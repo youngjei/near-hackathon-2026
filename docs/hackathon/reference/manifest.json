@@ -1,0 +1,93 @@
+{
+  "review_date_kst": "2026-11-09",
+  "snapshot_recorded_at_kst": "2026-11-09T14:14:50+09:00",
+  "prompt_repository": "https://github.com/nearai/near-hackathon-prompt-examples",
+  "prompt_revision": "78733430eac004f9ebca44cdb9f2bc72b403c057",
+  "files": [
+    {
+      "path": "HACKATHON.md",
+      "source_url": "https://nearhackathon.com/HACKATHON.md",
+      "sha256": "903794f4b656b456eaee087941517d024a33633641d167b90c3f060d381d9aed"
+    },
+    {
+      "path": "prompt-examples/00-setup.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/00-setup.md",
+      "sha256": "7d769d9e55584a867b9e6ed83b9cf5a5ec406543f250b402e25e5a0903011974"
+    },
+    {
+      "path": "prompt-examples/README.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/README.md",
+      "sha256": "71d8243e15bc23498194313c7ee6d2ec3a189560567c3eac41eaa3e579c6eb6e"
+    },
+    {
+      "path": "prompt-examples/SUBMITTING.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/SUBMITTING.md",
+      "sha256": "78eca27998e3c84bdfcda694b3750f652ca10fd4bb13c76e71e3bbbd013ee4bd"
+    },
+    {
+      "path": "prompt-examples/tracks/01-defi.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/01-defi.md",
+      "sha256": "9a33aafe6e239499e5bd757e57c7de618bd0b02ea0fea23060945121f7c16c4e"
+    },
+    {
+      "path": "prompt-examples/tracks/02-thesis.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/02-thesis.md",
+      "sha256": "30e254ecf69c0a960f5eb36b075b3b9f8aa53442331725a489aee62a19712f29"
+    },
+    {
+      "path": "prompt-examples/tracks/03-privacy.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/03-privacy.md",
+      "sha256": "6b94fed244d4dabcde3b16836ad7dda672ee49a1cb236242232ac5f7c2a7b77c"
+    },
+    {
+      "path": "prompt-examples/tracks/04-business.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/04-business.md",
+      "sha256": "f170db133c7604eca99e639545b2e18a26652a96d80d31fd2dbefd19bfdf7400"
+    },
+    {
+      "path": "prompt-examples/tracks/05-swarms.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/05-swarms.md",
+      "sha256": "d17e9e3b8810b3bd95dc29bd808cc5dfc270643b5e29a0daee8c1fcc6ce66331"
+    },
+    {
+      "path": "prompt-examples/tracks/06-security.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/06-security.md",
+      "sha256": "8121bf2b6d2ca5734f190705d401c8a14c24ee56c27ba75bd77b291b96e176e0"
+    },
+    {
+      "path": "prompt-examples/tracks/07-agents.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/07-agents.md",
+      "sha256": "85b9361a6d5465efd5c7b17c9e962bb588ac7461c64dc15db568a7f17b3cae1c"
+    },
+    {
+      "path": "prompt-examples/tracks/08-realworld.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/08-realworld.md",
+      "sha256": "1fff90a505ff8f70f5f9ce1632d37406ac07bc5a0ad8627bcbcf1f2ac2dedebe"
+    },
+    {
+      "path": "prompt-examples/tracks/09-games.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/09-games.md",
+      "sha256": "131ebc4daf4cce0f631f318fee931343de52afe7d25fd5eef563c4cd04b51f74"
+    },
+    {
+      "path": "prompt-examples/tracks/10-nfts.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/10-nfts.md",
+      "sha256": "7e460eccd5b5ad37d4a0f3a6891306bf09c9b25c4602dbc5aff49ea17975070f"
+    },
+    {
+      "path": "prompt-examples/tracks/11-memecoins.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/11-memecoins.md",
+      "sha256": "eed6e975f80b76a13237603f1ed7fae715d7457e2e3640f13116640888f6c467"
+    },
+    {
+      "path": "prompt-examples/tracks/12-social.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/12-social.md",
+      "sha256": "75dda43bd321f14f61f7b9eee7f016eb37d26a7ed0c3c316bfbb91acc99f1716"
+    },
+    {
+      "path": "prompt-examples/tracks/13-open.md",
+      "source_url": "https://github.com/nearai/near-hackathon-prompt-examples/blob/78733430eac004f9ebca44cdb9f2bc72b403c057/tracks/13-open.md",
+      "sha256": "2827c0957ba96e7a7f0d69168276cab648563e4640471edb61308fad7dafefa9"
+    }
+  ]
+}
