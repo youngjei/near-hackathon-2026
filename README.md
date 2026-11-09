@@ -1,6 +1,8 @@
-# NEAR Hackathon 2026
+# splitdbill — NEAR Hackathon 2026
 
-Our project workspace for [NEAR HACKATHON](https://nearhackathon.com/). Project name, idea and tracks are still to be chosen. This repository currently contains preparation and research; there is no working application yet.
+A receipt-based bill splitter for friends meeting across borders: confirm a receipt, share a payment link, and reimburse the organizer in USDC through NEAR Intents. The intended privacy benefit is protecting the organizer’s main wallet from fellow diners. That end-to-end property is not verified yet.
+
+This private repository contains hackathon preparation, technical research and an unfunded API probe; there is no working application yet. The working product name is **splitdbill**.
 
 **Submission deadline: November 14, 2026, 23:59 UTC / November 15, 2026, 08:59 KST.**
 
@@ -9,7 +11,7 @@ Our project workspace for [NEAR HACKATHON](https://nearhackathon.com/). Project 
 1. Read the [hackathon brief](docs/hackathon/BRIEF.md) for dates, eligibility, prizes and judging.
 2. Compare the [13 tracks](docs/hackathon/TRACKS.md) and their starter ideas.
 3. Check [technical resources and constraints](docs/hackathon/RESOURCES.md).
-4. Fill in the [project brief](docs/project/PROJECT.md), then select one small user journey to build.
+4. Read the [project brief](docs/project/PROJECT.md) and [NEAR Intents technical dossier](docs/technical/README.md), including live privacy/access findings.
 5. Keep [status](docs/project/STATUS.md), [decisions](docs/project/DECISIONS.md) and the [build log](docs/project/BUILD_LOG.md) current as we work.
 6. Use the [submission checklist](docs/hackathon/SUBMISSION.md) when the prototype is ready.
 
@@ -27,4 +29,4 @@ The repository starts private. It must become public before the deadline and rem
 
 ## Reproducibility status
 
-There are no runtime dependencies or application commands yet. Judges should not treat this preparation repository as a completed entry. When the prototype exists, this section will state prerequisites, exact commands, sample inputs, expected outputs, NEAR integration, deployed addresses/network, limitations and the demo URL.
+There are no application commands yet. The [research probe instructions](docs/technical/evidence/RESULTS.md) reproduce authentication and unfunded quote checks with Python and cryptography; they do not execute a payment. Judges should not treat this preparation repository as a completed entry. When the prototype exists, this section will state prerequisites, exact commands, sample inputs, expected outputs, NEAR integration, deployed addresses/network, limitations and the demo URL.

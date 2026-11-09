@@ -9,3 +9,13 @@
 - Do not assume an Intents testnet or working programmatic access to a partner service; verify the dependency first.
 
 For future decisions, record the date, decision, reason, alternatives that materially affected it, and implications for the demo.
+
+## 2026-11-09 — splitdbill and evidence-based privacy design
+
+- Adopt splitdbill as the working product name and the user's recurring cross-border bill-splitting problem. Keep the existing private repo URL for continuity.
+- Propose Real-World Money plus Social Money; final track selection remains open. Privacy is earned by demonstrated behavior, not the use of a privacy-branded API.
+- Use exact-output quotes per share; implement bills, allocation, fiat conversion and QR/link management in the application.
+- Investigate confidential receiving balances, with a dedicated user-controlled receiving identity as the design proposal. Do not claim the organizer's main wallet is protected until the payer-visible path passes the documented test.
+- Treat partner enablement as a real dependency. A valid end-user session alone did not authorize confidential quote creation.
+- Keep receipt/OCR confirmation and simple UX central. No DeFi/lending/trading feature expansion.
+- Keep source-derived statements, live observations and untested boundaries separate in docs/technical. No funded execution was authorized or performed.

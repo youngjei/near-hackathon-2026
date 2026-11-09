@@ -1,0 +1,14 @@
+[
+  {
+    "name": "dry-external-public",
+    "signature_valid": true
+  },
+  {
+    "name": "unfunded-public",
+    "signature_valid": true
+  },
+  {
+    "name": "unfunded-public-status",
+    "signature_valid": true
+  }
+]

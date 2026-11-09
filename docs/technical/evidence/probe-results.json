@@ -1,0 +1,331 @@
+{
+  "balances-no-auth": {
+    "http_status": "401",
+    "retrieved_at": "2026-11-09T05:53:40.222646+00:00",
+    "response": {
+      "message": "Authorization token required",
+      "error": "Unauthorized",
+      "statusCode": 401,
+      "timestamp": "2026-11-09T05:53:42.374Z",
+      "path": "/v0/account/balances"
+    },
+    "curl_error": ""
+  },
+  "history-no-auth": {
+    "http_status": "403",
+    "retrieved_at": "2026-11-09T05:53:40.957165+00:00",
+    "response": {
+      "message": "History is invite-only for now",
+      "error": "Forbidden",
+      "statusCode": 403,
+      "timestamp": "2026-11-09T05:53:43.054Z",
+      "path": "/v0/account/history"
+    },
+    "curl_error": ""
+  },
+  "ephemeral-auth": {
+    "http_status": "201",
+    "retrieved_at": "2026-11-09T05:57:22.105916+00:00",
+    "response": {
+      "response_keys": [
+        "accessToken",
+        "refreshToken",
+        "expiresIn",
+        "refreshExpiresIn"
+      ]
+    },
+    "curl_error": ""
+  },
+  "balances-with-session": {
+    "http_status": "200",
+    "retrieved_at": "2026-11-09T05:57:22.863162+00:00",
+    "response": {
+      "balances": []
+    },
+    "curl_error": ""
+  },
+  "history-with-session": {
+    "http_status": "403",
+    "retrieved_at": "2026-11-09T05:57:23.570938+00:00",
+    "response": {
+      "message": "History is invite-only for now",
+      "error": "Forbidden",
+      "statusCode": 403,
+      "timestamp": "2026-11-09T05:57:25.734Z",
+      "path": "/v0/account/history"
+    },
+    "curl_error": ""
+  },
+  "dry-confidential-public": {
+    "http_status": "401",
+    "retrieved_at": "2026-11-09T05:53:38.138061+00:00",
+    "response": {
+      "message": "User authentication is required for confidential intent quotes",
+      "error": "Unauthorized",
+      "statusCode": 401,
+      "timestamp": "2026-11-09T05:53:40.291Z",
+      "path": "/v0/quote"
+    },
+    "curl_error": ""
+  },
+  "dry-confidential-basic": {
+    "http_status": "401",
+    "retrieved_at": "2026-11-09T05:53:38.861132+00:00",
+    "response": {
+      "message": "User authentication is required for confidential intent quotes",
+      "error": "Unauthorized",
+      "statusCode": 401,
+      "timestamp": "2026-11-09T05:53:40.949Z",
+      "path": "/v0/quote"
+    },
+    "curl_error": ""
+  },
+  "dry-confidential-advanced": {
+    "http_status": "401",
+    "retrieved_at": "2026-11-09T05:53:39.521074+00:00",
+    "response": {
+      "message": "User authentication is required for confidential intent quotes",
+      "error": "Unauthorized",
+      "statusCode": 401,
+      "timestamp": "2026-11-09T05:53:41.681Z",
+      "path": "/v0/quote"
+    },
+    "curl_error": ""
+  },
+  "dry-private-session-public": {
+    "http_status": "401",
+    "retrieved_at": "2026-11-09T05:57:24.300732+00:00",
+    "response": {
+      "message": "Invalid token",
+      "error": "Unauthorized",
+      "statusCode": 401,
+      "timestamp": "2026-11-09T05:57:26.396Z",
+      "path": "/v0/quote"
+    },
+    "curl_error": ""
+  },
+  "dry-private-session-basic": {
+    "http_status": "401",
+    "retrieved_at": "2026-11-09T05:57:24.966921+00:00",
+    "response": {
+      "message": "Invalid token",
+      "error": "Unauthorized",
+      "statusCode": 401,
+      "timestamp": "2026-11-09T05:57:27.109Z",
+      "path": "/v0/quote"
+    },
+    "curl_error": ""
+  },
+  "dry-private-session-advanced": {
+    "http_status": "401",
+    "retrieved_at": "2026-11-09T05:57:25.667639+00:00",
+    "response": {
+      "message": "Invalid token",
+      "error": "Unauthorized",
+      "statusCode": 401,
+      "timestamp": "2026-11-09T05:57:27.830Z",
+      "path": "/v0/quote"
+    },
+    "curl_error": ""
+  },
+  "dry-external-public": {
+    "http_status": "201",
+    "retrieved_at": "2026-11-09T05:57:26.686143+00:00",
+    "response": {
+      "quote": {
+        "amountIn": "15158646",
+        "amountInFormatted": "15.158646",
+        "amountInUsd": "15.149960095842",
+        "minAmountIn": "15007059",
+        "amountOut": "15000000",
+        "amountOutFormatted": "15.0",
+        "amountOutUsd": "14.991405000000",
+        "minAmountOut": "15000000",
+        "timeEstimate": 34,
+        "refundFee": "2400",
+        "withdrawFee": "5300"
+      },
+      "quoteRequest": {
+        "dry": true,
+        "depositMode": "SIMPLE",
+        "swapType": "EXACT_OUTPUT",
+        "slippageTolerance": 100,
+        "originAsset": "nep141:base-0x833589fcd6edb6e08f4c7c32d4f71b54bda02913.omft.near",
+        "depositType": "ORIGIN_CHAIN",
+        "destinationAsset": "nep141:arb-0xaf88d065e77c8cc2239327c5edb3a432268e5831.omft.near",
+        "amount": "15000000",
+        "refundTo": "0x1111111111111111111111111111111111111111",
+        "refundType": "ORIGIN_CHAIN",
+        "recipient": "0x2222222222222222222222222222222222222222",
+        "recipientType": "DESTINATION_CHAIN",
+        "deadline": "2026-11-09T06:12:24.967Z",
+        "confidentiality": "public",
+        "quoteWaitingTimeMs": 0,
+        "insured": false,
+        "appFees": [
+          {
+            "recipient": "5880ad2b362620fadf759cbceb1cd5737ce8c6ed7fb8e9942881e6731f9247dd",
+            "fee": 1
+          }
+        ]
+      },
+      "signature": "ed25519:2UZ2DKYJDMyxRfx8rFmFDGkiVV7wtNEoQJv9fKmLhZeCHpooSaSSSoUnwhQSzMBsVCrVSfCjQ4u7PMRhD2Q8zTe5",
+      "timestamp": "2026-11-09T05:57:28.483Z",
+      "correlationId": "40656353-297b-4999-8a34-c89bacb53ef1"
+    },
+    "curl_error": ""
+  },
+  "dry-external-basic": {
+    "http_status": "401",
+    "retrieved_at": "2026-11-09T05:57:27.447398+00:00",
+    "response": {
+      "message": "User authentication is required for confidential intent quotes",
+      "error": "Unauthorized",
+      "statusCode": 401,
+      "timestamp": "2026-11-09T05:57:29.562Z",
+      "path": "/v0/quote"
+    },
+    "curl_error": ""
+  },
+  "dry-external-advanced": {
+    "http_status": "401",
+    "retrieved_at": "2026-11-09T05:57:28.107947+00:00",
+    "response": {
+      "message": "User authentication is required for confidential intent quotes",
+      "error": "Unauthorized",
+      "statusCode": 401,
+      "timestamp": "2026-11-09T05:57:30.269Z",
+      "path": "/v0/quote"
+    },
+    "curl_error": ""
+  },
+  "unfunded-public": {
+    "http_status": "201",
+    "retrieved_at": "2026-11-09T05:57:56.157715+00:00",
+    "response": {
+      "quote": {
+        "amountIn": "15158646",
+        "amountInFormatted": "15.158646",
+        "amountInUsd": "15.149626605630",
+        "minAmountIn": "15007059",
+        "amountOut": "15000000",
+        "amountOutFormatted": "15.0",
+        "amountOutUsd": "14.991075000000",
+        "minAmountOut": "15000000",
+        "timeEstimate": 34,
+        "refundFee": "2400",
+        "withdrawFee": "5300",
+        "deadline": "2026-11-12T06:12:55.024Z",
+        "timeWhenInactive": "2026-11-12T06:12:55.024Z",
+        "depositAddress": "0x46395143f85c7f5B72C234dEA1ee03CB3d4606AD"
+      },
+      "quoteRequest": {
+        "dry": false,
+        "depositMode": "SIMPLE",
+        "swapType": "EXACT_OUTPUT",
+        "slippageTolerance": 100,
+        "originAsset": "nep141:base-0x833589fcd6edb6e08f4c7c32d4f71b54bda02913.omft.near",
+        "depositType": "ORIGIN_CHAIN",
+        "destinationAsset": "nep141:arb-0xaf88d065e77c8cc2239327c5edb3a432268e5831.omft.near",
+        "amount": "15000000",
+        "refundTo": "0x1111111111111111111111111111111111111111",
+        "refundType": "ORIGIN_CHAIN",
+        "recipient": "0x2222222222222222222222222222222222222222",
+        "recipientType": "DESTINATION_CHAIN",
+        "deadline": "2026-11-09T06:12:55.024Z",
+        "confidentiality": "public",
+        "quoteWaitingTimeMs": 0,
+        "insured": false,
+        "appFees": [
+          {
+            "recipient": "5880ad2b362620fadf759cbceb1cd5737ce8c6ed7fb8e9942881e6731f9247dd",
+            "fee": 1,
+            "limitOrderId": null
+          }
+        ]
+      },
+      "signature": "ed25519:5jLqUAw3sUvdKCk3jx4K6aTGPnhuUu69hxzKRFeCqdT4LCyPaatiqY4SLKA7tjrzNsXMyHjBKXnGrXan7U9wxNsA",
+      "timestamp": "2026-11-09T05:57:57.894Z",
+      "correlationId": "4b506aac-e1a9-45a8-944f-34405dde4fd5"
+    },
+    "curl_error": ""
+  },
+  "unfunded-public-status": {
+    "http_status": "200",
+    "retrieved_at": "2026-11-09T05:57:57.000506+00:00",
+    "response": {
+      "status": "PENDING_DEPOSIT",
+      "updatedAt": "2026-11-09T05:57:58.303Z",
+      "correlationId": "21c08d6d-7154-4041-ace1-423deeb99aa1",
+      "swapDetails": {
+        "depositedAmount": null,
+        "depositedAmountUsd": null,
+        "depositedAmountFormatted": null,
+        "intentHashes": [],
+        "nearTxHashes": [],
+        "amountIn": null,
+        "amountInFormatted": null,
+        "amountInUsd": null,
+        "amountOut": null,
+        "amountOutFormatted": null,
+        "amountOutUsd": null,
+        "slippage": null,
+        "refundedAmount": "0",
+        "refundedAmountFormatted": "0",
+        "refundedAmountUsd": "0",
+        "refundReason": null,
+        "refundFee": "2400",
+        "withdrawFee": "5300",
+        "originChainTxHashes": [],
+        "destinationChainTxHashes": []
+      },
+      "quoteResponse": {
+        "timestamp": "2026-11-09T05:57:57.894Z",
+        "signature": "ed25519:5jLqUAw3sUvdKCk3jx4K6aTGPnhuUu69hxzKRFeCqdT4LCyPaatiqY4SLKA7tjrzNsXMyHjBKXnGrXan7U9wxNsA",
+        "quoteRequest": {
+          "dry": false,
+          "swapType": "EXACT_OUTPUT",
+          "depositMode": "SIMPLE",
+          "slippageTolerance": 100,
+          "originAsset": "nep141:base-0x833589fcd6edb6e08f4c7c32d4f71b54bda02913.omft.near",
+          "depositType": "ORIGIN_CHAIN",
+          "destinationAsset": "nep141:arb-0xaf88d065e77c8cc2239327c5edb3a432268e5831.omft.near",
+          "amount": "15000000",
+          "refundTo": "0x1111111111111111111111111111111111111111",
+          "refundType": "ORIGIN_CHAIN",
+          "recipient": "0x2222222222222222222222222222222222222222",
+          "recipientType": "DESTINATION_CHAIN",
+          "deadline": "2026-11-09T06:12:55.024Z",
+          "appFees": [
+            {
+              "limitOrderId": null,
+              "recipient": "5880ad2b362620fadf759cbceb1cd5737ce8c6ed7fb8e9942881e6731f9247dd",
+              "fee": 1
+            }
+          ],
+          "virtualChainRecipient": null,
+          "virtualChainRefundRecipient": null,
+          "referral": null,
+          "confidentiality": "public"
+        },
+        "quote": {
+          "amountIn": "15158646",
+          "amountInFormatted": "15.158646",
+          "amountInUsd": "15.149626605630",
+          "minAmountIn": "15007059",
+          "amountOut": "15000000",
+          "amountOutFormatted": "15.0",
+          "amountOutUsd": "14.991075000000",
+          "minAmountOut": "15000000",
+          "timeWhenInactive": "2026-11-12T06:12:55.024Z",
+          "depositAddress": "0x46395143f85c7f5B72C234dEA1ee03CB3d4606AD",
+          "deadline": "2026-11-12T06:12:55.024Z",
+          "timeEstimate": 34,
+          "refundFee": "2400",
+          "withdrawFee": "5300"
+        }
+      }
+    },
+    "curl_error": ""
+  }
+}

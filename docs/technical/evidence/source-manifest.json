@@ -1,0 +1,519 @@
+{
+  "retrieved_at": "2026-11-09T05:52:44.345738+00:00",
+  "files": [
+    {
+      "url": "https://docs.near-intents.org/getting-started/what-are-intents.md",
+      "ok": true,
+      "sha256": "665ee5578168caa058a2e8e0cdf363080fc37656e37dff8ae56484d437171619",
+      "error": null,
+      "scratch_path": "work/near-research/docs/getting-started/what-are-intents.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/resources/chain-support.md",
+      "ok": true,
+      "sha256": "4d82cb4964a063a17c05f3324550ec8d10b97acaf97e820dba557c18f336b3ac",
+      "error": null,
+      "scratch_path": "work/near-research/docs/resources/chain-support.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/resources/asset-support.md",
+      "ok": true,
+      "sha256": "fc09582d3161250897c54e81ee75b40a1b76d35b14723776b8a36920aea8bc65",
+      "error": null,
+      "scratch_path": "work/near-research/docs/resources/asset-support.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/about-1click-api.md",
+      "ok": true,
+      "sha256": "322ac44e050ec6aa7c275dfccdd771b49c257611fb80d4d6cd04757b70e61f2f",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/about-1click-api.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/quickstart/introduction.md",
+      "ok": true,
+      "sha256": "d76e83a5b03278d45db6ee6e3f829609ed3fa51f42ac964d9b111de7ae76a46c",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/quickstart/introduction.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/quickstart/making-a-request.md",
+      "ok": true,
+      "sha256": "ae276f221d8c4822ee5110f02aec81bc278ab92d70c71d14299eb2ef931a187a",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/quickstart/making-a-request.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/quickstart/confidential-swaps.md",
+      "ok": true,
+      "sha256": "9e03de64bf87fecd7457365919aa3bf3bb2c4386979143ff42161cddf85f4a32",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/quickstart/confidential-swaps.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/quickstart/signed-intent-execution.md",
+      "ok": true,
+      "sha256": "c4552cd724287a93ace57911b6068c25bbf0e83a3aac222685c8441ecd941bd1",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/quickstart/signed-intent-execution.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/quickstart/going-live.md",
+      "ok": true,
+      "sha256": "8e760d65d93fc110f135c45ab0aeef11ab95e168adff9d6ac63f89c975a351f4",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/quickstart/going-live.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/sdk.md",
+      "ok": true,
+      "sha256": "6a66f3a7b42b2e095f2bc9f138ce375c0ed46db181bb9d32be8090c269050203",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/sdk.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/authentication.md",
+      "ok": true,
+      "sha256": "e525505007074eab170962d688436e9612a200f23334029e908a7dd02deffbad",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/authentication.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/verify-quote-signature.md",
+      "ok": true,
+      "sha256": "0d12f56346b8e488fa2f9f6e0f24536bbadff83d97c8dc188b714241a68861e6",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/verify-quote-signature.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/swap-types.md",
+      "ok": true,
+      "sha256": "6bf1fcc3de2c7918360bbbc817bd6aeac0cefb705a1b81bf1145169c7f5bb65d",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/swap-types.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/earn.md",
+      "ok": true,
+      "sha256": "944294f63bed9006e0904298ac8f41ecd35a0e7636a55e6c629d833781487749",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/earn.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/hyperliquid.md",
+      "ok": true,
+      "sha256": "fc513a9e8000e1a88310574c5247c1239f71cbb8f01e2438f2a575744c09806c",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/hyperliquid.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/orders.md",
+      "ok": true,
+      "sha256": "000af47d8cf8fbfd5d8643804c9123cc4c1a7662ebfbfdc6b4e8efc0ec527e42",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/orders.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/order/create-an-order.md",
+      "ok": true,
+      "sha256": "d59047cccd2df3d1a5c98b4fa867a94146b76a304645c35c8ea69be3e7a82b25",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/order/create-an-order.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/order/list-orders.md",
+      "ok": true,
+      "sha256": "230b881c3c1ff8767c974f16c232a3e6462867df5b342adb93fbd7817dee9aa7",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/order/list-orders.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/order/get-an-order.md",
+      "ok": true,
+      "sha256": "9f1e8114b2e3ddad111b65d60f98026b2d8a0f3abf5dc41ad493e27a2a512025",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/order/get-an-order.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/order/cancel-an-order.md",
+      "ok": true,
+      "sha256": "645b05428b32c2449f2ffe3e6f38b886e51acfffd3c9ae86f93f4aa8898469a7",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/order/cancel-an-order.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/fee-config.md",
+      "ok": true,
+      "sha256": "3ac879ae25c2ce44c7d49ef12544381f29e0687a0207656e213e687a27e55c3a",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/fee-config.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/oneclick/get-supported-tokens.md",
+      "ok": true,
+      "sha256": "3e1765e167a6f467f2fde5a6915c1322ac5950880a5d7a092d9d7780e10ac346",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/oneclick/get-supported-tokens.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/oneclick/request-a-swap-quote.md",
+      "ok": true,
+      "sha256": "e2c0cab21c6e0cedc0e1e71f99ddd6273a39c245990536534d9d0662d755281b",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/oneclick/request-a-swap-quote.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/oneclick/check-swap-execution-status.md",
+      "ok": true,
+      "sha256": "e724d4aef50404e22ae0c61418c66f33bcabfdfbb647bbaa06d0877c102178d7",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/oneclick/check-swap-execution-status.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/oneclick/get-any_input-withdrawals.md",
+      "ok": true,
+      "sha256": "db65ebd01cc25eb751cb45d22428816e084d62061f7dfec98a86d547107ecae9",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/oneclick/get-any_input-withdrawals.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/oneclick/submit-deposit-transaction-hash.md",
+      "ok": true,
+      "sha256": "ce9db1794afec72cbc5194897d9c43cbca4afe3f6de7c23b24696884d8e01504",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/oneclick/submit-deposit-transaction-hash.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/oneclick/generate-an-intent-for-signing.md",
+      "ok": true,
+      "sha256": "5ced8f51d3b9601539ab8409d9305ea66fa6fa7e9e7e87bf67da4dcc0c4a35c9",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/oneclick/generate-an-intent-for-signing.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/oneclick/submit-a-signed-intent.md",
+      "ok": true,
+      "sha256": "8a706c5ec91695343a19b98c4884e94c0862fa74e8ae69dc89834430d0624b95",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/oneclick/submit-a-signed-intent.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/user-auth/authenticate-user-with-signed-data.md",
+      "ok": true,
+      "sha256": "2fb22d40b71611f1feea302794ee5e1162ed1731ea5ea7ac8be29da11defd799",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/user-auth/authenticate-user-with-signed-data.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/user-auth/refresh-access-token.md",
+      "ok": true,
+      "sha256": "d3d8b18a523fa6edc88605ae680751cc7641ef001a62eeeeb4034c0817a2ad22",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/user-auth/refresh-access-token.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/account/get-user-token-balances.md",
+      "ok": true,
+      "sha256": "2e769d80af265c450d1e09fa4aacb86ecd026507e74f8cfd405103cca910e749",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/account/get-user-token-balances.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/account/get-transaction-history.md",
+      "ok": true,
+      "sha256": "d4795459d5e91532e49733030191e1991de1448d9ca73a0bd352ce4af3b86623",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/account/get-transaction-history.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/distribution-channels/1click-api/explorer/introduction.md",
+      "ok": true,
+      "sha256": "005dddb488ce27dd9fed5d5a0c4886ee3804da09f3bb5eb171328be09635a7bb",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/distribution-channels/1click-api/explorer/introduction.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/api-reference/get-transactions.md",
+      "ok": true,
+      "sha256": "fadbf224335deaacf404d90a5fdde0da23ded216ff04d91c091096e3527aef15",
+      "error": null,
+      "scratch_path": "work/near-research/docs/api-reference/get-transactions.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/devkit/react-widget.md",
+      "ok": true,
+      "sha256": "5e5b65f4a2bc737b9480b98f381089425ea450957d18a47b10818f951ca4f6be",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/devkit/react-widget.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/devkit/intents-sdk.md",
+      "ok": true,
+      "sha256": "55dea08e013533144c1789359a9a8f660fa3d161297db16bd08eaed9fdd24843",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/devkit/intents-sdk.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/devkit/skills.md",
+      "ok": true,
+      "sha256": "4dee50a2c86a7a1d18b26833fb597fa0e7830174862707695e5203be8c0efa0a",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/devkit/skills.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/resources/faqs.md",
+      "ok": true,
+      "sha256": "8b2249ab3851ec7edc978cbb5009b77978ca9161566bb92a48a114025064a81e",
+      "error": null,
+      "scratch_path": "work/near-research/docs/resources/faqs.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/resources/fees.md",
+      "ok": true,
+      "sha256": "c2485253e6484af34b4b9dedfd3686096c6a75c7b37eea13781810c512f4b70b",
+      "error": null,
+      "scratch_path": "work/near-research/docs/resources/fees.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/security-compliance/proactive-intents-security.md",
+      "ok": true,
+      "sha256": "82593b727b1c01c417f42ef440a8f7e8e4ba66fee6c3de2f2828369c8b50b148",
+      "error": null,
+      "scratch_path": "work/near-research/docs/security-compliance/proactive-intents-security.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/security-compliance/shield-incident-api.md",
+      "ok": true,
+      "sha256": "7746668fbedc228989ddec01051d31ed94bb6ab1047c3f743459c2d43d0fa953",
+      "error": null,
+      "scratch_path": "work/near-research/docs/security-compliance/shield-incident-api.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/security-compliance/risk-and-compliance.md",
+      "ok": true,
+      "sha256": "7d4425d55f8d549973df915f66ba7b4bb18d3102e02fb8ce809faa8b2601711b",
+      "error": null,
+      "scratch_path": "work/near-research/docs/security-compliance/risk-and-compliance.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/security-compliance/security.md",
+      "ok": true,
+      "sha256": "2ffd5e8d4bd4193ebea1076ccfaac02551c60498f01b667b6d78d28d65f2f989",
+      "error": null,
+      "scratch_path": "work/near-research/docs/security-compliance/security.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/security-compliance/treasury-addresses.md",
+      "ok": true,
+      "sha256": "6b7180f8830a004faa179dc5d51a47e612a5eb188df79573d1d3cca26b659a9c",
+      "error": null,
+      "scratch_path": "work/near-research/docs/security-compliance/treasury-addresses.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/security-compliance/withdrawals-to-exchanges.md",
+      "ok": true,
+      "sha256": "a1bf768c5e772f38de69ca3eea02dee7bd5c52264bc6a0c51b01241cc74dbe90",
+      "error": null,
+      "scratch_path": "work/near-research/docs/security-compliance/withdrawals-to-exchanges.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/security-compliance/terms-of-service.md",
+      "ok": true,
+      "sha256": "1c3d133b59fa6aca4a47300fa18fd515b00dc5471de71bdef80689a3ddca128b",
+      "error": null,
+      "scratch_path": "work/near-research/docs/security-compliance/terms-of-service.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/introduction.md",
+      "ok": true,
+      "sha256": "418397d8d6b64089e1225c4f8b0aa0534b2e2d8eb42218552318dca376f0b321",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/introduction.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/quickstart.md",
+      "ok": true,
+      "sha256": "46902f75bdea9635bfa95a62ab4f187a32f2f3291eb0d7ad43f716e83a870e5e",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/quickstart.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/example.md",
+      "ok": true,
+      "sha256": "2209b4d2acf2de99ff3c50011e2e4fca24bc0afa3eb70ea968bf1dc24c310a14",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/example.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/confidential-intents.md",
+      "ok": true,
+      "sha256": "ffbe491b3f39158c2006b6d97ba8959904a61748cf8be74f6690755e270d7df7",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/confidential-intents.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/confidential-liquidity.md",
+      "ok": true,
+      "sha256": "44bfb0ee2fbaea6675082c9b0a0933f3d23ce7a5ff5d3b40be13b600179f4b39",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/confidential-liquidity.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/confidential-example.md",
+      "ok": true,
+      "sha256": "d74331725518bb7ee2f51abb37de8255ae7a16983880af50687b4231cac8aa48",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/confidential-example.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/message-bus/introduction.md",
+      "ok": true,
+      "sha256": "710bba2b805b294424743b252c0fabc5864a0f8c919a8d8dd03fc6c4d9ba3b3c",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/message-bus/introduction.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/message-bus/rpc.md",
+      "ok": true,
+      "sha256": "244fec2d16cade873bcd334723a07e9212835e816bf728aa9312adab8113da35",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/message-bus/rpc.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/message-bus/websocket.md",
+      "ok": true,
+      "sha256": "7229a7d70b562523bacc11e42f777c84aee44064514657c22807c05ea1a99645",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/message-bus/websocket.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/message-bus/guaranteed-delivery.md",
+      "ok": true,
+      "sha256": "46928c938349be5a5df7f92d8ce3f913eb68b89669b54bdfb1916897ef934a02",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/message-bus/guaranteed-delivery.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/market-makers/solver-terms-of-use.md",
+      "ok": true,
+      "sha256": "083e5f1206597c664535a3f05cf8e107aed524153d3ccbaf3936b0e558ff43ba",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/market-makers/solver-terms-of-use.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/bridging/overview.md",
+      "ok": true,
+      "sha256": "db3916ef782c00861df64ea96d723cc3cc6bd3c1cb918c6a6e9acbe84d5678a5",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/bridging/overview.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/bridging/btc-deposit-refund.md",
+      "ok": true,
+      "sha256": "fc745658bb68ae06054269f6ceace7fe2ff490d0af08ebb5c74f0f82ed187e40",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/bridging/btc-deposit-refund.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/verifier-contract/introduction.md",
+      "ok": true,
+      "sha256": "3fdc99ee1cf511e24b04b40cfd32fde7c8e0070dff35dddabf37436fc87c68c5",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/verifier-contract/introduction.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/verifier-contract/account-abstraction.md",
+      "ok": true,
+      "sha256": "91940efac59d24ddf575e396213afed80d2425d2178bcc8255b5498ce4f68450",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/verifier-contract/account-abstraction.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/verifier-contract/deposits-and-withdrawals/deposits.md",
+      "ok": true,
+      "sha256": "49e89ff6647d8f155e71080854f7fe924f59caefb35537a0dc829ad159136c6d",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/verifier-contract/deposits-and-withdrawals/deposits.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/verifier-contract/deposits-and-withdrawals/withdrawals.md",
+      "ok": true,
+      "sha256": "f884667455770455eaefdc529753d8a278179e603a32d86adeeed8c23efc94cd",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/verifier-contract/deposits-and-withdrawals/withdrawals.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/verifier-contract/deposits-and-withdrawals/near-token.md",
+      "ok": true,
+      "sha256": "a55cbfcd18f7fcbe2c2694433e74db2d99765a34291e886d720017a3219d2a4c",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/verifier-contract/deposits-and-withdrawals/near-token.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/verifier-contract/deposits-and-withdrawals/balances.md",
+      "ok": true,
+      "sha256": "6760305cdb36e357312f20079d13568468700c5f8cd8482d402a8b9829e0aa92",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/verifier-contract/deposits-and-withdrawals/balances.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/verifier-contract/intent-types-and-execution.md",
+      "ok": true,
+      "sha256": "e48b235eca07fd7972b7c2841eb2eb78c23d25a7beff64ea1071ec8fe014cbeb",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/verifier-contract/intent-types-and-execution.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/verifier-contract/signing-intents.md",
+      "ok": true,
+      "sha256": "4dab5817a88941786b07eae0c962f5aa29121ab5fd52303c621f6c9d0d8315f3",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/verifier-contract/signing-intents.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/verifier-contract/simulating-intents.md",
+      "ok": true,
+      "sha256": "a9f3fc7defd95d8b1741828fa40e2029cd7fea3c041043958a7705ee9a2156d2",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/verifier-contract/simulating-intents.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/integration/verifier-contract/events.md",
+      "ok": true,
+      "sha256": "2a7ea2a3a6d9514a3275e2a2720c35755668b87348ab2fc92b7e6cd73c6b5800",
+      "error": null,
+      "scratch_path": "work/near-research/docs/integration/verifier-contract/events.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/learn/omni-bridge/overview.md",
+      "ok": true,
+      "sha256": "f574f8b529ac3b21474b5b535a18e6b336f1f9c19c830e9ac5a39f48826429d1",
+      "error": null,
+      "scratch_path": "work/near-research/docs/learn/omni-bridge/overview.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/learn/omni-bridge/how-it-works.md",
+      "ok": true,
+      "sha256": "6aa545dba857ee6f4d464c017b2b1599f2803667af512c9ae91336bf4abfc6cc",
+      "error": null,
+      "scratch_path": "work/near-research/docs/learn/omni-bridge/how-it-works.md"
+    },
+    {
+      "url": "https://docs.near-intents.org/changelog/overview.md",
+      "ok": true,
+      "sha256": "135b9f1117d53aefc09cf881614b16556355e6dd4c473cf04c8ae5658bca3cc9",
+      "error": null,
+      "scratch_path": "work/near-research/docs/changelog/overview.md"
+    }
+  ],
+  "additional_sources": [
+    {
+      "url": "https://1click.chaindefuser.com/docs/v0/openapi.yaml",
+      "sha256": "9a2e676682aa6dec6905c82f1b2cc0ec72eda97964369aa51ec35eb82ccac0a3"
+    },
+    {
+      "url": "https://docs.near-intents.org/changelog/entries/2026-07-02-confidentiality-parameter.md",
+      "sha256": "987ce03ff55ec529d62185bbdc279dfad2d2cc707a184e1d3d20a9110e46b151"
+    }
+  ]
+}
