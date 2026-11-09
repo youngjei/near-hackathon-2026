@@ -1,6 +1,6 @@
 # NEAR Intents technical dossier for splitdbill
 
-Checked 2026-11-09. This is implementation research, not a completed payment integration or a security audit.
+Protocol research checked 2026-11-09. The [November 10 beta scope](../project/BETA_SCOPE.md) narrows the application to shielded ZEC and existing confidential balances; broad-chain examples below remain research history. This is implementation research, not a completed payment integration or a security audit.
 
 ## Start here
 

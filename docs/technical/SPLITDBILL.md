@@ -2,7 +2,9 @@
 
 ## Product
 
-A friend pays a restaurant bill abroad, photographs the receipt, confirms its total, and shares a QR/link. Each other diner pays their share using a supported crypto asset; the organizer receives USDC in a confidential receiving account. The aim is to avoid revealing the organizer's main public wallet to the group.
+Current beta scope (November 10): [BETA_SCOPE.md](../project/BETA_SCOPE.md) supersedes the earlier broad-chain proposal.
+
+A friend pays a restaurant bill abroad, photographs the receipt, confirms its total, and shares payment requests. Other diners pay shielded ZEC from VIZOR/Zodl or use an existing Confidential Intents balance. The organizer receives confidential USDC. The product contribution is automatic conversion, request creation and reconciliation.
 
 Keep the first experience to three views: create/confirm bill, pay one share, and organizer progress. The visual style will be selected later. No lending, yield, trading dashboard, DAO, custom token or speculative feature is needed.
 
@@ -17,7 +19,7 @@ Keep the first experience to three views: create/confirm bill, pay one share, an
 | Private receipt access, reminders and group progress | Confidential balance/transaction infrastructure, with enabled access |
 | Protection of recipient identity in every payer-facing surface | Underlying cryptographic signatures and ledger execution |
 
-There is no documented native N-person bill request, receipt scanner, fiat FX conversion, or group payment-link API. A bill link is our application object. Create fresh per-share payment quotes when a diner chooses a token and chain; do not encode a long-lived expiring quote as the bill itself.
+There is no documented native N-person bill request, receipt scanner, fiat FX conversion, or group payment-link API. A bill link is our application object. Create fresh per-share payment quotes when a diner chooses Zcash or their confidential balance; do not encode a long-lived expiring quote as the bill itself.
 
 ## Amount calculation
 
@@ -27,11 +29,11 @@ Store the selected conversion rate, source and timestamp with the bill. Let the 
 
 ## Receiving identity
 
-Use a dedicated, user-controlled receiving identity for splitdbill as the current design proposal. Authenticate it for confidential balance access. Avoid putting the organizer's main wallet in the bill, public URL, receipt metadata or client response. Do not give the server a spending key merely to make links.
+Use the organizer's user-controlled confidential receiving account. Authenticate it for confidential balance access. A separate receiving identity is optional future hardening, not a new-wallet requirement for the beta. Avoid putting the organizer's main wallet in the bill, public URL, receipt metadata or client response. Do not give the server a spending key merely to make links.
 
-This reduces harm from exposing a receiving identifier but is not proof of unlinkability. Account recovery, withdrawal metadata and the actual confidential status response must be verified. A dedicated identity is an application design choice, not a claim that Confidential Intents requires a second wallet.
+Account recovery, withdrawal metadata and the actual confidential status response must be verified. A confidential balance is not proof of recipient-identity unlinkability.
 
-For external payers, the documented target is `depositType: ORIGIN_CHAIN`, `recipientType: CONFIDENTIAL_INTENTS`, destination USDC. A diner already using a private Intents balance instead uses signed-intent execution. Third-party receipt by the organizer must be tested with enabled partner credentials; the live private quote access gate currently prevents that test.
+For beta Zcash payers, the documented target is `depositType: ORIGIN_CHAIN`, `recipientType: CONFIDENTIAL_INTENTS`, destination USDC. A diner already using a private Intents balance instead uses signed-intent execution. Third-party receipt by the organizer must be tested with enabled partner credentials; the live private quote access gate currently prevents that test.
 
 ## Payment records and failure behavior
 
@@ -47,6 +49,6 @@ The receipt itself can contain names, restaurant location, timestamps and card f
 
 ## Next concrete integration milestone
 
-Obtain an enabled partner integration through the official portal, then run the owner/payer/anonymous confidentiality test in [PRIVACY.md](PRIVACY.md). Only after that can we finalize the receiving flow and claim that reimbursing a bill does not expose the organizer's main wallet. A funded end-to-end test requires a separately authorized small budget because no official testnet exists.
+Obtain an enabled partner integration through the official portal, then run the owner/payer/anonymous confidentiality test in [PRIVACY.md](PRIVACY.md). Validate ZEC quote sizes, wallet request handling, refunds, and third-party confidential payment delivery. Recipient-metadata checks remain part of validation; universal sender/recipient anonymity is not the product promise. A funded end-to-end test requires a separately authorized small budget because no official testnet exists.
 
 Primary track fit: Real-World Money. Social Money is the natural secondary candidate. Privacy & Private AI is additional only when the privacy journey is demonstrated. No submission track is finalized here.

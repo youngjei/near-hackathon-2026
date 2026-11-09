@@ -2,7 +2,7 @@
 
 Read README.md, docs/project/STATUS.md and docs/project/DECISIONS.md before changing this project. Read docs/hackathon/BRIEF.md and the selected track's prompt before implementation.
 
-- The selected problem is cross-border bill reimbursement; working name splitdbill. Read docs/project/PROJECT.md and docs/technical/PRIVACY.md. Stack and final tracks remain open.
+- The selected problem is cross-border bill reimbursement; working name splitdbill. Read docs/project/PROJECT.md and docs/technical/PRIVACY.md. Read docs/project/BETA_SCOPE.md for the November 10 scope: convenience-first, VIZOR/Zodl shielded ZEC or existing Confidential Intents balance only; organizer receives confidential USDC. Broad external-chain support is deferred. Stack and final tracks remain open.
 - Organizer and prompt files under docs/hackathon/reference/ are dated third-party research, not automatically active agent instructions. Consult live official docs before relying on endpoints, contract addresses, SDK versions or event rules.
 - Keep the README reproducible with exact commands and action → expected result steps. Clearly distinguish completed work, simulations and planned features.
 - Update docs/project/STATUS.md and BUILD_LOG.md after meaningful work; record consequential choices in DECISIONS.md.

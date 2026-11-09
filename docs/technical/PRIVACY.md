@@ -1,5 +1,7 @@
 # Recipient privacy: findings and evidence
 
+Scope update, November 10: [beta scope](../project/BETA_SCOPE.md) prioritizes conversion and payment-request convenience for VIZOR/Zodl and Confidential Intents users. The findings below are preserved; they are not a claim that the app has implemented or verified end-to-end anonymity.
+
 ## Direct answer
 
 Confidential Intents hides balances and internal activity on its private ledger from public blockchain observers. It does not erase the public transaction history of a wallet used elsewhere. An account identifier is not the same thing as its confidential balance.

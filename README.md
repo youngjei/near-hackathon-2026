@@ -1,6 +1,8 @@
 # splitdbill — NEAR Hackathon 2026
 
-A receipt-based bill splitter for friends meeting across borders: confirm a receipt, share a payment link, and reimburse the organizer in USDC through NEAR Intents. The intended privacy benefit is protecting the organizer’s main wallet from fellow diners. That end-to-end property is not verified yet.
+A receipt-based bill splitter for friends meeting across borders: confirm a receipt, automatically calculate shares and conversions, send payment requests, and track repayments in USDC.
+
+The hackathon beta supports **ZEC payments from VIZOR or Zodl (formerly Zashi)** and **payments from an existing Confidential Intents balance**. Organizers receive USDC into a confidential balance. Convenience is the product contribution; general external-chain support is deferred. See the [beta scope](docs/project/BETA_SCOPE.md).
 
 This private repository contains hackathon preparation, technical research and an unfunded API probe; there is no working application yet. The working product name is **splitdbill**.
 
@@ -15,7 +17,7 @@ This private repository contains hackathon preparation, technical research and a
 5. Keep [status](docs/project/STATUS.md), [decisions](docs/project/DECISIONS.md) and the [build log](docs/project/BUILD_LOG.md) current as we work.
 6. Use the [submission checklist](docs/hackathon/SUBMISSION.md) when the prototype is ready.
 
-Research was checked on **November 9, 2026 (KST)**. [Sources and snapshots](docs/hackathon/SOURCES.md) explain provenance and known gaps. Recheck the live organizer guide before submitting.
+Hackathon research was checked on **November 9, 2026 (KST)**; beta wallet scope and sources were updated **November 10**. [Sources and snapshots](docs/hackathon/SOURCES.md) explain provenance and known gaps. Recheck the live organizer guide before submitting.
 
 ## Working on the project
 

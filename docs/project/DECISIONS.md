@@ -19,3 +19,12 @@ For future decisions, record the date, decision, reason, alternatives that mater
 - Treat partner enablement as a real dependency. A valid end-user session alone did not authorize confidential quote creation.
 - Keep receipt/OCR confirmation and simple UX central. No DeFi/lending/trading feature expansion.
 - Keep source-derived statements, live observations and untested boundaries separate in docs/technical. No funded execution was authorized or performed.
+
+## 2026-11-10 — Convenience-first, restricted-wallet beta
+
+- User chose automatic bill conversion and payment requests as the project contribution.
+- Restrict the beta to shielded ZEC from VIZOR/Zodl (formerly Zashi) and existing Confidential Intents balances. Organizer receives confidential USDC. General external-chain support is future work.
+- Start the private-balance path with USDC input as a simplifying implementation choice. Preserve equal split as the first allocation mode.
+- Use per-share ZIP-321 ZEC requests as the planned wallet handoff, with real app/version testing before claiming support. A wallet-brand selector does not enforce the sender app on chain.
+- Reuse existing privacy infrastructure and keep per-diner payment metadata private. Do not market splitdbill as a newly built anonymity system.
+- Partner access, route economics, refund compatibility and actual third-party settlement remain integration requirements. See BETA_SCOPE.md.
