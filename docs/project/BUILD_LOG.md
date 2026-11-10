@@ -63,3 +63,9 @@ Acknowledged the user's clarification that the final deliverable is a real usabl
 User configured the Distribution Channel credential. Validated format without printing the key, then requested four dry quotes: ordinary authenticated control; ZEC → confidential USDC with basic and public confidentiality parameters; confidential USDC → confidential USDC. All returned HTTP 201 and no deposit addresses. Used synthetic account/refund identifiers only. No wallet access, spending intent or funds.
 
 The public catalogue uses blockchain `zec` for native Zcash; corrected the probe's initial `zcash` assumption before the quote requests. Saved a whitelist-only evidence summary and reproducible checker, with no partner token or raw provider payloads. Quote access does not establish wallet signing, shielded refunds, account ownership or funded settlement. The official docs Support link resolves directly to https://t.me/near_intents, an alternative to the inaccessible portal link. No support message sent.
+
+## 2026-11-10 — AI key saved; inference verification deferred
+
+Checked only local presence/format of NEAR_AI_API_KEY; no key printed, uploaded or used in a request. Model remains unselected. Official status page loaded in browser and reported a major outage across Cloud API, Chat API, private models and attestation (last update 07:50 KST). Public, unauthenticated /v1/models returned 200 and 64 models. That response is not evidence that inference or verification is healthy.
+
+User mentioned a potential security issue on X; targeted official-source searches did not verify an incident statement. Asked for the source; user recalled X without a link. No inference or receipt upload was attempted, and no provider switch or credential rotation was performed. Receipt manual entry and other integrations can proceed independently.

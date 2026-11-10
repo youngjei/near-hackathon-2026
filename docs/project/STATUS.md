@@ -37,6 +37,10 @@ Delivery target: a real usable application with Supabase persistence, receipt ex
 4. Validate an image model with the configured NEAR AI key; wire receipt extraction after validation. Complete the intended Supabase/native Next.js deployment adapter if adopting Vercel.
 5. Implement real settlement reconciliation and validate funded execution only after a small explicit budget is authorized.
 
+## NEAR AI availability — November 10
+
+NEAR AI key is configured locally and remains ignored by Git. It has not been authenticated or used for inference. Official https://status.near.ai showed Major outage for Cloud API, Chat API, private models and attestation, last updated November 10 at 07:50 KST. An unauthenticated public /v1/models request returned HTTP 200 with 64 models; that does not verify inference or attestation availability. User reported a possible security issue on X, but no primary-source incident announcement was verified. Keep manual receipt entry available and defer inference checks until the service status is resolved or clarified.
+
 ## Known boundaries
 
 Private balances are documented and authentication was tested. Recipient identity privacy across the entire proposed flow is not yet proved. Basic versus advanced guarantees and confidential quote auth composition need partner clarification. Fee/deadline docs/runtime differences are recorded in the technical dossier. No fund movement or mainnet deployment occurred.
