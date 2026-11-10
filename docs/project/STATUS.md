@@ -37,7 +37,7 @@ Delivery target: a real usable application with receipt extraction and verified 
 - Ten desktop/mobile browser scenarios pass against native Next.js with the real Supabase project. The new receiving-address scenarios also pass against the D1 production build; the previous eight D1 scenarios passed after adapter extraction.
 - Both production builds and TypeScript pass. Native Next.js output is isolated in `.next-native/` so it cannot overwrite Vinext route types.
 - Updated Next.js to 16.4.6 and React/RSC to 19.2.8, resolving the audit's critical Next advisory and RSC high advisory. Other audit findings remain (26: 16 moderate, 10 high, including tooling/Vinext/Zod); do not describe this as a completed dependency security review.
-- Hosted API checks passed for Supabase selection, synthetic receipt round-trip, authorization and idempotent simulated settlement. Deployed Site source `da965610766fc0b568f70ede9cc49eb1711cf5f4`, deployment `appgdep_6af295f0fe7881c2941663c3bd134601`, environment revision 1. Only Supabase credentials were configured in hosted secrets; NEAR AI and Intents keys remain local and unused by the app.
+- Hosted API checks passed for Supabase selection, receiving-address persistence and exclusion from diner responses, synthetic receipt round-trip, authorization and idempotent simulated settlement. Deployed Site source `f85efcad807fb136bd8533a4c6457c802dcfe803`, deployment `appgdep_6af2c386b0c081c28b1ca85bfb03d66f`, environment revision 1. Only Supabase credentials were configured in hosted secrets; NEAR AI and Intents keys remain local and unused by the app.
 
 ## Next
 
