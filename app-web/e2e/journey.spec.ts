@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-const base = "http://127.0.0.1:5173";
+const base = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:5173";
 test("create, privately share, pay and reconcile a demo dinner", async ({
   page,
   browser,

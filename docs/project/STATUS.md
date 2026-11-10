@@ -2,7 +2,7 @@
 
 Updated: November 10, 2026 (KST).
 
-Phase: persisted demo implemented, locally verified and privately deployed. Demo methods represent VIZOR/Zodl ZEC and confidential USDC but cannot move funds. Partner dry-quote access is now verified; wallet signing, OCR and live reconciliation remain pending. No submission or funded project wallet exists.
+Phase: Supabase persistence connected, native Next.js supported, and the private Site updated. Demo methods represent VIZOR/Zodl ZEC and confidential USDC but cannot move funds. Partner dry-quote access is now verified; wallet signing, OCR and live reconciliation remain pending. No submission or funded project wallet exists.
 
 Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site) — owner-only, ChatGPT sign-in required.
 
@@ -14,7 +14,7 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 - Implemented per-share capabilities, cookie exchange, exact cent allocation, idempotent requests, stale-attempt handling and explicit simulation controls.
 - TypeScript and production build passed; 10 Vitest checks and 8 Playwright scenarios passed. Visual inspection completed; wallet-device testing is separate and not performed.
 - Published the private preview and verified the hosted API with synthetic data: creation, durable reads, separate diner access, simulated settlement and idempotence passed. All five expected database tables were present. No recurring jobs are configured.
-- Added schema migrations, empty-value environment template, reproducible walkthrough and credential setup guide. Supabase schema is staged only; no Supabase/Vercel runtime is configured.
+- Applied all three Supabase migrations with explicit user approval for the server functions and grants. Implemented PostgreSQL transactions, private receipt storage, exact monetary serialization and rate limits. The private Site now uses Supabase; native Next.js is also supported locally. Vercel hosting is not configured.
 
 - Recommended TypeScript/Next.js, Supabase, 1Click/Intents SDKs, ZIP-321 and NEAR AI receipt extraction; see [stack proposal](../technical/STACK.md). Checked current AI-credit terms and hosting constraints. No services provisioned.
 
@@ -27,14 +27,22 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 - Requested real dry quotes, allocated one unfunded public quote and confirmed anonymous status returns its recipient. Verified three response signatures.
 - Saved source hashes, sanitized results and a reproducible unfunded probe.
 
-Delivery target: a real usable application with Supabase persistence, receipt extraction and verified NEAR payments. The existing demo is an interim preview. Supabase credentials were verified; schema setup and runtime connection remain pending. The schema now has an appended migration supporting explicit live and test records.
+Delivery target: a real usable application with receipt extraction and verified NEAR payments. Supabase schema and runtime connection are complete; payment execution remains simulated and is clearly labelled. Existing D1 test records are preserved but not migrated; create new links in the Supabase-backed preview.
+
+## Latest verification
+
+- 18 Vitest checks pass, including real PostgreSQL migration/transaction behavior and native proxy-origin security checks.
+- Eight desktop/mobile browser scenarios pass against native Next.js with the real Supabase project. The D1 implementation also passed all eight after extraction into its adapter.
+- Both production builds and TypeScript pass. Native Next.js output is isolated in `.next-native/` so it cannot overwrite Vinext route types.
+- Updated Next.js to 16.4.6 and React/RSC to 19.2.8, resolving the audit's critical Next advisory and RSC high advisory. Other audit findings remain (26: 16 moderate, 10 high, including tooling/Vinext/Zod); do not describe this as a completed dependency security review.
+- Hosted API checks passed for Supabase selection, synthetic receipt round-trip, authorization and idempotent simulated settlement. Deployed Site source `da965610766fc0b568f70ede9cc49eb1711cf5f4`, deployment `appgdep_6af295f0fe7881c2941663c3bd134601`, environment revision 1. Only Supabase credentials were configured in hosted secrets; NEAR AI and Intents keys remain local and unused by the app.
 
 ## Next
 
 1. Partner credential is configured locally and accepted for dry confidential quotes. Verify wallet ownership/signing, shielded refund compatibility and executable quote behavior next.
 2. Validate dinner-sized ZEC → confidential USDC quotes, refund formats and ZIP-321 handoff in selected VIZOR/Zodl releases.
 3. Validate a different user paying confidential USDC → organizer confidential USDC; finalize receipt → share → payment-attempt records and private checkout access.
-4. Validate an image model with the configured NEAR AI key; wire receipt extraction after validation. Complete the intended Supabase/native Next.js deployment adapter if adopting Vercel.
+4. Validate an image model with the configured NEAR AI key; wire receipt extraction after validation. The Supabase/native Next.js adapter is complete; configure Vercel only if switching hosting.
 5. Implement real settlement reconciliation and validate funded execution only after a small explicit budget is authorized.
 
 ## NEAR AI availability — November 10

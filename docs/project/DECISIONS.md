@@ -53,3 +53,11 @@ For future decisions, record the date, decision, reason, alternatives that mater
 
 - A configured partner key successfully authorizes dry quotes for both intended payment paths. Do not keep describing partner quote enablement as blocked.
 - Keep funded execution gated until actual receiving-account authorization, payer signing, refunds and provider reconciliation pass their own checks. Synthetic dry quotes do not prove these.
+
+## 2026-11-10 — Shared Supabase persistence and native runtime
+
+- Separate API behavior from storage with a domain-level Store interface. Keep the existing Sites D1/R2 implementation and add Supabase PostgreSQL/private Storage; never translate arbitrary SQL over HTTP.
+- Use server-only, security-invoker RPCs for transactions. Explicit service-role grants fix the observed table permission errors; browser roles retain no table/function access. Apply migration 003 only after the user's explicit approval, received this session.
+- Serialize monetary PostgreSQL values as strings, normalize timestamps, and lock shares during attempt creation/updates. Payment mode remains independent of database choice.
+- Add native Next.js commands without replacing the existing private Site. Pin an explicit public origin for native production CSRF/cookies, because Next's internal request URL may use localhost behind a proxy.
+- Retain old D1 test records; they are not migrated to Supabase. New Supabase requests have their own links. No wallet spending or live settlement is enabled by this infrastructure change.

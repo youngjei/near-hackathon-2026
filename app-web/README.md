@@ -1,10 +1,10 @@
 # split/d/bill web beta
 
-A persisted, **demo-only** receipt-to-reimbursement application. No live payment can be created, no wallet is connected, and no real funds move. All simulation controls say so explicitly.
+A persisted receipt-to-reimbursement application with **Supabase PostgreSQL and private Storage**, plus an isolated D1/R2 development mode. Payment execution remains simulated. No live payment can be created, no wallet is connected, and no real funds move. All simulation controls say so explicitly.
 
 ## Run locally
 
-Use Node 24 LTS and npm. The current implementation uses React and Next.js App Router conventions through Vinext, with Sites Cloudflare Workers, D1 and private R2 storage. It is not deployed to Vercel. Supabase has a staged PostgreSQL migration, not a connected runtime adapter.
+Use Node 24 LTS and npm. The current implementation uses React and Next.js App Router conventions through Vinext, with Sites Cloudflare Workers, D1 and private R2 storage. It is not deployed to Vercel. Supabase is connected through a server-only adapter and transactional RPCs. Native Next.js also builds and runs against Supabase.
 
 From this directory:
 
@@ -18,6 +18,28 @@ npm run dev -- --port 5173
 Open http://127.0.0.1:5173. Apply the migration once to a fresh local database; do not rerun it on an existing initialized database. Later migrations must be applied in order. `npm start -- --port 5173` previews the production build against the same local database. `.wrangler/` contains disposable local demo data and is ignored.
 
 The npm legacy peer resolver is pinned in `.npmrc` because the host npm resolver crashed on the dependency graph. `package-lock.json` pins installed versions. No environment credentials are needed for the isolated demo.
+
+## Run with Supabase and native Next.js
+
+The configured Supabase project has all three migrations applied. For a new project, apply `supabase/migrations/*.sql` in filename order. Do not rerun the initial migration on an existing database. Only the server role has table/function access; browser roles cannot call the RPCs.
+
+Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in ignored `.env.local`, then:
+
+```sh
+node --env-file=.env.local scripts/check-supabase.mjs
+npm run dev:next
+```
+
+Open http://127.0.0.1:5180. This mode uses real Supabase storage and still labels payment simulations. For a production Node build:
+
+```sh
+npm run build:next
+APP_ORIGIN=http://127.0.0.1:5180 npm run start:next
+```
+
+Set `APP_ORIGIN` to the exact HTTPS deployment origin for hosting, without a trailing slash. It pins CSRF validation and secure cookies independently of proxy headers. A Vercel deployment can use `npm run build:next`; no Vercel project has been provisioned.
+
+Sites uses the Cloudflare entry point. Set hosted `STORAGE_BACKEND=supabase` plus the two server credentials using runtime secret configuration to use the same database. D1 remains available with `STORAGE_BACKEND=d1`; selecting an unavailable backend never silently falls back. Old D1 preview records are retained but are not copied to Supabase.
 
 ## Demo walkthrough
 
@@ -51,12 +73,12 @@ The owner-private Sites deployment is for the owner to review. Friends cannot us
 | Confidential Intents | Live gate hard-disabled; only an unused read-only status adapter exists |
 | ZIP-321 | URI validation helper tested; no fundable request generated in demo |
 | Wallet signing | Not implemented; requires actual supported signer and partner access |
-| Supabase | Staged schema with explicit live/test modes; runtime adapter not implemented |
+| Supabase | Server adapter, atomic bill/attempt operations, rate limits and private receipt storage implemented |
 | Cron | Protected demo-expiry endpoint exists; no recurring job or live provider reconciliation is configured |
 
 `POST /api/reconcile` requires a server-configured `CRON_SECRET` bearer token. It only expires pending demo attempts and cleans old rate-limit counters. It never checks or marks a live payment paid. Frontend polling is a view refresh, not a substitute for live reconciliation.
 
-See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Receiving live USDC still requires partner enablement, correct account proof and spending signatures, exact-output route/refund tests, funded settlement authorization and a genuine provider reconciliation implementation. Credentials alone do not enable these paths.
+See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Partner dry-quote access is verified. Receiving live USDC still requires correct account proof and spending signatures, exact-output route/refund tests, funded settlement authorization and a genuine provider reconciliation implementation. Credentials alone do not enable these paths.
 
 ## Validation
 
@@ -66,9 +88,11 @@ npm test
 npx playwright install chromium
 # Run the local server first, then:
 npm run test:e2e
+# Against the native Next.js + Supabase server:
+PLAYWRIGHT_BASE_URL=http://127.0.0.1:5180 npm run test:e2e
 ```
 
-Playwright uses separate browser contexts to check organizer/diner access boundaries and tests mobile and desktop journeys. It also tests image fallback/privacy, stale requests, concurrent retries, late settlement, refunds, keyboard entry, reduced motion and small-screen overflow. Outputs are synthetic data only. Real VIZOR/Zodl app handoffs and real payments are not tested by this suite.
+Vitest includes an embedded PostgreSQL engine that executes the actual migrations, tests transaction rollback, access grants, duplicate requests, late updates and bigint serialization. Native-origin tests cover proxy requests and spoofed headers. Playwright uses separate browser contexts to check organizer/diner access boundaries and tests mobile and desktop journeys. It also tests image fallback/privacy, stale requests, concurrent retries, late settlement, refunds, keyboard entry, reduced motion and small-screen overflow. Outputs are synthetic data only. Real VIZOR/Zodl app handoffs and real payments are not tested by this suite.
 
 ## Publishing
 

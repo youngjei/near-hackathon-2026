@@ -4,7 +4,7 @@ A receipt-based bill splitter for friends meeting across borders: confirm a rece
 
 The hackathon beta supports **ZEC payments from VIZOR or Zodl (formerly Zashi)** and **payments from an existing Confidential Intents balance**. Organizers receive USDC into a confidential balance. Convenience is the product contribution; general external-chain support is deferred. See the [beta scope](docs/project/BETA_SCOPE.md).
 
-This private repository now contains the first persisted **split/d/bill demo**, alongside hackathon research and unfunded protocol probes. The [web application](app-web/README.md) supports receipt upload/manual entry, conversion, private share links and simulated repayment tracking. Live payments, wallet signing and OCR are not enabled.
+This private repository now contains the persisted **split/d/bill beta preview**, alongside hackathon research and unfunded protocol probes. The [web application](app-web/README.md) supports receipt upload/manual entry, conversion, private share links and simulated repayment tracking. Supabase persistence and private receipt storage are connected. Live payments, wallet signing and OCR are not enabled.
 
 **Submission deadline: November 14, 2026, 23:59 UTC / November 15, 2026, 08:59 KST.**
 
@@ -29,7 +29,7 @@ Hackathon research was checked on **November 9, 2026 (KST)**; beta wallet scope 
 - Keep credentials in ignored local environment files. Commit only an example file with empty values when configuration is defined.
 - Track tasks using the included GitHub issue template or the project status file.
 
-The repository starts private. It must become public before the deadline and remain public through judging. The [original stack recommendation](docs/technical/STACK.md) is preserved. The first preview uses Next.js App Router conventions through Vinext on Sites with D1/R2; Vercel/Supabase integration remains pending. See the [implementation direction](docs/technical/DESIGN.md). Selecting a license is on the release checklist. Reference documents retain their original authorship and are not our project code.
+The repository starts private. It must become public before the deadline and remain public through judging. The [original stack recommendation](docs/technical/STACK.md) is preserved. The private preview uses Vinext on Sites with Supabase; D1/R2 remains an isolated development option. Native Next.js also builds and runs against Supabase. Vercel hosting remains optional and unconfigured. See the [implementation direction](docs/technical/DESIGN.md). Selecting a license is on the release checklist. Reference documents retain their original authorship and are not our project code.
 
 ## Reproducibility status
 

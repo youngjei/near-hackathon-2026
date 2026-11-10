@@ -1,6 +1,6 @@
 # Credentials for the next integration phase
 
-The current deployed demo does not need any of these credentials. It uses Sites D1/R2 and cannot accept real funds. This guide prepares the originally planned integrations; it does not imply they are enabled by adding keys.
+The Supabase server adapter is implemented and the project migrations are applied. Native Next.js uses it directly; Sites selects it with `STORAGE_BACKEND=supabase`. Payment execution and OCR remain separate integrations and are not enabled by database credentials.
 
 ## Local file
 
@@ -18,8 +18,9 @@ Open `.env.local` in your editor. Fill values after the equals signs. Never past
 1. Open https://supabase.com/dashboard and create a project. Choose a free plan if available and sufficient. Keep the generated database password in your own password manager; the current API integration does not need it in chat.
 2. In the project **Connect** dialog or project API settings, copy the project URL into `SUPABASE_URL`.
 3. In **Settings → API Keys**, use a server-only secret key (`sb_secret_…`), or the legacy `service_role` key. Store it as `SUPABASE_SERVICE_ROLE_KEY`; the variable name is retained for compatibility even when using a new secret key. Never use it in browser code. See [Supabase API keys](https://supabase.com/docs/guides/getting-started/api-keys).
-4. The staged schema is `app-web/supabase/migrations/202611100001_beta.sql`. Apply the initial migration followed by `202611100002_application_modes.sql`; together they create application tables with explicit live/test modes, row-level security and a private `receipts` bucket. The corrected combined fresh-project script is supplied in outputs/supabase-initial-setup.sql. It has not been run against your project. Once the project is available, apply and verify the migration and implement the PostgreSQL transaction adapter before switching the application from D1. Do not point it at a database containing unrelated existing tables with the same names.
-5. You do not need Supabase Auth email signup for the current capability-link demo. Wallet authorization remains a separate integration requirement.
+4. The configured project has migrations `202611100001_beta.sql`, `202611100002_application_modes.sql`, and `202611100003_server_adapter.sql` applied. The third migration was explicitly approved and grants access only to the server role, adds transaction functions and rate limits, and preserves existing records. For a different fresh project, run all migrations in order. Do not rerun them against this initialized project.
+5. Validate access from `app-web` with `node --env-file=.env.local scripts/check-supabase.mjs`. Start native Next.js with `npm run dev:next`, then open http://127.0.0.1:5180. For a production Next.js server, set `APP_ORIGIN` to its exact public origin without a trailing slash. See the application README for build/test commands.
+6. You do not need Supabase Auth email signup for the current capability-link demo. Wallet authorization remains a separate integration requirement.
 
 ## 2. NEAR AI Cloud
 
@@ -50,6 +51,6 @@ Sources: [partner authentication](https://docs.near-intents.org/integration/dist
 
 The current Site is owner-private and uses its own runtime/storage. Local `.env.local` values are not automatically deployed; do not assume keys on your machine configure the hosted Site.
 
-Vercel is optional for this first preview. A later Vercel deployment needs an appropriate account/plan, a native Next.js build and the completed Supabase adapter. Background reconciliation must verify actual provider settlement; the current protected endpoint only expires simulated requests. No scheduled job is provisioned. Do not configure a live job around the demo endpoint.
+Vercel is optional for this first preview. Native Next.js and the Supabase adapter are implemented. A Vercel deployment still needs an appropriate account/plan and server environment configuration. Background reconciliation must verify actual provider settlement; the current protected endpoint only expires simulated requests. No scheduled job is provisioned. Do not configure a live job around the demo endpoint.
 
 Tell me when the local values are configured, without sending the values. I can check presence and perform bounded non-spending integration checks next.

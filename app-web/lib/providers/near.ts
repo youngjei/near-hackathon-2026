@@ -3,7 +3,7 @@
 export const liveReadiness = {
   enabled: false,
   reason:
-    "Live payments need a verified confidential wallet connection and enabled partner integration.",
+    "Live payments need wallet authorization, supported refunds and verified settlement.",
 } as const;
 export function requireLiveReadiness(): never {
   throw new Error(liveReadiness.reason);
