@@ -57,3 +57,9 @@ Final code checks: 10 unit tests and the full 8-case browser suite passed, follo
 ## 2026-11-10 — Corrected application setup scope
 
 Acknowledged the user's clarification that the final deliverable is a real usable application. Appended a PostgreSQL migration allowing explicit live/demo records and removing implicit test-mode defaults. Regenerated the fresh-project SQL handoff and supplied a separate upgrade script. Preserved the original migration and existing test data. No remote schema or live-payment gates changed. Checked generated SQL composition and Git whitespace; remote execution remains untested.
+
+## 2026-11-10 — Partner access verified
+
+User configured the Distribution Channel credential. Validated format without printing the key, then requested four dry quotes: ordinary authenticated control; ZEC → confidential USDC with basic and public confidentiality parameters; confidential USDC → confidential USDC. All returned HTTP 201 and no deposit addresses. Used synthetic account/refund identifiers only. No wallet access, spending intent or funds.
+
+The public catalogue uses blockchain `zec` for native Zcash; corrected the probe's initial `zcash` assumption before the quote requests. Saved a whitelist-only evidence summary and reproducible checker, with no partner token or raw provider payloads. Quote access does not establish wallet signing, shielded refunds, account ownership or funded settlement. The official docs Support link resolves directly to https://t.me/near_intents, an alternative to the inaccessible portal link. No support message sent.

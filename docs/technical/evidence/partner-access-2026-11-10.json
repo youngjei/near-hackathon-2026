@@ -1,0 +1,67 @@
+{
+  "checked_at": "2026-11-10T02:22:36.840664+00:00",
+  "dry_only": true,
+  "funds_moved": false,
+  "probes": [
+    {
+      "name": "partner-auth-control",
+      "http_status": 201,
+      "authenticated": true,
+      "correlationId": "6e7d686b-bc5a-42b1-94ee-3436c755ba54",
+      "quote": {
+        "amountInFormatted": "15.159781",
+        "amountOutFormatted": "15.0",
+        "timeEstimate": 34,
+        "refundFee": "2400",
+        "withdrawFee": "5300"
+      },
+      "deposit_address_generated": false
+    },
+    {
+      "name": "zec-to-confidential-usdc-basic",
+      "http_status": 201,
+      "authenticated": true,
+      "correlationId": "f001cd3a-4c11-4048-8a72-9054009573c8",
+      "quote": {
+        "amountInFormatted": "0.01319687",
+        "amountOutFormatted": "15.0",
+        "timeEstimate": 455,
+        "refundFee": "32000",
+        "withdrawFee": "0"
+      },
+      "deposit_address_generated": false
+    },
+    {
+      "name": "zec-to-confidential-usdc-public-parameter",
+      "http_status": 201,
+      "authenticated": true,
+      "correlationId": "9ec0a589-e474-4a7f-a3d4-c1ecbd44e897",
+      "quote": {
+        "amountInFormatted": "0.0131923",
+        "amountOutFormatted": "15.0",
+        "timeEstimate": 455,
+        "refundFee": "32000",
+        "withdrawFee": "0"
+      },
+      "deposit_address_generated": false
+    },
+    {
+      "name": "confidential-usdc-to-confidential-usdc",
+      "http_status": 201,
+      "authenticated": true,
+      "correlationId": "2ab8db3d-15fe-465d-8990-12c9a5ac84fb",
+      "quote": {
+        "amountInFormatted": "15.151516",
+        "amountOutFormatted": "15.0",
+        "timeEstimate": 10,
+        "refundFee": "0",
+        "withdrawFee": "0"
+      },
+      "deposit_address_generated": false
+    }
+  ],
+  "assets": {
+    "zec": "nep141:zec.omft.near",
+    "usdc": "nep141:17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1"
+  }
+}

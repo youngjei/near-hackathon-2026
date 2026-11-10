@@ -48,3 +48,8 @@ For future decisions, record the date, decision, reason, alternatives that mater
 - User clarified that setup must target a real usable application. The deployed demo is an interim preview, not the intended final deliverable.
 - Append a Supabase migration allowing explicit live/demo modes instead of restricting the schema to demo-only records. Remove implicit demo defaults; retain existing test records and current live-payment authorization gates.
 - Correct the fresh-project SQL handoff and provide a separate upgrade for a project that already ran the original setup. This schema change does not implement or validate payment execution.
+
+## 2026-11-10 — Confidential quote access no longer blocked
+
+- A configured partner key successfully authorizes dry quotes for both intended payment paths. Do not keep describing partner quote enablement as blocked.
+- Keep funded execution gated until actual receiving-account authorization, payer signing, refunds and provider reconciliation pass their own checks. Synthetic dry quotes do not prove these.

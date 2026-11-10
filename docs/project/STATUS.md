@@ -2,11 +2,13 @@
 
 Updated: November 10, 2026 (KST).
 
-Phase: persisted demo implemented, locally verified and privately deployed. Demo methods represent VIZOR/Zodl ZEC and confidential USDC but cannot move funds. Partner integration access, wallet signing, OCR and live reconciliation remain pending. No submission or funded project wallet exists.
+Phase: persisted demo implemented, locally verified and privately deployed. Demo methods represent VIZOR/Zodl ZEC and confidential USDC but cannot move funds. Partner dry-quote access is now verified; wallet signing, OCR and live reconciliation remain pending. No submission or funded project wallet exists.
 
 Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site) — owner-only, ChatGPT sign-in required.
 
 ## Completed
+
+- November 10 partner checks: authenticated ordinary control, ZEC → confidential USDC (basic and public parameter), and confidential USDC → confidential USDC all returned HTTP 201 dry quotes. No payment addresses, spending signatures or funds. Sanitized evidence saved; credential remains local.
 
 - Built TypeScript/React App Router screens on the Sites-compatible Vinext runtime, with D1 bill/share/attempt records and private R2 receipt uploads.
 - Implemented per-share capabilities, cookie exchange, exact cent allocation, idempotent requests, stale-attempt handling and explicit simulation controls.
@@ -29,7 +31,7 @@ Delivery target: a real usable application with Supabase persistence, receipt ex
 
 ## Next
 
-1. Provision an enabled Confidential Intents partner integration through the official Partner Portal; no enabled credential is available here.
+1. Partner credential is configured locally and accepted for dry confidential quotes. Verify wallet ownership/signing, shielded refund compatibility and executable quote behavior next.
 2. Validate dinner-sized ZEC → confidential USDC quotes, refund formats and ZIP-321 handoff in selected VIZOR/Zodl releases.
 3. Validate a different user paying confidential USDC → organizer confidential USDC; finalize receipt → share → payment-attempt records and private checkout access.
 4. Validate an image model with the configured NEAR AI key; wire receipt extraction after validation. Complete the intended Supabase/native Next.js deployment adapter if adopting Vercel.
