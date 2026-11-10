@@ -70,7 +70,7 @@ The owner-private Sites deployment is for the owner to review. Friends cannot us
 | D1 / R2 | Implemented for the Sites preview and local emulator |
 | Fiat reference rates | Frankfurter adapter with dated, labelled fixture fallback in demo |
 | NEAR AI | Server adapter implemented; no model/credential verified; upload route deliberately uses manual entry |
-| Confidential Intents | Live gate hard-disabled; only an unused read-only status adapter exists |
+| Confidential Intents | Signed quote validation and settlement assessment implemented; six live dry estimates verified; checkout remains disabled |
 | ZIP-321 | URI validation helper tested; no fundable request generated in demo |
 | Wallet signing | Not implemented; requires actual supported signer and partner access |
 | Supabase | Server adapter, atomic bill/attempt operations, rate limits and private receipt storage implemented |
@@ -78,7 +78,9 @@ The owner-private Sites deployment is for the owner to review. Friends cannot us
 
 `POST /api/reconcile` requires a server-configured `CRON_SECRET` bearer token. It only expires pending demo attempts and cleans old rate-limit counters. It never checks or marks a live payment paid. Frontend polling is a view refresh, not a substitute for live reconciliation.
 
-See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Partner dry-quote access is verified. Receiving live USDC still requires correct account proof and spending signatures, exact-output route/refund tests, funded settlement authorization and a genuine provider reconciliation implementation. Credentials alone do not enable these paths.
+See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Partner dry-quote access is verified. Receiving integration still needs the correct account identity and onboarding authorization; each payer spending from a confidential balance also needs their own wallet signature. Refund/device checks, funded settlement authorization and durable provider reconciliation remain pending. Credentials alone do not enable these paths.
+
+See the [payment adapter and near.com passkey handoff](../docs/technical/PAYMENT_ADAPTER.md) for verified behavior and remaining integration work. `npm run check:intents` explicitly runs six unfunded, signed route estimates using the local partner key; it creates no payment address and saves sanitized evidence. It is separate from default tests and the hosted application.
 
 ## Validation
 

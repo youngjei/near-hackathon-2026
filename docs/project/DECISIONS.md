@@ -61,3 +61,11 @@ For future decisions, record the date, decision, reason, alternatives that mater
 - Serialize monetary PostgreSQL values as strings, normalize timestamps, and lock shares during attempt creation/updates. Payment mode remains independent of database choice.
 - Add native Next.js commands without replacing the existing private Site. Pin an explicit public origin for native production CSRF/cookies, because Next's internal request URL may use localhost behind a proxy.
 - Retain old D1 test records; they are not migrated to Supabase. New Supabase requests have their own links. No wallet spending or live settlement is enabled by this infrastructure change.
+
+## 2026-11-10 — Verified payment adapter; preserve the existing near.com wallet
+
+- User confirmed near.com with a passkey. Do not replace it with a new app-scoped passkey or an unrelated external wallet. Resolve an actual near.com signing handoff before claiming connection. Receiving does not require signing each incoming payment; spending from confidential USDC does require payer authorization.
+- Pin the official 1Click TypeScript SDK 0.1.26 for quote verification. Bind all expected routing fields independently because the signed projection excludes confidentiality and settlement status. Keep provider metadata server-side.
+- Both beta routes passed signed dry estimates at 5, 15 and 50 USDC. Store sanitized evidence only. Keep live checkout gated until account authorization, wallet refunds, confidential status access and funded acceptance are verified.
+- Validate transparent Zcash refund addresses according to current published support. Do not silently treat a shielded/unified refund address as supported, or imply that VIZOR/Zodl device compatibility has been tested.
+- No schema change, hosted behavior change, user signature, allocated confidential payment address or funds in this increment.

@@ -8,18 +8,5 @@ export const liveReadiness = {
 export function requireLiveReadiness(): never {
   throw new Error(liveReadiness.reason);
 }
-// Read-only integration boundary. Per-request credentials, never a mutable SDK singleton.
-export async function inspectExecution(
-  depositAddress: string,
-  partnerKey: string,
-) {
-  if (!partnerKey) throw new Error("Partner access is not configured.");
-  const url = new URL("https://1click.chaindefuser.com/v0/status");
-  url.searchParams.set("depositAddress", depositAddress);
-  const r = await fetch(url, {
-    headers: { "X-API-Key": partnerKey },
-    signal: AbortSignal.timeout(10000),
-  });
-  if (!r.ok) throw new Error("Payment status is unavailable.");
-  return r.json();
-}
+// Verified quote and status adapters live in intents.ts.
+// They are not wired to live bill creation or settlement yet.

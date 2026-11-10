@@ -17,10 +17,12 @@
     "db:generate": "drizzle-kit generate",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "check:intents": "node --env-file=.env.local ./node_modules/vitest/vitest.mjs run --config vitest.live.config.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
+    "@defuse-protocol/one-click-sdk-typescript": "0.1.26",
     "@supabase/supabase-js": "^2.99.0",
     "clsx": "2.1.1",
     "decimal.js": "^10.6.0",

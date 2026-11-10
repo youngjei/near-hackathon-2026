@@ -36,7 +36,7 @@ Official sources: [quickstart](https://docs.near.ai/cloud/quickstart), [model ti
 
 1. Register at https://partners.near-intents.org.
 2. Obtain the partner API credential and save it as `NEAR_INTENTS_API_KEY`. The official docs support `X-API-Key`; a partner JWT is not the same credential as a wallet-owner session.
-3. If confidential access is not explicitly available, ask partner support for the scope below. No message has been sent on your behalf.
+3. Partner quote access is now verified for this project. The remaining specific dependency is the near.com passkey account/signing handoff; see [the precise integration question](PAYMENT_ADAPTER.md). The broader request below remains useful for a new partner account. No message has been sent on your behalf.
 
 Suggested support request:
 

@@ -4,7 +4,7 @@ A receipt-based bill splitter for friends meeting across borders: confirm a rece
 
 The hackathon beta supports **ZEC payments from VIZOR or Zodl (formerly Zashi)** and **payments from an existing Confidential Intents balance**. Organizers receive USDC into a confidential balance. Convenience is the product contribution; general external-chain support is deferred. See the [beta scope](docs/project/BETA_SCOPE.md).
 
-This private repository now contains the persisted **split/d/bill beta preview**, alongside hackathon research and unfunded protocol probes. The [web application](app-web/README.md) supports receipt upload/manual entry, conversion, private share links and simulated repayment tracking. Supabase persistence and private receipt storage are connected. Live payments, wallet signing and OCR are not enabled.
+This private repository now contains the persisted **split/d/bill beta preview**, alongside hackathon research and unfunded protocol probes. The [web application](app-web/README.md) supports receipt upload/manual entry, conversion, private share links and simulated repayment tracking. Supabase persistence and private receipt storage are connected. A signed payment adapter now passes real dry-quote checks for both beta routes; see [integration status](docs/technical/PAYMENT_ADAPTER.md). Live payments, wallet signing and OCR are not enabled.
 
 **Submission deadline: November 14, 2026, 23:59 UTC / November 15, 2026, 08:59 KST.**
 
