@@ -34,3 +34,11 @@ For future decisions, record the date, decision, reason, alternatives that mater
 - Recommend one TypeScript/Next.js application with Supabase PostgreSQL/private Storage and scheduled reconciliation. No custom smart contract or native app is required by the scoped beta.
 - Use existing 1Click/Intents SDKs and ZIP-321; isolate provider APIs behind small adapters. Recommend Frankfurter reference rates and NEAR AI Cloud receipt extraction, with the exact image model still unverified.
 - This records an engineering recommendation, not user approval of visual design, purchased services or an implemented integration. See docs/technical/STACK.md for dependencies and access requirements.
+
+## 2026-11-10 — First persisted preview
+
+- Implement the user's receipt-first light design and exact split/d/bill wordmark; omit ASCII because it does not clarify the payment journey.
+- In the absence of Vercel/Supabase credentials, use the available Sites hosting runtime (Vinext with App Router conventions) and D1/R2 for a persistent owner-private preview. Preserve the Supabase migration as staged, not an implemented backend switch.
+- Live payment gate is hard-disabled. No fundable QR, fabricated wallet connection, simulated balances presented as real, or spending endpoint exists. Real NEAR/AI adapters remain incomplete and unverified.
+- Use individual invitation links instead of a shared claimable group link for this first version, avoiding shared access to all diners' payment data.
+- No cloud plan purchased, blockchain contract deployed, visibility changed or funds moved.

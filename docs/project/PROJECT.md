@@ -1,6 +1,6 @@
 # Project brief
 
-Working name: **splitdbill**. Beta narrowed by the user on November 10; [BETA_SCOPE.md](BETA_SCOPE.md) is authoritative. Implementation stack and final tracks remain open.
+Working name: **splitdbill**. Beta narrowed by the user on November 10; [BETA_SCOPE.md](BETA_SCOPE.md) is authoritative. The first persisted demo uses Sites/Vinext + D1/R2; live integrations and final tracks remain open.
 
 | Question | Current direction |
 | --- | --- |
@@ -16,8 +16,8 @@ Working name: **splitdbill**. Beta narrowed by the user on November 10; [BETA_SC
 | Out of scope | External public-wallet/chain support, itemized splitting, lending, yield, trading dashboard, custom token, operating a solver, broad accounting suite |
 | UX | Simple, clean; choose visual style after the core flow is established |
 | First experiment | Partner-enabled ZEC → confidential USDC quote, ZIP-321 wallet handoff and refund compatibility; confidential → confidential payment |
-| Stack/network | Stack undecided; Intents has no official testnet |
-| Real vs simulated | Real API auth, dry quotes and one unfunded public quote/status tested; no payment executed, no application exists |
+| Stack/network | TypeScript/React App Router demo on Sites/Vinext with D1/R2; planned Supabase/Vercel integration pending; Intents has no official testnet |
+| Real vs simulated | Real API auth, dry quotes and one unfunded public quote/status tested; no real payment executed; persisted demo application now deployed |
 | Budget/license/team | Not yet set; keep personal details outside Git |
 
 See [integration design](../technical/SPLITDBILL.md), [privacy findings](../technical/PRIVACY.md) and [API map](../technical/API_MAP.md).

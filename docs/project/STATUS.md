@@ -2,9 +2,17 @@
 
 Updated: November 10, 2026 (KST).
 
-Phase: convenience-first beta scoped to shielded ZEC from VIZOR/Zodl and existing Confidential Intents balances. Partner integration access remains pending. No application, deployment or submission exists. A disposable identity was generated for read-only authentication and discarded; no funded project wallet exists.
+Phase: persisted demo implemented, locally verified and privately deployed. Demo methods represent VIZOR/Zodl ZEC and confidential USDC but cannot move funds. Partner integration access, wallet signing, OCR and live reconciliation remain pending. No submission or funded project wallet exists.
+
+Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site) — owner-only, ChatGPT sign-in required.
 
 ## Completed
+
+- Built TypeScript/React App Router screens on the Sites-compatible Vinext runtime, with D1 bill/share/attempt records and private R2 receipt uploads.
+- Implemented per-share capabilities, cookie exchange, exact cent allocation, idempotent requests, stale-attempt handling and explicit simulation controls.
+- TypeScript and production build passed; 10 Vitest checks and 8 Playwright scenarios passed. Visual inspection completed; wallet-device testing is separate and not performed.
+- Published the private preview and verified the hosted API with synthetic data: creation, durable reads, separate diner access, simulated settlement and idempotence passed. All five expected database tables were present. No recurring jobs are configured.
+- Added schema migrations, empty-value environment template, reproducible walkthrough and credential setup guide. Supabase schema is staged only; no Supabase/Vercel runtime is configured.
 
 - Recommended TypeScript/Next.js, Supabase, 1Click/Intents SDKs, ZIP-321 and NEAR AI receipt extraction; see [stack proposal](../technical/STACK.md). Checked current AI-credit terms and hosting constraints. No services provisioned.
 
@@ -22,7 +30,8 @@ Phase: convenience-first beta scoped to shielded ZEC from VIZOR/Zodl and existin
 1. Provision an enabled Confidential Intents partner integration through the official Partner Portal; no enabled credential is available here.
 2. Validate dinner-sized ZEC → confidential USDC quotes, refund formats and ZIP-321 handoff in selected VIZOR/Zodl releases.
 3. Validate a different user paying confidential USDC → organizer confidential USDC; finalize receipt → share → payment-attempt records and private checkout access.
-4. Implement the smallest complete journey using the recommended stack; verify a receipt model and wallet connector first. Validate actual funded execution only after a small explicit budget is authorized.
+4. Validate an image model with the configured NEAR AI key; wire receipt extraction after validation. Complete the intended Supabase/native Next.js deployment adapter if adopting Vercel.
+5. Implement real settlement reconciliation and validate funded execution only after a small explicit budget is authorized.
 
 ## Known boundaries
 
