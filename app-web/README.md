@@ -1,0 +1,77 @@
+# split/d/bill web beta
+
+A persisted, **demo-only** receipt-to-reimbursement application. No live payment can be created, no wallet is connected, and no real funds move. All simulation controls say so explicitly.
+
+## Run locally
+
+Use Node 24 LTS and npm. The current implementation uses React and Next.js App Router conventions through Vinext, with Sites Cloudflare Workers, D1 and private R2 storage. It is not deployed to Vercel. Supabase has a staged PostgreSQL migration, not a connected runtime adapter.
+
+From this directory:
+
+```sh
+npm ci
+npm run build
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_organic_jimmy_woo.sql
+npm run dev -- --port 5173
+```
+
+Open http://127.0.0.1:5173. Apply the migration once to a fresh local database; do not rerun it on an existing initialized database. Later migrations must be applied in order. `npm start -- --port 5173` previews the production build against the same local database. `.wrangler/` contains disposable local demo data and is ignored.
+
+The npm legacy peer resolver is pinned in `.npmrc` because the host npm resolver crashed on the dependency graph. `package-lock.json` pins installed versions. No environment credentials are needed for the isolated demo.
+
+## Demo walkthrough
+
+1. **Try a sample bill** → synthetic 200 AED receipt details appear. Alternatively upload a JPG/PNG/WebP under 5 MB or enter details manually. OCR is not connected: uploads always ask for manual details.
+2. Correct the name, total, currency, extra charges and diner count. Only add charges not already included in the receipt.
+3. **Review split** → approve the dated fiat reference rate and USDC amounts. One USD equals one USDC for bill accounting; this is not a swap quote. A dated, labelled demo reference rate is used if the rate service fails.
+4. **Create demo requests** → one persisted bill and N−1 individual reimbursement shares. The organizer's share is excluded from the reimbursement total.
+5. **Share link** on a friend → copy that private link or scan its invitation QR. It opens a checkout, never a fundable wallet request.
+6. Open checkout → choose Zcash or confidential USDC → **Try … demo** → **Simulate successful payment**. No address, live quote, wallet signature or spending submission exists in this mode.
+7. The organizer page updates within about five seconds while open. Reload either page: stored progress persists. **Test another outcome** exercises expiry, failure, refund and late settlement.
+
+The owner-private Sites deployment is for the owner to review. Friends cannot use it until an explicitly authorized audience change/deployment is made. Individual application capabilities remain required even within the hosting access boundary.
+
+## Privacy and correctness
+
+- Random organizer capability, per-share derived capabilities and hashes stored in the database.
+- Tokens travel in URL fragments, are exchanged through same-origin POST for scoped HTTP-only cookies, and are removed from the address bar. HTTP request URLs/referrers do not include fragments. Do not share organizer links or disclose private share links.
+- Cookies last seven days. This demo has no wallet-based account recovery. Bookmarking preserves access only in a browser retaining the cookie.
+- Receipts remain in a private bucket. Reading requires organizer or individual share authorization. Images become inaccessible after seven days; automatic object deletion is not scheduled yet.
+- Atomic batches and unique keys prevent duplicate creation and repeated payment requests. One share is counted once even if multiple attempts settle. Old attempts are retained.
+- No API exposes other diners' capabilities to a payer, or raw provider metadata. Rate limits bound creation, upload, FX and attempt calls per session/share.
+- No secret is bundled into the client. No analytics or external font/image requests are present.
+
+## Integrations and limits
+
+| Integration | Actual status |
+| --- | --- |
+| D1 / R2 | Implemented for the Sites preview and local emulator |
+| Fiat reference rates | Frankfurter adapter with dated, labelled fixture fallback in demo |
+| NEAR AI | Server adapter implemented; no model/credential verified; upload route deliberately uses manual entry |
+| Confidential Intents | Live gate hard-disabled; only an unused read-only status adapter exists |
+| ZIP-321 | URI validation helper tested; no fundable request generated in demo |
+| Wallet signing | Not implemented; requires actual supported signer and partner access |
+| Supabase | Schema-only staging migration; not applied, runtime adapter not implemented |
+| Cron | Protected demo-expiry endpoint exists; no recurring job or live provider reconciliation is configured |
+
+`POST /api/reconcile` requires a server-configured `CRON_SECRET` bearer token. It only expires pending demo attempts and cleans old rate-limit counters. It never checks or marks a live payment paid. Frontend polling is a view refresh, not a substitute for live reconciliation.
+
+See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Receiving live USDC still requires partner enablement, correct account proof and spending signatures, exact-output route/refund tests, funded settlement authorization and a genuine provider reconciliation implementation. Credentials alone do not enable these paths.
+
+## Validation
+
+```sh
+npm run typecheck
+npm test
+npx playwright install chromium
+# Run the local server first, then:
+npm run test:e2e
+```
+
+Playwright uses separate browser contexts to check organizer/diner access boundaries and tests mobile and desktop journeys. It also tests image fallback/privacy, stale requests, concurrent retries, late settlement, refunds, keyboard entry, reduced motion and small-screen overflow. Outputs are synthetic data only. Real VIZOR/Zodl app handoffs and real payments are not tested by this suite.
+
+## Publishing
+
+`.openai/hosting.json` owns the existing Site ID. Never create another Site for this app. Use the Sites skill source workflow to build, synchronize the exact source and publish privately. D1 migrations are included in the artifact; local data is not. Keep `.env*`, `.dev.vars*`, `.wrangler`, `.sites-runtime`, test traces and credentials out of Git and deployment archives.
+
+The application is kept in the original GitHub project. Sites publication uses a sanitized copy of this directory so the hosting source repository does not replace the project's Git remote.
