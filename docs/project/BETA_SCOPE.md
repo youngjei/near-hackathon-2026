@@ -20,7 +20,7 @@ Do not build external Ethereum/MetaMask, Solana/Phantom, BTC or a generic chain 
 
 ## Organizer journey
 
-1. Paste and confirm the existing Confidential Intents receiving account. No organizer wallet login, connection, ownership signature or new wallet is required. Validate the destination format and confidential route; do not claim ownership is verified.
+1. Paste and confirm a USDC/Solana receive address copied from near.com Confidential Mode for the manual beta. No organizer wallet login, connection, ownership signature or new wallet is required in split/d/bill. This deposit address is distinct from an internal Confidential Intents account ID; validate explicit destination type and route without claiming ownership is verified.
 2. Photograph/upload a receipt; confirm extracted total, currency, tips and service charges.
 3. Enter diner count including themselves; allocate N shares and request N−1 reimbursements.
 4. Approve the conversion into USDC and rounding allocation. Record FX source and time.
@@ -34,12 +34,12 @@ Equal splitting is the first beta. Item-level allocations and additional split r
 ## Zcash payment path
 
 1. Friend opens their checkout, sees the receipt and USDC share, then selects Zcash.
-2. Backend requests an `EXACT_OUTPUT` ZEC → USDC quote with `depositType: ORIGIN_CHAIN` and `recipientType: CONFIDENTIAL_INTENTS`.
+2. Backend requests an `EXACT_OUTPUT` ZEC → Solana USDC quote with `depositType: ORIGIN_CHAIN` and `recipientType: DESTINATION_CHAIN` for the manual near.com receive address. The direct internal-account alternative uses `CONFIDENTIAL_INTENTS`; never interchange those recipient values. The current adapter implements only the latter.
 3. Obtain a supported, payer-controlled refund destination before creating the executable quote. Do not infer a shielded sender's refund address from the public transaction. Verify supported refund formats and their privacy implications with the live integration.
 4. Generate a single-recipient ZIP-321 payment URI from the returned Zcash deposit address and quoted ZEC input amount. Example shape only: `zcash:<deposit-address>?amount=<quoted-ZEC>`. Do not put receipt details or personal names into the URI.
 5. Present a wallet-open action where the OS supports it, a scanable payment QR, and a copy-address/amount fallback. Test VIZOR's Send flow and Zodl on selected release versions. Do not assume every scanner, platform or in-app swap screen processes payment requests identically.
 6. Friend reviews and approves in their wallet. The Zcash network fee is separate from the amount paid to the deposit address; ensure sufficient balance for both.
-7. Backend polls 1Click and reconciles actual USDC delivery before marking the share paid.
+7. Backend polls 1Click for delivery to the Solana deposit address, then verifies deposit credit separately before claiming confidential receipt. Minimums, any deposit-stage fees and supported credit-status access must be validated; 1Click delivery alone is not proof of final credit.
 
 We create and track the 1Click quote. The wallet makes a ZEC send to its deposit address. Do not send users through a second independent in-wallet swap, which could lose our quote association or duplicate routing.
 
@@ -48,7 +48,7 @@ ZIP-321 is an amount/address request, not a guarantee of quote validity or execu
 ## Confidential balance payment path
 
 1. Friend authorizes access to their existing confidential account.
-2. Backend requests a quote funded from `CONFIDENTIAL_INTENTS`, with confidential recipient and refund types where supported.
+2. Backend requests a quote funded from `CONFIDENTIAL_INTENTS`, with a confidential refund destination. For manual Solana deposit-address receiving, use `recipientType: DESTINATION_CHAIN`; for a direct internal recipient use `CONFIDENTIAL_INTENTS`.
 3. Generate the spending intent, validate account/amount/destination, have the user's wallet sign it, and submit through the partner API.
 4. Track and reconcile settlement into the organizer's confidential USDC balance.
 
@@ -86,3 +86,7 @@ The previous [privacy investigation](../technical/PRIVACY.md) remains relevant e
 - [Signed-intent execution](https://docs.near-intents.org/integration/distribution-channels/1click-api/quickstart/signed-intent-execution): existing confidential-balance payment flow.
 
 Track direction remains Real-World Money plus Social Money as candidates. Choose final tracks against the completed demo; privacy branding is not the product thesis.
+
+## Longer-term product vision
+
+Integrate receipt splitting directly into near.com: automatically use the signed-in user's confidential receiving destination, generate requests and track reimbursements in the existing wallet experience. This is a user-stated aspiration, not a confirmed partnership or shipped near.com feature. The standalone beta uses manual receiving-address entry.

@@ -75,3 +75,10 @@ For future decisions, record the date, decision, reason, alternatives that mater
 - User explicitly chose receiving-account entry without receiver login. This supersedes earlier organizer ownership-proof/onboarding authorization requirements. The organizer pastes and confirms a Confidential Intents receiving account; validate format and route, not ownership.
 - Preserve private organizer capability access for bill management. Bind the receiving account to the bill and prohibit changing it after payment requests are issued. Do not ask for wallet secrets or balance-reading access.
 - Payers still authorize their own spending in their wallet. An organizer passkey bridge is not a prerequisite for ZEC reimbursements into their confidential balance. Live recipient entry/binding remains to be implemented; this update changes the specification only.
+
+## 2026-11-10 — Manual Solana deposit receiving and near.com vision
+
+- User wants the feature eventually embedded in near.com and included as a future goal in the hackathon description. Record the aspiration without claiming partnership or integration.
+- User's example receive screen is USDC on Solana with a 1 USDC minimum; user explicitly confirmed Confidential Mode. For the manual beta, use this typed chain-deposit destination with DESTINATION_CHAIN and the Solana USDC asset. It is not the internal account ID accepted by the existing adapter. Preserve the direct internal route separately.
+- Existing 1Click routing performs conversion; no custom or additional app-managed solver is needed. near.com deposit credit is a separate downstream step with unverified fees/status mechanics. Do not equate delivery to its deposit address with verified net confidential credit. Keep organizer login-free and payer scope unchanged.
+- This records the next implementation direction. No address/QR saved in Git, route implementation switched, payment sent or submission made.

@@ -103,3 +103,9 @@ User corrected the preceding wallet answer: the required destination is the conf
 ## 2026-11-10 — Removed organizer login requirement
 
 User clarified that the receiver only needs to provide a receiving wallet. Updated the authoritative beta journey, design, status, setup and adapter notes to require paste-and-confirm Confidential Intents account entry without organizer login or ownership proof. Kept destination/routing validation separate from ownership; retained private organizer-link management and specified immutable recipient binding once requests exist. Payer spending authorization remains separate. Documentation-only change; no payment gate, schema or deployed behavior changed. Checked whitespace and current requirements for consistency.
+
+## 2026-11-10 — Distinguished chain deposit from internal receiving account
+
+Reviewed the user's USDC/Solana Receive screenshot; user confirmed it was opened in near.com Confidential Mode. Checked official recipient-type semantics, current token catalogue and confidential-liquidity documentation. The external Solana deposit address needs DESTINATION_CHAIN and the Solana USDC asset, while the current adapter is hardcoded to internal confidential receiving and NEAR-origin USDC. Documented the manual deposit route, explicit destination typing, downstream credit/fee checks, and the public Solana transfer boundary. Existing solver routing handles asset conversion; a second custom solver is unnecessary.
+
+Added the user's aspiration for native near.com integration and drafted honest hackathon wording distinguishing future integration from this independent prototype. No personal address or QR retained. Documentation-only changes; no route execution, wallet authentication, funds, remote schema, submission or deployment. Python HTTPS lookup failed due to its local CA configuration; retried successfully using Node with TLS verification enabled. Checked documentation whitespace and route consistency.

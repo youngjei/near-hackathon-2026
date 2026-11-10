@@ -51,3 +51,9 @@ Do not add `website`: it is a spam trap, not a project website field for the API
 On 201, record successful submission privately. On 400, fix the listed validation fields and reuse the same request ID. On 403, stop and report the reason. On 409, investigate the existing submission/limit; do not change identity or repository URLs to evade it. On 413, shorten the body. On 503, wait a minute and reuse the same request ID. After a network error, reuse the same request ID rather than creating a second entry.
 
 Saved entries cannot be edited directly. The human uses [Request changes](https://nearhackathon.com/request-changes) with the originally submitted email, wallet and repository plus proposed corrections; organizers review manually. Do not submit the same project again.
+
+## Product description draft
+
+split/d/bill is being built to make shared meals easier to settle across borders. Friends confirm a receipt, split the total and receive individual payment requests, with NEAR Intents routing supported payments toward the organizer's confidential USDC balance on near.com. The standalone beta is designed around a receiving address supplied manually by the organizer, without requiring a wallet login to create a bill. Our longer-term vision is to bring this flow directly into near.com, so receipt splitting, receiving details and reimbursement tracking work within the existing wallet experience. This is an independent hackathon project; native near.com integration is a future goal.
+
+Before submission, pair this description with the exact shipped feature/limitation list. Current live payment execution and final deposit-credit verification remain incomplete; do not present this product-direction draft as evidence of a working embedded integration or successful payments. Nothing has been submitted.

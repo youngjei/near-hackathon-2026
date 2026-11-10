@@ -37,16 +37,39 @@ For passkey-based accounts, protocol support for `standard: webauthn` is real. I
 
 Receiving and spending are separate:
 
-1. **Receiving ZEC reimbursements:** a confidential-recipient quote needs the correct organizer account ID; the organizer does not sign each incoming payment. The organizer pastes and confirms that account. Validate its format and confidential routing, without asserting ownership or requiring a wallet connection. Bind it immutably to the bill once requests are issued; protect management with the existing organizer capability. An external-chain deposit address is not interchangeable with the Confidential Intents account ID.
+1. **Direct internal receiving (existing adapter):** a confidential-recipient quote needs the correct organizer account ID; the organizer does not sign each incoming payment. The organizer pastes and confirms that account. Validate its format and confidential routing, without asserting ownership or requiring a wallet connection. Bind it immutably to the bill once requests are issued; protect management with the existing organizer capability. An external-chain deposit address is not interchangeable with the Confidential Intents account ID.
 2. **Paying from confidential USDC:** generate the intent for the payer's account, obtain their explicit signature through a supported wallet handoff, then submit it. A partner API key or an authenticated user session cannot replace that signature.
 
 Precise question for NEAR's integration team (draft only; not sent):
 
 > We have working partner-authenticated dry quotes for ZEC -> confidential USDC and confidential USDC -> confidential USDC. Our organizer wants to receive into the confidential balance displayed on near.com; their login method is not yet confirmed. How should we identify the correct account ID and verify it for recipientType CONFIDENTIAL_INTENTS? Separately, what supported wallet interfaces let existing confidential-balance payers authorize the payload returned by /generate-intent? For near.com passkey users, is there a supported near.com-origin signing bridge? If no third-party signer is available, is there a supported near.com payment-request/deep-link flow? We do not want users to create new wallets or export keys. Please also confirm the user-session requirements for basic-confidential quote/status lookup and the supported Zcash refund path for VIZOR/Zodl users.
 
+## Manual receiving through near.com's Solana deposit address
+
+The user supplied a Receive screen showing USDC, Solana and a minimum of 1 USDC, and explicitly confirmed it was opened in Confidential Mode. Do not store the user's address or QR in this repository. This is a chain-specific deposit destination associated with their intended confidential balance, not an internal Confidential Intents account ID.
+
+For this manual beta route, the intended flow is:
+
+`payer ZEC or confidential USDC -> one 1Click conversion -> USDC on Solana to the pasted near.com receive address -> near.com deposit processing -> confidential credit`
+
+The existing 1Click solver infrastructure handles asset conversion; the app does not operate a second solver or chain two independent swap requests. Deposit processing is a separate stage from the conversion, and a funded end-to-end acceptance check remains necessary.
+
+| Receiving route | recipientType | destinationAsset | recipient value |
+| --- | --- | --- | --- |
+| Manual Solana receive address from Confidential Mode | DESTINATION_CHAIN | nep141:sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near | Solana deposit address |
+| Direct internal confidential account | CONFIDENTIAL_INTENTS | Explicitly selected USDC asset | Internal account ID |
+
+Both USDC asset IDs in the current implementation and this table were checked against the live public token catalogue on November 10; they are different six-decimal assets. The current adapter hardcodes NEAR-origin USDC and an internal recipient. It must be extended and tested before accepting a Solana receive address. Never put a Solana deposit address into its internal-recipient field or silently infer destination type from an arbitrary string.
+
+For the manual beta, pin the receive network/token to Solana USDC and ask the organizer to copy the address from near.com Confidential Mode, then confirm it without login to split/d/bill. Keep recipient binding immutable after requests are issued. This does not broaden payer-chain scope. Automatic address association inside near.com is the longer-term integration vision.
+
+Acceptance must establish address lifetime/reusability, supported third-party 1Click withdrawals into that deposit address, minimums and any second-stage fees. Exact output at the Solana deposit address is not proof of the same net confidential credit. A 1Click SUCCESS can establish delivery for its own route; use a distinct delivered/credit-pending state until supported deposit confirmation establishes the final credit. Do not require organizer login merely to compensate for an unimplemented deposit-status integration. The Solana transfer is publicly visible even though the eventual balance is confidential.
+
+Sources: [quote recipient types](https://docs.near-intents.org/api-reference/oneclick/request-a-swap-quote), [public token catalogue](https://1click.chaindefuser.com/v0/tokens), [Main/Confidential balance distinction and direct confidential deposits](https://docs.near-intents.org/integration/market-makers/confidential-liquidity). The association of the pictured receive screen with Confidential Mode is user-confirmed; final credit and deposit mechanics for that particular address have not been tested.
+
 ## Remaining activation checks
 
-1. Implement paste-and-confirm receiving-account entry, destination validation and immutable bill recipient binding. No organizer login or ownership proof. Select signing adapters separately for confidential-balance payers.
+1. Implement paste-and-confirm Solana USDC deposit-address entry for the manual Confidential Mode receiving route, with explicit destination type and immutable bill recipient binding. Keep the direct internal-account adapter separate. No organizer login or ownership proof. Select signing adapters separately for confidential-balance payers.
 2. Verify selected wallet versions can supply a payer-controlled supported refund destination and handle a ZIP-321 request.
 3. Add server-only executable quote storage per share, capability-protected checkout, cancellation/retry policy and durable provider reconciliation. Never send raw quotes/account identifiers to other diners.
 4. Test confidential status visibility with the partner credential, organizer session, unrelated payer session and anonymous access. A dry quote does not prove recipient privacy.
