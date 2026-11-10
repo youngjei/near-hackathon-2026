@@ -70,6 +70,7 @@ export function d1Store(db: D1Database, bucket?: R2Bucket): Store {
         b.create_key,
       );
       if (!saved) throw new Error("Save failed");
+      if (saved.recipient_account !== b.recipient_account) throw new HttpError(409, "This bill already has a receiving address. Start a new bill to use a different one.");
       return saved;
     },
     async createDemoAttempt(a) {

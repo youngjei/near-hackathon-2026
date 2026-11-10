@@ -18,7 +18,7 @@ Open `.env.local` in your editor. Fill values after the equals signs. Never past
 1. Open https://supabase.com/dashboard and create a project. Choose a free plan if available and sufficient. Keep the generated database password in your own password manager; the current API integration does not need it in chat.
 2. In the project **Connect** dialog or project API settings, copy the project URL into `SUPABASE_URL`.
 3. In **Settings → API Keys**, use a server-only secret key (`sb_secret_…`), or the legacy `service_role` key. Store it as `SUPABASE_SERVICE_ROLE_KEY`; the variable name is retained for compatibility even when using a new secret key. Never use it in browser code. See [Supabase API keys](https://supabase.com/docs/guides/getting-started/api-keys).
-4. The configured project has migrations `202611100001_beta.sql`, `202611100002_application_modes.sql`, and `202611100003_server_adapter.sql` applied. The third migration was explicitly approved and grants access only to the server role, adds transaction functions and rate limits, and preserves existing records. For a different fresh project, run all migrations in order. Do not rerun them against this initialized project.
+4. The configured project has migrations `202611100001_beta.sql`, `202611100002_application_modes.sql`, `202611100003_server_adapter.sql`, and `202611100004_receiving_account.sql` applied. The third migration was explicitly approved and grants access only to the server role, adds transaction functions and rate limits, and preserves existing records. The fourth adds the immutable receiving account while preserving legacy records and browser access restrictions. For a different fresh project, run all migrations in order. Do not rerun them against this initialized project.
 5. Validate access from `app-web` with `node --env-file=.env.local scripts/check-supabase.mjs`. Start native Next.js with `npm run dev:next`, then open http://127.0.0.1:5180. For a production Next.js server, set `APP_ORIGIN` to its exact public origin without a trailing slash. See the application README for build/test commands.
 6. You do not need Supabase Auth email signup for the current capability-link demo. The organizer supplies a confirmed confidential receiving account without wallet login. Payer authorization is required when spending a confidential balance.
 
@@ -36,7 +36,7 @@ Official sources: [quickstart](https://docs.near.ai/cloud/quickstart), [model ti
 
 1. Register at https://partners.near-intents.org.
 2. Obtain the partner API credential and save it as `NEAR_INTENTS_API_KEY`. The official docs support `X-API-Key`; a partner JWT is not the same credential as a wallet-owner session.
-3. Partner quote access is now verified for this project. Next identify the actual confidential receiving account on near.com and, separately, the wallet method for payer signing; see [the precise integration question](PAYMENT_ADAPTER.md). The broader request below remains useful for a new partner account. No message has been sent on your behalf.
+3. Partner quote access is now verified for this project. Internal near.com account routing is verified with signed dry quotes, and the app saves the pasted recipient. Next validate payer signing and settlement; see [the precise integration question](PAYMENT_ADAPTER.md). The broader request below remains useful for a new partner account. No message has been sent on your behalf.
 
 Suggested support request:
 

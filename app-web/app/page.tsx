@@ -4,6 +4,8 @@ import { Shell, ErrorMessage } from "@/components/shell";
 import { api, link, Dashboard } from "@/lib/client";
 import { allocation, currencies, formatAmount, billInput } from "@/lib/money";
 import Decimal from "decimal.js";
+import { receivingAddress as addressSchema } from "@/lib/receiving";
+import { ReceivingHelp } from "@/components/receiving-help";
 type FX = { rate: string; date: string; source: string; fixture: boolean };
 export default function CreateBill() {
   const [hydrated, setHydrated] = useState(false);
@@ -14,6 +16,9 @@ export default function CreateBill() {
     [extra, setExtra] = useState("0"),
     [currency, setCurrency] = useState("AED"),
     [diners, setDiners] = useState(4);
+  const [recipient, setRecipient] = useState("");
+  const [recipientError, setRecipientError] = useState("");
+  const recipientInput = useRef<HTMLInputElement>(null);
   const [receiptId, setReceiptId] = useState<string>(),
     [preview, setPreview] = useState(""),
     [note, setNote] = useState(""),
@@ -68,6 +73,14 @@ export default function CreateBill() {
   async function review(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    const address = addressSchema.safeParse(recipient);
+    if (!address.success) {
+      setRecipientError(address.error.issues[0].message);
+      recipientInput.current?.focus();
+      return;
+    }
+    setRecipient(address.data);
+    setRecipientError("");
     setBusy(true);
     try {
       if (!requestKey.current) requestKey.current = crypto.randomUUID();
@@ -78,6 +91,7 @@ export default function CreateBill() {
         currency,
         diners,
         receiptId,
+        receivingAddress: recipient,
         requestKey: requestKey.current,
         approvedRate: "1",
         approvedDate: "2026-11-10",
@@ -110,6 +124,7 @@ export default function CreateBill() {
         currency,
         diners,
         receiptId,
+        receivingAddress: recipient,
         requestKey: requestKey.current,
         approvedRate: fx.rate,
         approvedDate: fx.date,
@@ -304,6 +319,20 @@ export default function CreateBill() {
                   </button>
                 </div>
               </div>
+              <div className="receiving-field">
+                <label className="field" htmlFor="receiving-address">
+                  Your near.com receiving address
+                  <input id="receiving-address" ref={recipientInput}
+                    value={recipient} onChange={event => { setRecipient(event.target.value); setRecipientError(""); }}
+                    placeholder="nearcom:0x…" autoComplete="off" autoCapitalize="none" spellCheck={false}
+                    maxLength={80} aria-required="true" aria-invalid={!!recipientError}
+                    aria-describedby={recipientError ? "receiving-hint receiving-error" : "receiving-hint"}
+                  />
+                </label>
+                <p id="receiving-hint" className="field-hint">Paste your internal address, including nearcom:. No wallet connection needed.</p>
+                {recipientError && <p id="receiving-error" className="field-error" role="alert">{recipientError}</p>}
+                <ReceivingHelp />
+              </div>
               <button
                 className="button primary full"
                 disabled={busy || !hydrated}
@@ -372,6 +401,11 @@ export default function CreateBill() {
                 A one-cent difference keeps the total exact.
               </p>
             )}
+            <section className="receiving-summary" aria-label="Receiving address">
+              <h2>Your receiving address</h2>
+              <p className="address-value">{recipient}</p>
+              <p className="field-hint">Check it before creating requests. It stays fixed for this bill.</p>
+            </section>
             <div className="receiving-note">
               <strong>Try the complete flow</strong>
               <p>

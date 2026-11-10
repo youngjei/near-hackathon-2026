@@ -3,6 +3,7 @@ import { allocation, billInput, currencies } from "../money";
 import { shareStatus, transition, Status } from "../payments";
 import { getRate } from "../providers/fx";
 import { imageType } from "../providers/receipt";
+import { receivingAccount, displayReceivingAddress } from "../receiving";
 import { liveReadiness } from "../providers/near";
 import {
   HttpError,
@@ -100,7 +101,7 @@ export function createHandler(store: Store, cronSecret?: string) {
         token: await shareToken(token, s.id),
       })),
     );
-    return { bill: billView(bill), shares: result };
+    return { bill: billView(bill), receivingAddress: bill.recipient_account ? displayReceivingAddress(bill.recipient_account) : null, shares: result };
   }
   async function checkout(share: Share, bill: Bill) {
     const attempts = await store.attempts(share.id);
@@ -206,6 +207,8 @@ export function createHandler(store: Store, cronSecret?: string) {
         const token = await shareToken(master, body.requestKey),
           ownerHash = await hash(token);
         const old = await store.billByRequest(ownerHash, body.requestKey);
+        if (old && old.recipient_account !== receivingAccount(body.receivingAddress))
+          throw new HttpError(409, "This bill already has a receiving address. Start a new bill to use a different one.");
         if (old)
           return json(
             { ...(await dashboard(old, token)), organizerToken: token },
@@ -260,6 +263,7 @@ export function createHandler(store: Store, cronSecret?: string) {
             fx_source: fx.source,
             mode: "demo",
             receipt_id: body.receiptId || null,
+            recipient_account: receivingAccount(body.receivingAddress),
             created_at: now,
           },
           shares,

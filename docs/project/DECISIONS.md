@@ -82,3 +82,8 @@ For future decisions, record the date, decision, reason, alternatives that mater
 - User's example receive screen is USDC on Solana with a 1 USDC minimum; user explicitly confirmed Confidential Mode. For the manual beta, use this typed chain-deposit destination with DESTINATION_CHAIN and the Solana USDC asset. It is not the internal account ID accepted by the existing adapter. Preserve the direct internal route separately.
 - Existing 1Click routing performs conversion; no custom or additional app-managed solver is needed. near.com deposit credit is a separate downstream step with unverified fees/status mechanics. Do not equate delivery to its deposit address with verified net confidential credit. Keep organizer login-free and payer scope unchanged.
 - This records the next implementation direction. No address/QR saved in Git, route implementation switched, payment sent or submission made.
+
+
+## 2026-11-10 — Implemented direct internal receiving
+
+The user selected the simpler internal near.com address route, superseding the manual Solana deposit plan. Require the full nearcom: prefix at entry, validate format, normalize only for storage/provider use, and show the address for confirmation. Add an accessible instructions popup. Save the recipient immutably at bill creation; a changed recipient requires a new bill. Only organizer responses contain it. Do not claim ownership validation or live settlement. Migration 004 preserves old rows as null and retains server-only access.

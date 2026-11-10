@@ -13,6 +13,7 @@ const migrations = [
   "202611100001_beta.sql",
   "202611100002_application_modes.sql",
   "202611100003_server_adapter.sql",
+  "202611100004_receiving_account.sql",
 ];
 beforeAll(async () => {
   await pg.exec(`create role anon; create role authenticated; create role service_role bypassrls;
@@ -82,6 +83,7 @@ async function call(
 }
 const input = () => ({
   merchant: "Integration dinner",
+  receivingAddress: "nearcom:0x" + "a1".repeat(20),
   currency: "USD",
   total: "30.01",
   extra: "0",
@@ -104,6 +106,7 @@ async function dinner() {
 test("Supabase saves an entire bill, normalizes money/timestamps, and preserves private access", async () => {
   const { body, data, cookie } = await dinner();
   expect(data.shares).toHaveLength(2);
+  expect(data.receivingAddress).toBe(body.receivingAddress);
   expect(data.bill.totalUnits).toBe("30010000");
   expect(typeof data.bill.createdAt).toBe("number");
   expect((await call(`/bills/${data.bill.id}`)).status).toBe(404);
@@ -122,7 +125,7 @@ test("Supabase saves an entire bill, normalizes money/timestamps, and preserves 
   ).json()) as Checkout;
   expect(checkout.share.amountUnits).toBe("10000000");
   expect(JSON.stringify(checkout)).not.toMatch(
-    /owner_hash|token_hash|organizerToken/,
+    /owner_hash|token_hash|organizerToken|receivingAddress|recipient_account|nearcom:|a1a1a1a1/,
   );
   expect(
     (await call(`/bills/${data.bill.id}`, "GET", undefined, dinerCookie))
@@ -260,4 +263,22 @@ test("rate limits increment atomically and monetary JSON preserves bigint precis
   expect((await store.bill(data.bill.id))!.total_units).toBe(
     "9007199254740993",
   );
+});
+
+test("recipient is normalized, persisted, immutable and cannot be changed by a repeated request", async () => {
+ const {data,body}=await dinner();
+ const different='nearcom:0x'+'b2'.repeat(20);
+ const replay=await call('/bills','POST',{...body,receivingAddress:different});
+ expect(replay.status).toBe(409);
+ const store=supabaseStore('https://database.test','test-server-key');
+ const saved=(await store.bill(data.bill.id))!;
+ expect(saved.recipient_account).toBe(body.receivingAddress.slice(8));
+ await expect(pg.query('update public.bills set recipient_account=$1 where id=$2',[different.slice(8),saved.id])).rejects.toThrow('fixed for this bill');
+ await expect(store.createBill({...saved,recipient_account:different.slice(8)},await store.shares(saved.id))).rejects.toThrow();
+ expect((await store.bill(saved.id))?.recipient_account).toBe(saved.recipient_account);
+});
+test("bare blockchain and malformed receiving addresses are rejected by the API", async () => {
+ for(const receivingAddress of ['', '0x'+'a1'.repeat(20), 'nearcom:0x123', 'nearcom:solana:abc']) {
+  expect((await call('/bills','POST',{...input(),receivingAddress})).status).toBe(400);
+ }
 });

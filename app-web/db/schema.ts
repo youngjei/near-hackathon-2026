@@ -22,6 +22,7 @@ export const bills = sqliteTable(
     fxSource: text("fx_source").notNull(),
     mode: text("mode").notNull().default("demo"),
     receiptId: text("receipt_id"),
+    recipientAccount: text("recipient_account"),
     createdAt: integer("created_at").notNull(),
   },
   (t) => [uniqueIndex("bill_creation").on(t.ownerHash, t.createKey)],

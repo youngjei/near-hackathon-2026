@@ -51,6 +51,7 @@ export type AttemptView = {
 };
 export type Dashboard = {
   bill: BillView;
+  receivingAddress: string | null;
   shares: ShareView[];
   organizerToken?: string;
 };

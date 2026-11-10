@@ -15,6 +15,7 @@ export type Bill = {
   fx_source: string;
   mode: "demo" | "live";
   receipt_id: string | null;
+  recipient_account: string | null;
   created_at: number;
 };
 export type Share = {

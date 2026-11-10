@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 import { z } from "zod";
+import { receivingAddress } from "./receiving";
 export const currencies = [
   "AED",
   "USD",
@@ -24,6 +25,7 @@ export const billInput = z
     extra: moneyInput.default("0"),
     diners: z.number().int().min(2).max(20),
     receiptId: z.string().uuid().optional(),
+    receivingAddress,
     requestKey: z.string().uuid(),
     approvedRate: z.string().regex(/^\d+(\.\d+)?$/),
     approvedDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),

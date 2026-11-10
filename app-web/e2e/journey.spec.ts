@@ -10,6 +10,7 @@ test("create, privately share, pay and reconcile a demo dinner", async ({
   await expect(page.getByLabel("Receipt total", { exact: true })).toHaveValue(
     "200.00",
   );
+  await page.getByLabel("Your near.com receiving address", {exact:true}).fill("nearcom:0x" + "a1".repeat(20));
   await page.getByRole("button", { name: "Review split" }).click();
   await expect(
     page.getByRole("heading", { name: "Here’s the split." }),
@@ -89,6 +90,7 @@ test("manual correction, stale attempts, concurrency and isolation", async ({
   await page.getByLabel("Bill name").fill("Late-night noodles");
   await page.getByLabel("Receipt total", { exact: true }).fill("10");
   await page.getByLabel("Currency").selectOption("USD");
+  await page.getByLabel("Your near.com receiving address", {exact:true}).fill("nearcom:0x" + "a1".repeat(20));
   await page.getByRole("button", { name: "Review split" }).click();
   await page.getByRole("button", { name: "Create 3 demo requests" }).click();
   await expect(page.getByText("0 of 3 paid")).toBeVisible();
@@ -134,7 +136,7 @@ test("manual correction, stale attempts, concurrency and isolation", async ({
   expect(c.share.status).toBe("paid");
   expect(c.attempts).toHaveLength(2);
   expect(JSON.stringify(c)).not.toMatch(
-    /token_hash|owner_hash|depositAddress|refundTo/,
+    /token_hash|owner_hash|depositAddress|refundTo|recipient_account|receivingAddress|a1a1a1a1/,
   );
   const forbidden = await page.request.post(
     `/api/shares/${d.shares[1].id}/access`,
@@ -177,6 +179,7 @@ test("receipt fallback stays editable, rejects unsafe uploads, and keeps images 
   await page.getByLabel("Bill name").fill("Photo receipt test");
   await page.getByLabel("Receipt total", { exact: true }).fill("99.99");
   await page.getByLabel("Currency").selectOption("USD");
+  await page.getByLabel("Your near.com receiving address", {exact:true}).fill("nearcom:0x" + "a1".repeat(20));
   await page.getByRole("button", { name: "Review split" }).click();
   await page.getByRole("button", { name: "Create 3 demo requests" }).click();
   await expect(page.getByText("0 of 3 paid")).toBeVisible();
@@ -221,6 +224,7 @@ test("small screens, large amounts, keyboard focus and reduced motion", async ({
     .fill("A long dinner name that still needs to fit on a small screen");
   await page.getByLabel("Receipt total", { exact: true }).fill("99999999.99");
   await page.getByLabel("Currency").selectOption("USD");
+  await page.getByLabel("Your near.com receiving address", {exact:true}).fill("nearcom:0x" + "a1".repeat(20));
   await page.getByRole("button", { name: "Review split" }).click();
   await expect(
     page.getByRole("heading", { name: "Here’s the split." }),
@@ -235,4 +239,45 @@ test("small screens, large amounts, keyboard focus and reduced motion", async ({
       .locator(".flow")
       .evaluate((el) => getComputedStyle(el).animationName),
   ).toBe("none");
+});
+
+test("receiving-address help, validation, confirmation and saved organizer-only address", async ({page}) => {
+ await page.goto('/');
+ await page.getByRole('button',{name:'Try a sample bill'}).click();
+ const input=page.getByLabel('Your near.com receiving address',{exact:true});
+ await expect(input).toHaveAttribute('placeholder','nearcom:0x…');
+ await page.getByRole('button',{name:'Where do I find this?'}).click();
+ const help=page.getByRole('dialog',{name:'Find your near.com address'});
+ await expect(help).toBeVisible();
+ await expect(help.getByRole('link',{name:'Open near.com'})).toHaveAttribute('href','https://near.com');
+ await expect(help.getByRole('button',{name:'Close address help'})).toBeFocused();
+ await page.screenshot({path:`../outputs/receiving-help-${test.info().project.name}.png`,animations:'disabled'});
+ const box=await help.boundingBox();
+ expect(box!.x).toBeGreaterThan(0);
+ expect(box!.x+box!.width).toBeLessThan(page.viewportSize()!.width);
+ expect(box!.y).toBeGreaterThanOrEqual(0);
+ expect(box!.y+box!.height).toBeLessThanOrEqual(page.viewportSize()!.height);
+ await page.keyboard.press('Escape');
+ await expect(help).not.toBeVisible();
+ await expect(page.getByRole('button',{name:'Where do I find this?'})).toBeFocused();
+ await page.getByRole('button',{name:'Review split'}).click();
+ await expect(page.getByText('Paste your near.com internal address.',{exact:true})).toBeVisible();
+ await expect(input).toBeFocused();
+ await input.fill('0x'+'AB'.repeat(20));
+ await page.getByRole('button',{name:'Review split'}).click();
+ await expect(page.getByText('Copy the internal address from near.com. It starts with nearcom:.')).toBeVisible();
+ await input.fill('NEARCOM:0x'+'AB'.repeat(20));
+ await page.getByRole('button',{name:'Review split'}).click();
+ const normalized='nearcom:0x'+'ab'.repeat(20);
+ await expect(page.getByLabel('Receiving address').getByText(normalized,{exact:true})).toBeVisible();
+ await page.getByRole('button',{name:'Edit bill'}).click();
+ await expect(input).toHaveValue(normalized);
+ await input.scrollIntoViewIfNeeded();
+ await page.screenshot({path:`../outputs/receiving-field-${test.info().project.name}.png`,fullPage:true});
+ await page.getByRole('button',{name:'Review split'}).click();
+ await page.getByRole('button',{name:'Create 3 demo requests'}).click();
+ await expect(page.getByRole('heading',{name:'Your bill, shared.'})).toBeVisible();
+ await page.reload();
+ await expect(page.getByLabel('Receiving address').getByText(normalized,{exact:true})).toBeVisible();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
 });

@@ -159,6 +159,13 @@ export default function Bill() {
             </p>
           </section>
         )}
+        {data.receivingAddress && (
+          <section className="receiving-summary" aria-label="Receiving address">
+            <h2>Your receiving address</h2>
+            <p className="address-value">{data.receivingAddress}</p>
+            <p className="field-hint">Saved for this bill. Live payments are not enabled yet.</p>
+          </section>
+        )}
         <Receipt bill={data.bill} kind="bills" id={data.bill.id} />
         <p className="small-note left">
           Keep this organizer page open or bookmark it on this device. Only you

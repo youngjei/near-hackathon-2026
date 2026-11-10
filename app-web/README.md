@@ -12,16 +12,17 @@ From this directory:
 npm ci
 npm run build
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_organic_jimmy_woo.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_complete_bruce_banner.sql
 npm run dev -- --port 5173
 ```
 
-Open http://127.0.0.1:5173. Apply the migration once to a fresh local database; do not rerun it on an existing initialized database. Later migrations must be applied in order. `npm start -- --port 5173` previews the production build against the same local database. `.wrangler/` contains disposable local demo data and is ignored.
+Open http://127.0.0.1:5173. Apply each migration once to a fresh local database; do not rerun it on an existing initialized database. Later migrations must be applied in order. `npm start -- --port 5173` previews the production build against the same local database. `.wrangler/` contains disposable local demo data and is ignored.
 
 The npm legacy peer resolver is pinned in `.npmrc` because the host npm resolver crashed on the dependency graph. `package-lock.json` pins installed versions. No environment credentials are needed for the isolated demo.
 
 ## Run with Supabase and native Next.js
 
-The configured Supabase project has all three migrations applied. For a new project, apply `supabase/migrations/*.sql` in filename order. Do not rerun the initial migration on an existing database. Only the server role has table/function access; browser roles cannot call the RPCs.
+The configured Supabase project has all four migrations applied. For a new project, apply `supabase/migrations/*.sql` in filename order. Do not rerun the initial migration on an existing database. Only the server role has table/function access; browser roles cannot call the RPCs.
 
 Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in ignored `.env.local`, then:
 
@@ -44,8 +45,8 @@ Sites uses the Cloudflare entry point. Set hosted `STORAGE_BACKEND=supabase` plu
 ## Demo walkthrough
 
 1. **Try a sample bill** → synthetic 200 AED receipt details appear. Alternatively upload a JPG/PNG/WebP under 5 MB or enter details manually. OCR is not connected: uploads always ask for manual details.
-2. Correct the name, total, currency, extra charges and diner count. Only add charges not already included in the receipt.
-3. **Review split** → approve the dated fiat reference rate and USDC amounts. One USD equals one USDC for bill accounting; this is not a swap quote. A dated, labelled demo reference rate is used if the rate service fails.
+2. Correct the name, total, currency, extra charges and diner count. Only add charges not already included in the receipt. Paste your full internal `nearcom:` receiving address; **Where do I find this?** opens instructions. For isolated tests only, use synthetic `nearcom:demo.near` (never send funds to it).
+3. **Review split** → confirm the receiving address and approve the dated fiat reference rate and USDC amounts. One USD equals one USDC for bill accounting; this is not a swap quote. A dated, labelled demo reference rate is used if the rate service fails.
 4. **Create demo requests** → one persisted bill and N−1 individual reimbursement shares. The organizer's share is excluded from the reimbursement total.
 5. **Share link** on a friend → copy that private link or scan its invitation QR. It opens a checkout, never a fundable wallet request.
 6. Open checkout → choose Zcash or confidential USDC → **Try … demo** → **Simulate successful payment**. No address, live quote, wallet signature or spending submission exists in this mode.
@@ -78,9 +79,9 @@ The owner-private Sites deployment is for the owner to review. Friends cannot us
 
 `POST /api/reconcile` requires a server-configured `CRON_SECRET` bearer token. It only expires pending demo attempts and cleans old rate-limit counters. It never checks or marks a live payment paid. Frontend polling is a view refresh, not a substitute for live reconciliation.
 
-See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Partner dry-quote access is verified. The planned manual receiving integration uses a pasted, confirmed Solana USDC deposit address from near.com Confidential Mode, with no organizer login or ownership proof. This needs a separate destination-chain route and final deposit-credit verification; the tested adapter currently uses direct internal confidential receiving. Each payer spending from a confidential balance also needs their own wallet signature. Refund/device checks, funded settlement authorization and durable provider reconciliation remain pending. Credentials alone do not enable these paths.
+See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Partner dry-quote access is verified. Organizer entry now requires the full internal `nearcom:` address, with format validation, finding instructions and confirmation before saving. The normalized account is immutable on the bill and omitted from diner responses. No organizer wallet login or ownership proof is required. The planned execution route strips the display prefix and uses `CONFIDENTIAL_INTENTS`; real dry quotes to the supplied account passed. Actual payment execution is still disabled. Each payer spending from a confidential balance also needs their own wallet signature. Refund/device checks, funded settlement authorization and durable provider reconciliation remain pending. Credentials alone do not enable these paths.
 
-See the [payment adapter and near.com passkey handoff](../docs/technical/PAYMENT_ADAPTER.md) for verified behavior and remaining integration work. `npm run check:intents` explicitly runs six unfunded, signed route estimates using the local partner key; it creates no payment address and saves sanitized evidence. It is separate from default tests and the hosted application.
+See the [payment adapter and near.com handoff](../docs/technical/PAYMENT_ADAPTER.md) for verified behavior and remaining integration work. `npm run check:intents` explicitly runs six unfunded, signed route estimates using the local partner key; it creates no payment address and saves sanitized evidence. It is separate from default tests and the hosted application.
 
 ## Validation
 

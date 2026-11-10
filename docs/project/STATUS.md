@@ -2,7 +2,7 @@
 
 Updated: November 10, 2026 (KST).
 
-Phase: Supabase persistence connected, native Next.js supported, and the private Site updated. Demo methods represent VIZOR/Zodl ZEC and confidential USDC but cannot move funds. Signed payment estimates now verify in the application adapter; receiving-account identification, payer signing, OCR and live reconciliation remain pending. No submission or funded project wallet exists.
+Phase: Supabase persistence connected, native Next.js supported, and the private Site updated. Demo methods represent VIZOR/Zodl ZEC and confidential USDC but cannot move funds. Signed payment estimates now verify in the application adapter; organizer receiving-address entry and storage are implemented, while payer signing, OCR and live reconciliation remain pending. No submission or funded project wallet exists.
 
 Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site) — owner-only, ChatGPT sign-in required.
 
@@ -16,7 +16,7 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 - Implemented per-share capabilities, cookie exchange, exact cent allocation, idempotent requests, stale-attempt handling and explicit simulation controls.
 - TypeScript and production build passed; 10 Vitest checks and 8 Playwright scenarios passed. Visual inspection completed; wallet-device testing is separate and not performed.
 - Published the private preview and verified the hosted API with synthetic data: creation, durable reads, separate diner access, simulated settlement and idempotence passed. All five expected database tables were present. No recurring jobs are configured.
-- Applied all three Supabase migrations with explicit user approval for the server functions and grants. Implemented PostgreSQL transactions, private receipt storage, exact monetary serialization and rate limits. The private Site now uses Supabase; native Next.js is also supported locally. Vercel hosting is not configured.
+- Applied the first three Supabase migrations with explicit user approval for the server functions and grants. Implemented PostgreSQL transactions, private receipt storage, exact monetary serialization and rate limits. The private Site now uses Supabase; native Next.js is also supported locally. Vercel hosting is not configured.
 
 - Recommended TypeScript/Next.js, Supabase, 1Click/Intents SDKs, ZIP-321 and NEAR AI receipt extraction; see [stack proposal](../technical/STACK.md). Checked current AI-credit terms and hosting constraints. No services provisioned.
 
@@ -33,17 +33,17 @@ Delivery target: a real usable application with receipt extraction and verified 
 
 ## Latest verification
 
-- 34 Vitest checks pass, including quote tampering/expiry, settlement underpayment, provider error redaction, real PostgreSQL migration/transaction behavior and native proxy-origin security checks.
-- Eight desktop/mobile browser scenarios pass against native Next.js with the real Supabase project. The D1 implementation also passed all eight after extraction into its adapter.
+- 38 Vitest checks pass, including quote tampering/expiry, settlement underpayment, provider error redaction, real PostgreSQL migration/transaction behavior and native proxy-origin security checks.
+- Ten desktop/mobile browser scenarios pass against native Next.js with the real Supabase project. The new receiving-address scenarios also pass against the D1 production build; the previous eight D1 scenarios passed after adapter extraction.
 - Both production builds and TypeScript pass. Native Next.js output is isolated in `.next-native/` so it cannot overwrite Vinext route types.
 - Updated Next.js to 16.4.6 and React/RSC to 19.2.8, resolving the audit's critical Next advisory and RSC high advisory. Other audit findings remain (26: 16 moderate, 10 high, including tooling/Vinext/Zod); do not describe this as a completed dependency security review.
 - Hosted API checks passed for Supabase selection, synthetic receipt round-trip, authorization and idempotent simulated settlement. Deployed Site source `da965610766fc0b568f70ede9cc49eb1711cf5f4`, deployment `appgdep_6af295f0fe7881c2941663c3bd134601`, environment revision 1. Only Supabase credentials were configured in hosted secrets; NEAR AI and Intents keys remain local and unused by the app.
 
 ## Next
 
-New evidence: the user supplied their internal near.com address. Four signed dry quotes to its normalized account passed for both payer methods and both NEAR-/Solana-origin USDC outputs, using CONFIDENTIAL_INTENTS. Direct internal receiving is now a concrete alternative to the Solana deposit round trip below; see PAYMENT_ADAPTER.md. No funded transfer or balance access. Personal identifier omitted from Git.
+New evidence: the user supplied their internal near.com address. Four signed dry quotes to its normalized account passed for both payer methods and both NEAR-/Solana-origin USDC outputs, using CONFIDENTIAL_INTENTS. The user selected direct internal receiving, superseding the earlier Solana deposit plan; see PAYMENT_ADAPTER.md. No funded transfer or balance access. Personal identifier omitted from Git.
 
-1. Organizer supplies a USDC/Solana receive address from near.com Confidential Mode, confirmed by the user. Extend the adapter with an explicit DESTINATION_CHAIN route; the existing CONFIDENTIAL_INTENTS route expects an internal account ID and cannot accept this deposit address. No organizer login. Verify deposit fees/minimums and final confidential credit separately from 1Click delivery.
+1. Organizer entry, help popup, confirmation and immutable storage of the internal nearcom-prefixed address are implemented. Migration 004 is applied to Supabase. Next bind executable quotes to that saved normalized account using CONFIDENTIAL_INTENTS; no organizer login or ownership proof. Verify actual delivery independently of dry-quote acceptance.
 2. Dinner-sized dry quotes pass. Verify transparent t1/t3 refund access and ZIP-321 handoff in the selected VIZOR/Zodl releases; published bridge support does not include shielded refund addresses.
 3. Validate a different user paying confidential USDC → organizer confidential USDC; finalize receipt → share → payment-attempt records and private checkout access.
 4. Validate an image model with the configured NEAR AI key; wire receipt extraction after validation. The Supabase/native Next.js adapter is complete; configure Vercel only if switching hosting.
