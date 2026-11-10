@@ -27,7 +27,7 @@ Hackathon research was checked on **November 9, 2026 (KST)**; beta wallet scope 
 - Keep credentials in ignored local environment files. Commit only an example file with empty values when configuration is defined.
 - Track tasks using the included GitHub issue template or the project status file.
 
-The repository starts private. It must become public before the deadline and remain public through judging. Application code, framework, infrastructure and license are not selected yet; selecting a license is on the release checklist. Reference documents retain their original authorship and are not our project code.
+The repository starts private. It must become public before the deadline and remain public through judging. A [recommended beta stack](docs/technical/STACK.md) now describes TypeScript/Next.js, Supabase and the payment integrations; nothing is installed or provisioned yet. Selecting a license is on the release checklist. Reference documents retain their original authorship and are not our project code.
 
 ## Reproducibility status
 

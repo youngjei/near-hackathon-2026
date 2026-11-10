@@ -28,3 +28,9 @@ For future decisions, record the date, decision, reason, alternatives that mater
 - Use per-share ZIP-321 ZEC requests as the planned wallet handoff, with real app/version testing before claiming support. A wallet-brand selector does not enforce the sender app on chain.
 - Reuse existing privacy infrastructure and keep per-diner payment metadata private. Do not market splitdbill as a newly built anonymity system.
 - Partner access, route economics, refund compatibility and actual third-party settlement remain integration requirements. See BETA_SCOPE.md.
+
+## 2026-11-10 — Stack recommendation, pending implementation
+
+- Recommend one TypeScript/Next.js application with Supabase PostgreSQL/private Storage and scheduled reconciliation. No custom smart contract or native app is required by the scoped beta.
+- Use existing 1Click/Intents SDKs and ZIP-321; isolate provider APIs behind small adapters. Recommend Frankfurter reference rates and NEAR AI Cloud receipt extraction, with the exact image model still unverified.
+- This records an engineering recommendation, not user approval of visual design, purchased services or an implemented integration. See docs/technical/STACK.md for dependencies and access requirements.
