@@ -41,7 +41,7 @@ Delivery target: a real usable application with receipt extraction and verified 
 
 ## Next
 
-1. User wants reimbursements in the confidential balance shown on near.com; login/signing method is unconfirmed. Identify the actual receiving account and verify confidential routing first. Select the payer signer only after identifying their wallet. A near.com-specific passkey bridge is not an established requirement. Partner dry quote access is already verified.
+1. Organizer supplies and confirms their Confidential Intents receiving account; no organizer wallet login or ownership proof. Implement destination validation and immutable recipient binding with private organizer-link access. Payer signing is a separate integration for spending confidential balances. Partner dry quote access is already verified.
 2. Dinner-sized dry quotes pass. Verify transparent t1/t3 refund access and ZIP-321 handoff in the selected VIZOR/Zodl releases; published bridge support does not include shielded refund addresses.
 3. Validate a different user paying confidential USDC → organizer confidential USDC; finalize receipt → share → payment-attempt records and private checkout access.
 4. Validate an image model with the configured NEAR AI key; wire receipt extraction after validation. The Supabase/native Next.js adapter is complete; configure Vercel only if switching hosting.

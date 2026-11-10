@@ -69,3 +69,9 @@ For future decisions, record the date, decision, reason, alternatives that mater
 - Both beta routes passed signed dry estimates at 5, 15 and 50 USDC. Store sanitized evidence only. Keep live checkout gated until account authorization, wallet refunds, confidential status access and funded acceptance are verified.
 - Validate transparent Zcash refund addresses according to current published support. Do not silently treat a shielded/unified refund address as supported, or imply that VIZOR/Zodl device compatibility has been tested.
 - No schema change, hosted behavior change, user signature, allocated confidential payment address or funds in this increment.
+
+## 2026-11-10 — No organizer wallet login
+
+- User explicitly chose receiving-account entry without receiver login. This supersedes earlier organizer ownership-proof/onboarding authorization requirements. The organizer pastes and confirms a Confidential Intents receiving account; validate format and route, not ownership.
+- Preserve private organizer capability access for bill management. Bind the receiving account to the bill and prohibit changing it after payment requests are issued. Do not ask for wallet secrets or balance-reading access.
+- Payers still authorize their own spending in their wallet. An organizer passkey bridge is not a prerequisite for ZEC reimbursements into their confidential balance. Live recipient entry/binding remains to be implemented; this update changes the specification only.

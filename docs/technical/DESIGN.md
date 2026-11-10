@@ -19,4 +19,4 @@ No Vercel or Supabase credentials were available. To deliver a real persisted pr
 
 ## Remaining product constraints
 
-Private owner-only hosting is suitable for preview, not group distribution. App capabilities are still separately enforced. Organizer recovery is cookie-based for seven days in demo; verified wallet ownership is required before live receiving. Receipt images expire from application access after seven days; cleanup is not yet scheduled. No fabricated wallet-connect flow, live balances, quotes, fees or address fields appear in demo.
+Private owner-only hosting is suitable for preview, not group distribution. App capabilities are still separately enforced. Organizer access uses a private capability link and cookie. Live receiving will use a pasted, confirmed Confidential Intents account, without requiring wallet login or ownership proof. Recipient changes after requests are issued are disallowed; use a new bill. Receipt images expire from application access after seven days; cleanup is not yet scheduled. No fabricated wallet-connect flow, live balances, quotes, fees or address fields appear in demo.

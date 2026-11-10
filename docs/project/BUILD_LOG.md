@@ -99,3 +99,7 @@ Remaining: near.com account/signing handoff, actual VIZOR/Zodl refund and URI co
 ## 2026-11-10 — Receiving destination clarified
 
 User corrected the preceding wallet answer: the required destination is the confidential balance on near.com, while passkey/login method is uncertain. Updated current status, adapter notes, setup and decision log so a passkey bridge is not treated as a confirmed blocker. Reviewed official near.com migration instructions, which document Account menu → My address, and Intents account/quote documentation. Receiving-account identification and confidential-ledger verification come first; payer signing remains a separate requirement. No code, payment, deployment or credentials changed. Documentation consistency and whitespace checks passed.
+
+## 2026-11-10 — Removed organizer login requirement
+
+User clarified that the receiver only needs to provide a receiving wallet. Updated the authoritative beta journey, design, status, setup and adapter notes to require paste-and-confirm Confidential Intents account entry without organizer login or ownership proof. Kept destination/routing validation separate from ownership; retained private organizer-link management and specified immutable recipient binding once requests exist. Payer spending authorization remains separate. Documentation-only change; no payment gate, schema or deployed behavior changed. Checked whitespace and current requirements for consistency.

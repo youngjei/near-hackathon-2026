@@ -29,7 +29,7 @@ Status classification is unit-tested against a previously captured signed public
 
 ## Receiving destination: the confidential balance on near.com
 
-Correction from the user: the destination is the confidential balance displayed on near.com; the login or signing method is not confirmed. Do not assume it is a passkey account or make a near.com passkey bridge a universal receiving dependency. Do not create a replacement wallet or import secrets.
+Correction from the user: the destination is the confidential balance displayed on near.com; the login or signing method is not confirmed. The organizer only supplies and confirms a receiving account; no organizer wallet login or ownership signature is required. Do not assume it is a passkey account or make a near.com passkey bridge a receiving dependency. Do not create a replacement wallet or import secrets.
 
 The official near.com migration guide documents Account menu → My address for its internal receiving identity. Identify this account separately from any chain-specific deposit address, then verify its use as the confidential recipient. The guide's internal-network transfer instructions are not by themselves proof that a particular incoming payment credits the confidential ledger. [Official guide](https://near-intents-app.helpscoutdocs.com/article/257-migration-from-near-intents-to-nearcom).
 
@@ -37,7 +37,7 @@ For passkey-based accounts, protocol support for `standard: webauthn` is real. I
 
 Receiving and spending are separate:
 
-1. **Receiving ZEC reimbursements:** a confidential-recipient quote needs the correct organizer account ID; the organizer does not sign each incoming payment. We still need a supported way to identify and authorize the intended receiving account in onboarding. A copied, unverified identifier must not be called a verified wallet connection. An external-chain deposit address is not interchangeable with the Confidential Intents account ID.
+1. **Receiving ZEC reimbursements:** a confidential-recipient quote needs the correct organizer account ID; the organizer does not sign each incoming payment. The organizer pastes and confirms that account. Validate its format and confidential routing, without asserting ownership or requiring a wallet connection. Bind it immutably to the bill once requests are issued; protect management with the existing organizer capability. An external-chain deposit address is not interchangeable with the Confidential Intents account ID.
 2. **Paying from confidential USDC:** generate the intent for the payer's account, obtain their explicit signature through a supported wallet handoff, then submit it. A partner API key or an authenticated user session cannot replace that signature.
 
 Precise question for NEAR's integration team (draft only; not sent):
@@ -46,7 +46,7 @@ Precise question for NEAR's integration team (draft only; not sent):
 
 ## Remaining activation checks
 
-1. Identify and validate the actual confidential receiving account shown on near.com. Confirm the user's wallet/login method before choosing ownership and payer-signing adapters. Keep receiving and payer authorization distinct.
+1. Implement paste-and-confirm receiving-account entry, destination validation and immutable bill recipient binding. No organizer login or ownership proof. Select signing adapters separately for confidential-balance payers.
 2. Verify selected wallet versions can supply a payer-controlled supported refund destination and handle a ZIP-321 request.
 3. Add server-only executable quote storage per share, capability-protected checkout, cancellation/retry policy and durable provider reconciliation. Never send raw quotes/account identifiers to other diners.
 4. Test confidential status visibility with the partner credential, organizer session, unrelated payer session and anonymous access. A dry quote does not prove recipient privacy.

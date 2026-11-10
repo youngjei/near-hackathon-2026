@@ -20,12 +20,14 @@ Do not build external Ethereum/MetaMask, Solana/Phantom, BTC or a generic chain 
 
 ## Organizer journey
 
-1. Authorize their existing confidential receiving account. Do not require a newly created wallet solely for splitdbill.
+1. Paste and confirm the existing Confidential Intents receiving account. No organizer wallet login, connection, ownership signature or new wallet is required. Validate the destination format and confidential route; do not claim ownership is verified.
 2. Photograph/upload a receipt; confirm extracted total, currency, tips and service charges.
 3. Enter diner count including themselves; allocate N shares and request N−1 reimbursements.
 4. Approve the conversion into USDC and rounding allocation. Record FX source and time.
 5. Share the bill invitation and private per-diner checkout access.
 6. Follow unpaid, pending, paid and refunded status until all reimbursement shares settle.
+
+Keep bill management behind the private organizer capability link. Save the confirmed recipient with the bill and bind every payment quote to it. The recipient must not change after payment requests are issued; a different recipient requires a new bill. These are implementation requirements, not shipped live behavior.
 
 Equal splitting is the first beta. Item-level allocations and additional split rules are later scope.
 

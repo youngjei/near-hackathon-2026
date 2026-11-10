@@ -20,7 +20,7 @@ Open `.env.local` in your editor. Fill values after the equals signs. Never past
 3. In **Settings → API Keys**, use a server-only secret key (`sb_secret_…`), or the legacy `service_role` key. Store it as `SUPABASE_SERVICE_ROLE_KEY`; the variable name is retained for compatibility even when using a new secret key. Never use it in browser code. See [Supabase API keys](https://supabase.com/docs/guides/getting-started/api-keys).
 4. The configured project has migrations `202611100001_beta.sql`, `202611100002_application_modes.sql`, and `202611100003_server_adapter.sql` applied. The third migration was explicitly approved and grants access only to the server role, adds transaction functions and rate limits, and preserves existing records. For a different fresh project, run all migrations in order. Do not rerun them against this initialized project.
 5. Validate access from `app-web` with `node --env-file=.env.local scripts/check-supabase.mjs`. Start native Next.js with `npm run dev:next`, then open http://127.0.0.1:5180. For a production Next.js server, set `APP_ORIGIN` to its exact public origin without a trailing slash. See the application README for build/test commands.
-6. You do not need Supabase Auth email signup for the current capability-link demo. Wallet authorization remains a separate integration requirement.
+6. You do not need Supabase Auth email signup for the current capability-link demo. The organizer supplies a confirmed confidential receiving account without wallet login. Payer authorization is required when spending a confidential balance.
 
 ## 2. NEAR AI Cloud
 
@@ -36,11 +36,11 @@ Official sources: [quickstart](https://docs.near.ai/cloud/quickstart), [model ti
 
 1. Register at https://partners.near-intents.org.
 2. Obtain the partner API credential and save it as `NEAR_INTENTS_API_KEY`. The official docs support `X-API-Key`; a partner JWT is not the same credential as a wallet-owner session.
-3. Partner quote access is now verified for this project. Next identify the actual confidential receiving account on near.com and the wallet method for ownership/payer signing; see [the precise integration question](PAYMENT_ADAPTER.md). The broader request below remains useful for a new partner account. No message has been sent on your behalf.
+3. Partner quote access is now verified for this project. Next identify the actual confidential receiving account on near.com and, separately, the wallet method for payer signing; see [the precise integration question](PAYMENT_ADAPTER.md). The broader request below remains useful for a new partner account. No message has been sent on your behalf.
 
 Suggested support request:
 
-> I am building split/d/bill for the NEAR hackathon. An organizer receives USDC in a user-controlled Confidential Intents balance. Friends pay either shielded-source ZEC from VIZOR/Zodl or USDC from their own Confidential Intents balance. Please enable/confirm partner access for exact-output ZEC → confidential USDC and confidential USDC → another user's confidential USDC. Please confirm supported Zcash refund-address formats, minimum amounts, expiry/late-deposit behavior, confidential metadata access, and the supported wallet/account signing interface for organizer ownership proof and payer spending authorization.
+> I am building split/d/bill for the NEAR hackathon. An organizer receives USDC in a user-controlled Confidential Intents balance. Friends pay either shielded-source ZEC from VIZOR/Zodl or USDC from their own Confidential Intents balance. Please enable/confirm partner access for exact-output ZEC → confidential USDC and confidential USDC → another user's confidential USDC. Please confirm supported Zcash refund-address formats, minimum amounts, expiry/late-deposit behavior, confidential metadata access, and the supported account identifier for confidential receiving and wallet signing interface for payer spending authorization.
 
 4. Once access is configured, verify dry quotes and authorization without funds. An enabled key does not establish that refunds, third-party receiving or near.com wallet signing work.
 5. Funded tests require a separately agreed small budget and your wallet approval. Never supply a seed phrase or spending private key to the app or this chat.
