@@ -27,11 +27,13 @@ Expected result: one opt-in live check passes, covering all six quotes, and rewr
 
 Status classification is unit-tested against a previously captured signed public quote plus synthetic statuses. No confidential allocated quote/status access or actual settlement was verified here. No cron, database reconciliation, executable-quote allocator or spending submission is connected to this adapter. Persistent reconciliation must still handle retries, late payments, terminal-state ordering, duplicate settlement and refund follow-up atomically.
 
-## The user's wallet: near.com with a passkey
+## Receiving destination: the confidential balance on near.com
 
-The user confirmed this is the existing account to support. Do not create a replacement wallet, import secrets or connect an unrelated wallet as a substitute.
+Correction from the user: the destination is the confidential balance displayed on near.com; the login or signing method is not confirmed. Do not assume it is a passkey account or make a near.com passkey bridge a universal receiving dependency. Do not create a replacement wallet or import secrets.
 
-Protocol support for `standard: webauthn` is real. It specifies how a signed payload reaches Intents; it does not itself supply a third-party near.com wallet connection. The official migration notice explains that passkeys are domain-specific. The legacy frontend's related-origin support explicitly lists near-intents.org and solswap.org; that is not permission for our domain. No documented near.com-origin signing bridge, SDK, redirect or payment deep link for this app was found in the reviewed sources.
+The official near.com migration guide documents Account menu → My address for its internal receiving identity. Identify this account separately from any chain-specific deposit address, then verify its use as the confidential recipient. The guide's internal-network transfer instructions are not by themselves proof that a particular incoming payment credits the confidential ledger. [Official guide](https://near-intents-app.helpscoutdocs.com/article/257-migration-from-near-intents-to-nearcom).
+
+For passkey-based accounts, protocol support for `standard: webauthn` is real. It specifies how a signed payload reaches Intents; it does not itself supply a third-party near.com wallet connection. The official migration notice explains that passkeys are domain-specific. The legacy frontend's related-origin support explicitly lists near-intents.org and solswap.org; that is not permission for our domain. No documented near.com-origin signing bridge, SDK, redirect or payment deep link for this app was found in the reviewed sources.
 
 Receiving and spending are separate:
 
@@ -40,11 +42,11 @@ Receiving and spending are separate:
 
 Precise question for NEAR's integration team (draft only; not sent):
 
-> We have working partner-authenticated dry quotes for ZEC -> confidential USDC and confidential USDC -> confidential USDC. Our users hold existing near.com accounts created with passkeys. What supported SDK, redirect or near.com-origin signing bridge lets a third-party web app obtain the correct confidential account ID, request a non-spending ownership proof, and ask the user to sign the unchanged webauthn payload returned by /generate-intent? If no third-party signer is available, is there a supported near.com payment-request/deep-link flow? We do not want users to create new wallets or export keys. Please also confirm the user-session requirements for basic-confidential quote/status lookup and the supported Zcash refund path for VIZOR/Zodl users.
+> We have working partner-authenticated dry quotes for ZEC -> confidential USDC and confidential USDC -> confidential USDC. Our organizer wants to receive into the confidential balance displayed on near.com; their login method is not yet confirmed. How should we identify the correct account ID and verify it for recipientType CONFIDENTIAL_INTENTS? Separately, what supported wallet interfaces let existing confidential-balance payers authorize the payload returned by /generate-intent? For near.com passkey users, is there a supported near.com-origin signing bridge? If no third-party signer is available, is there a supported near.com payment-request/deep-link flow? We do not want users to create new wallets or export keys. Please also confirm the user-session requirements for basic-confidential quote/status lookup and the supported Zcash refund path for VIZOR/Zodl users.
 
 ## Remaining activation checks
 
-1. Resolve the actual near.com account/signing handoff and validate organizer authorization. Keep receiving and payer authorization distinct.
+1. Identify and validate the actual confidential receiving account shown on near.com. Confirm the user's wallet/login method before choosing ownership and payer-signing adapters. Keep receiving and payer authorization distinct.
 2. Verify selected wallet versions can supply a payer-controlled supported refund destination and handle a ZIP-321 request.
 3. Add server-only executable quote storage per share, capability-protected checkout, cancellation/retry policy and durable provider reconciliation. Never send raw quotes/account identifiers to other diners.
 4. Test confidential status visibility with the partner credential, organizer session, unrelated payer session and anonymous access. A dry quote does not prove recipient privacy.

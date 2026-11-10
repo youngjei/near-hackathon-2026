@@ -64,7 +64,7 @@ For future decisions, record the date, decision, reason, alternatives that mater
 
 ## 2026-11-10 — Verified payment adapter; preserve the existing near.com wallet
 
-- User confirmed near.com with a passkey. Do not replace it with a new app-scoped passkey or an unrelated external wallet. Resolve an actual near.com signing handoff before claiming connection. Receiving does not require signing each incoming payment; spending from confidential USDC does require payer authorization.
+- The initial answer described near.com with a passkey; the user subsequently clarified that only the confidential receiving balance on near.com is confirmed. Login/signing method remains unknown. Do not require a passkey bridge unless that account type is established. Receiving does not require signing each incoming payment; spending from confidential USDC does require payer authorization.
 - Pin the official 1Click TypeScript SDK 0.1.26 for quote verification. Bind all expected routing fields independently because the signed projection excludes confidentiality and settlement status. Keep provider metadata server-side.
 - Both beta routes passed signed dry estimates at 5, 15 and 50 USDC. Store sanitized evidence only. Keep live checkout gated until account authorization, wallet refunds, confidential status access and funded acceptance are verified.
 - Validate transparent Zcash refund addresses according to current published support. Do not silently treat a shielded/unified refund address as supported, or imply that VIZOR/Zodl device compatibility has been tested.
