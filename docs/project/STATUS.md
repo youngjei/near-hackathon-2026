@@ -41,6 +41,8 @@ Delivery target: a real usable application with receipt extraction and verified 
 
 ## Next
 
+New evidence: the user supplied their internal near.com address. Four signed dry quotes to its normalized account passed for both payer methods and both NEAR-/Solana-origin USDC outputs, using CONFIDENTIAL_INTENTS. Direct internal receiving is now a concrete alternative to the Solana deposit round trip below; see PAYMENT_ADAPTER.md. No funded transfer or balance access. Personal identifier omitted from Git.
+
 1. Organizer supplies a USDC/Solana receive address from near.com Confidential Mode, confirmed by the user. Extend the adapter with an explicit DESTINATION_CHAIN route; the existing CONFIDENTIAL_INTENTS route expects an internal account ID and cannot accept this deposit address. No organizer login. Verify deposit fees/minimums and final confidential credit separately from 1Click delivery.
 2. Dinner-sized dry quotes pass. Verify transparent t1/t3 refund access and ZIP-321 handoff in the selected VIZOR/Zodl releases; published bridge support does not include shielded refund addresses.
 3. Validate a different user paying confidential USDC → organizer confidential USDC; finalize receipt → share → payment-attempt records and private checkout access.

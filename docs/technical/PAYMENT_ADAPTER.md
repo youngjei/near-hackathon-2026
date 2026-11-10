@@ -67,6 +67,29 @@ Acceptance must establish address lifetime/reusability, supported third-party 1C
 
 Sources: [quote recipient types](https://docs.near-intents.org/api-reference/oneclick/request-a-swap-quote), [public token catalogue](https://1click.chaindefuser.com/v0/tokens), [Main/Confidential balance distinction and direct confidential deposits](https://docs.near-intents.org/integration/market-makers/confidential-liquidity). The association of the pictured receive screen with Confidential Mode is user-confirmed; final credit and deposit mechanics for that particular address have not been tested.
 
+## Internal near.com address now supplied: direct route verified with dry quotes
+
+The user subsequently supplied their internal near.com address with a `nearcom:` prefix. The personal value is intentionally not recorded here. Its format is `nearcom:0x<40 hex characters>`. NEAR DevHub's Trezu implementation treats the prefix as frontend routing/display information, strips it for 1Click, and chooses INTENTS versus CONFIDENTIAL_INTENTS separately. The prefix itself does not select the confidential ledger.
+
+Checked four dry quotes to the user-supplied underlying account ID, each for exactly 5 USDC output:
+
+| Payer input | Confidential output asset | HTTP | Signature and exact recipient/amount |
+| --- | --- | --- | --- |
+| External ZEC | NEAR-origin USDC | 201 | Verified |
+| External ZEC | Solana-origin USDC | 201 | Verified |
+| Existing confidential NEAR-origin USDC | NEAR-origin USDC | 201 | Verified |
+| Existing confidential NEAR-origin USDC | Solana-origin USDC | 201 | Verified |
+
+Every quote used recipientType CONFIDENTIAL_INTENTS, basic confidentiality and dry true. Refund identifiers were synthetic. No payment address allocated, owner session requested, spending signature generated, balance read or funds moved. Personal IDs and raw quote payloads were not saved. These checks establish quote/routing acceptance, not account ownership or completed settlement.
+
+Internal network does not mean NEAR-token-only or a normal transfer on the NEAR blockchain. This account can be credited with the tested supported USDC representations inside Confidential Intents. For this direct route, output associated with Solana USDC remains an internal confidential balance; it is not sent to a Solana blockchain address. The application's next route decision can now favor direct internal receiving and avoid the manual external deposit round trip. Keep the Solana deposit plan above as an alternative, not a necessary architecture. Organizer login is still unnecessary.
+
+Do not send an ordinary blockchain transfer to the internal 0x identifier. Removing nearcom: is for the typed 1Click API recipient only. The app must bind that normalized account to recipientType CONFIDENTIAL_INTENTS and validate the returned quote.
+
+Primary implementation evidence: [prefix normalization](https://github.com/NEAR-DevHub/trezu/blob/62cf0e41d4b2d2358a496d47c80fcd2e59094247/nt-fe/lib/nearcom-address.ts), [quote routing](https://github.com/NEAR-DevHub/trezu/blob/62cf0e41d4b2d2358a496d47c80fcd2e59094247/nt-fe/hooks/use-intents-quote.ts), [official recipient types](https://docs.near-intents.org/api-reference/oneclick/request-a-swap-quote).
+
+The same Trezu source includes a near.com/send prefill helper. This is a newly found possible wallet handoff, not yet tested in split/d/bill; investigate token/network/recipient/paymentToken behavior before claiming it solves exact-amount signing or reconciliation. It is not proof of an arbitrary passkey signing bridge.
+
 ## Remaining activation checks
 
 1. Implement paste-and-confirm Solana USDC deposit-address entry for the manual Confidential Mode receiving route, with explicit destination type and immutable bill recipient binding. Keep the direct internal-account adapter separate. No organizer login or ownership proof. Select signing adapters separately for confidential-balance payers.
