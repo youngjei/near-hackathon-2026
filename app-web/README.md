@@ -51,7 +51,7 @@ The owner-private Sites deployment is for the owner to review. Friends cannot us
 | Confidential Intents | Live gate hard-disabled; only an unused read-only status adapter exists |
 | ZIP-321 | URI validation helper tested; no fundable request generated in demo |
 | Wallet signing | Not implemented; requires actual supported signer and partner access |
-| Supabase | Schema-only staging migration; not applied, runtime adapter not implemented |
+| Supabase | Staged schema with explicit live/test modes; runtime adapter not implemented |
 | Cron | Protected demo-expiry endpoint exists; no recurring job or live provider reconciliation is configured |
 
 `POST /api/reconcile` requires a server-configured `CRON_SECRET` bearer token. It only expires pending demo attempts and cleans old rate-limit counters. It never checks or marks a live payment paid. Frontend polling is a view refresh, not a substitute for live reconciliation.

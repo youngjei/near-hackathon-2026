@@ -25,6 +25,8 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 - Requested real dry quotes, allocated one unfunded public quote and confirmed anonymous status returns its recipient. Verified three response signatures.
 - Saved source hashes, sanitized results and a reproducible unfunded probe.
 
+Delivery target: a real usable application with Supabase persistence, receipt extraction and verified NEAR payments. The existing demo is an interim preview. Supabase credentials were verified; schema setup and runtime connection remain pending. The schema now has an appended migration supporting explicit live and test records.
+
 ## Next
 
 1. Provision an enabled Confidential Intents partner integration through the official Partner Portal; no enabled credential is available here.

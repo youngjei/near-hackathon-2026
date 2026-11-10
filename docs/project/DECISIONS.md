@@ -42,3 +42,9 @@ For future decisions, record the date, decision, reason, alternatives that mater
 - Live payment gate is hard-disabled. No fundable QR, fabricated wallet connection, simulated balances presented as real, or spending endpoint exists. Real NEAR/AI adapters remain incomplete and unverified.
 - Use individual invitation links instead of a shared claimable group link for this first version, avoiding shared access to all diners' payment data.
 - No cloud plan purchased, blockchain contract deployed, visibility changed or funds moved.
+
+## 2026-11-10 — Real application remains the delivery goal
+
+- User clarified that setup must target a real usable application. The deployed demo is an interim preview, not the intended final deliverable.
+- Append a Supabase migration allowing explicit live/demo modes instead of restricting the schema to demo-only records. Remove implicit demo defaults; retain existing test records and current live-payment authorization gates.
+- Correct the fresh-project SQL handoff and provide a separate upgrade for a project that already ran the original setup. This schema change does not implement or validate payment execution.
