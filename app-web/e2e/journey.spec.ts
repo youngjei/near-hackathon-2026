@@ -212,7 +212,7 @@ test("small screens, large amounts, keyboard focus and reduced motion", async ({
   ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(
-    page.getByRole("link", { name: "split/d/bill home" }),
+    page.getByRole("link", { name: "splitdbill home" }),
   ).toBeFocused();
   await page.screenshot({
     path: `../outputs/home-${test.info().project.name}.png`,

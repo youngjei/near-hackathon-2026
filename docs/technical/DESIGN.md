@@ -4,7 +4,7 @@ User-authored build brief accepted November 10, 2026.
 
 - Product: a receipt becoming clear reimbursement requests for travelling friends.
 - Trust first; task completion is the primary interaction. No marketing landing page.
-- Wordmark: `split/d/bill` in lowercase, slashes in the restrained accent.
+- Wordmark: `splitdbill` in lowercase, centered in the header (updated at the user’s request on November 11).
 - Palette: paper `#faf9f6`, ink `#212922`, muted `#626b64`, accent `#345d49`, tint `#eef2eb`.
 - Single sans-serif stack, proportional text, tabular amounts. Native form controls for small-screen accessibility.
 - Narrow 480px task column; mobile margins 20px. Typography and rules establish hierarchy.
@@ -24,7 +24,7 @@ Private owner-only hosting is suitable for preview, not group distribution. App 
 
 ## November 11 UX refinement
 
-Product thesis: a receipt becomes a clear amount to repay. Target: friends paying each other after a shared meal across borders. Trust and clarity take precedence over novelty. The interface should feel like a short receipt and payment request, with the bill, amount and next action leading each screen. Use literal, consumer-friendly language. Preserve the split/d/bill wordmark and restrained paper/ink/green palette.
+Product thesis: a receipt becomes a clear amount to repay. Target: friends paying each other after a shared meal across borders. Trust and clarity take precedence over novelty. The interface should feel like a short receipt and payment request, with the bill, amount and next action leading each screen. Use literal, consumer-friendly language. Preserve the centered splitdbill wordmark and restrained paper/ink/green palette.
 
 Remove slogans, captions that repeat headings, decorative status banners, duplicate friend numbers and oversized controls that imply drag-and-drop without implementing it. Do not replace these with trendy gradients, glass cards, pill badges, italic display words, random monospace or scroll effects. Small transitions should acknowledge interaction. Optional exchange-rate explanations, address help and manual payment-copy fallbacks belong in accessible disclosures. Demo status, fees, expiry, return-address privacy, receiving-address confirmation and double-payment prevention must remain understandable.
 

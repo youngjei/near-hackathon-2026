@@ -33,17 +33,19 @@ Delivery target: a real usable application with receipt extraction and verified 
 
 ## Latest verification
 
+- Centered `splitdbill` header wordmark published. Rendered alignment and non-overlapping navigation verified at 320, 390 and 1440 pixels; production build passed.
+
 - UX refinement: 26 desktop/mobile journeys passed against the local Sites runtime. The focused QR-disclosure/above-fold action test passed on both viewports after a short-screen spacing correction. TypeScript and the sanitized Sites production build passed. Nine synthetic screenshots reviewed; no overflow or console errors. Demo disclosure and payment safeguards remain; optional explanations and QR/copy fallback use accessible disclosures.
 
 - 78 Vitest checks pass, including quote tampering/expiry, settlement underpayment, provider error redaction, real PostgreSQL migration/transaction behavior and native proxy-origin security checks.
 - Twenty-six desktop/mobile scenarios pass: ten persisted demo journeys against native Next.js/Supabase and sixteen synthetic live-checkout scenarios. The new receiving-address scenarios also pass against the D1 production build; the previous eight D1 scenarios passed after adapter extraction.
 - Both production builds and TypeScript pass. Native Next.js output is isolated in `.next-native/` so it cannot overwrite Vinext route types.
 - Next.js is 16.4.6; React/ReactDOM/RSC are patched to 19.2.9, resolving the newly listed critical RSC advisory as well as earlier patched issues. Other audit findings remain (26: 16 moderate, 10 high, including tooling/Vinext/Zod); do not describe this as a completed dependency security review.
-- Hosted API checks passed for Supabase selection, receiving-address persistence and exclusion from diner responses, synthetic receipt round-trip, authorization and idempotent simulated settlement. Those hosted checks covered the previous receiving-address deployment. The current payment-code deployment is source `75d277f8736afa9037519ef6539395e54aa667b9`, deployment `appgdep_6af45fa8047481c298b034729df0cde6`, environment revision 1; its Sites production build and native deployment result succeeded. Only Supabase credentials were configured in hosted secrets; NEAR AI and Intents keys remain local and unused by the app.
+- Hosted API checks passed for Supabase selection, receiving-address persistence and exclusion from diner responses, synthetic receipt round-trip, authorization and idempotent simulated settlement. Those hosted checks covered the previous receiving-address deployment. The current payment-code deployment is source `0210ff45d98e054df32bbfba4d6687609a2c574a`, deployment `appgdep_6af468c2067c81c287ce4099d2a398b7`, environment revision 1; its Sites production build and native deployment result succeeded. Only Supabase credentials were configured in hosted secrets; NEAR AI and Intents keys remain local and unused by the app.
 
 ## Next
 
-1. Publication completed after the user explicitly approved the publishing helper credential transport. Site source `75d277f8736afa9037519ef6539395e54aa667b9`, deployment `appgdep_6af45fa8047481c298b034729df0cde6`, environment revision 1. Both live routes remain disabled; publication does not establish wallet or settlement acceptance.
+1. Publication completed after the user explicitly approved the publishing helper credential transport. Site source `0210ff45d98e054df32bbfba4d6687609a2c574a`, deployment `appgdep_6af468c2067c81c287ce4099d2a398b7`, environment revision 1. Both live routes remain disabled; publication does not establish wallet or settlement acceptance.
 2. Run real VIZOR/Zodl URI + usable transparent-refund tests and a compatible external NEAR wallet signing test. near.com-created passkeys remain unsupported by this external-wallet connector.
 3. With an explicitly authorized small budget and user wallet approvals, verify actual confidential recipient credit, fees, partial/late deposits and refunds. No user-wallet signature or funded execution has happened.
 4. Configure hosted provider/cron secrets and a recurring reconciliation job, then activate only accepted routes. Both route switches remain false.

@@ -99,3 +99,8 @@ Reserve allocation and spending submission atomically before external calls; a t
 ## 2026-11-11 — Literal copy and task-first presentation
 
 User requested removal of redundant captions, corny phrases and common generated-interface patterns. Use the bill name and concrete actions instead of slogans. Keep amount and next action primary; reveal optional explanations and alternate payment handoffs on demand. Preserve consequential disclosures and demo labels. Retain the existing wordmark, restrained palette and single sans-serif instead of substituting another trend. Research and visual acceptance criteria are recorded in DESIGN.md.
+
+
+## 2026-11-11 — Centered wordmark
+
+User changed the main logo to plain lowercase splitdbill, centered in the header. This supersedes the earlier slash-separated wordmark styling.

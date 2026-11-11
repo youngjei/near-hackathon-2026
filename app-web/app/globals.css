@@ -86,21 +86,20 @@ strong {
   margin: auto;
   height: 96px;
   padding: 0;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
 }
 .wordmark {
+  grid-column: 2;
+  justify-self: center;
   font-size: 27px;
   font-weight: 600;
   letter-spacing: -1.6px;
 }
-.wordmark span {
-  color: var(--accent);
-  padding: 0 1px;
-  font-weight: 400;
-}
 .header-link {
+  grid-column: 3;
+  justify-self: end;
   font-size: 14px;
   color: var(--muted);
   padding: 12px 0;

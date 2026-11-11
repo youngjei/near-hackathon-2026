@@ -6,8 +6,8 @@ export function Shell({ children, notice = "Demo · No real payments" }: { child
   return (
     <>
       <header className="site-header">
-        <a className="wordmark" href="/" aria-label="split/d/bill home">
-          split<span>/</span>d<span>/</span>bill
+        <a className="wordmark" href="/" aria-label="splitdbill home">
+          splitdbill
         </a>
         {pathname !== "/" && (
           <a className="header-link" href="/">
