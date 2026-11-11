@@ -1,3 +1,5 @@
+> November 11 implementation update: durable live quote allocation, confidential NEP-413 signing through compatible external NEAR wallets, private status reconciliation and checkout are implemented behind disabled gates. Supabase migration 005 is applied. See [current compatibility](WALLET_COMPATIBILITY.md). Historical pending-implementation statements below describe earlier checkpoints; actual device/refund/funded acceptance remains outstanding.
+
 # Payment adapter and near.com connection
 
 Checked November 10, 2026. Implementation: `app-web/lib/providers/intents.ts`. This is a verified server integration component, not an enabled checkout. The hosted application still uses explicit payment simulations.

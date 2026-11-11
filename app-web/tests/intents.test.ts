@@ -50,6 +50,8 @@ test('expired quote can still be reconciled; success needs enough actually deliv
  expect(assessSettlement({...raw,swapDetails:{amountOut:'14999999'}},saved).state).toBe('review');
  expect(assessSettlement({...raw,swapDetails:{}},saved).state).toBe('review');
  expect(assessSettlement({...raw,swapDetails:{amountOut:'0'}},saved).state).toBe('review');
+ expect(assessSettlement({...raw,swapDetails:{amountOut:null}},saved).state).toBe('review');
+ expect(assessSettlement({...raw,status:'PENDING_DEPOSIT',swapDetails:{amountOut:null}},saved).state).toBe('pending');
  for(const status of ['PROCESSING','KNOWN_DEPOSIT_TX','INCOMPLETE_DEPOSIT','PENDING_DEPOSIT']) expect(assessSettlement({...raw,status},saved).state).toBe('pending');
  expect(assessSettlement({...raw,status:'REFUNDED'},saved).state).toBe('refunded');
  expect(assessSettlement({...raw,status:'SOMETHING_NEW'},saved).state).toBe('review');
@@ -83,4 +85,22 @@ test('status lookup preserves the deposit memo and never accepts a dry quote',as
  const {expected,response}=fixture();
  await expect(provider.status(validatePaymentQuote(response,expected,semanticsOnly))).rejects.toMatchObject({code:'invalid_quote'});
  expect(transport).toHaveBeenCalledTimes(1);
+});
+test('executable allocation uses the saved route and refuses unverified provider responses',async()=>{
+ const transport=vi.fn<typeof fetch>(async()=>Response.json({message:'not a quote'}));
+ const provider=intentsProvider('test-key',transport);
+ await expect(provider.allocate({...route,refundTo:'t1NYKoZGziMsyMvgK9K5b2qZGym3UQsw3Tz'})).rejects.toMatchObject({code:'invalid_quote'});
+ const body=JSON.parse(String(transport.mock.calls[0][1]?.body));
+ expect(body).toMatchObject({dry:false,amount:'15000000',recipient:route.recipient,recipientType:'CONFIDENTIAL_INTENTS',originAsset:ASSETS.zec});
+});
+test('status accepts omitted correlation and provider defaults but still binds route and amount',()=>{
+ const response=structuredClone(saved);
+ delete response.correlationId;
+ for(const key of ['quoteWaitingTimeMs','insured','appFees']) delete response.quoteRequest[key];
+ const status={status:'SUCCESS',updatedAt:new Date().toISOString(),quoteResponse:response,swapDetails:{amountOut:saved.quote.amountOut}};
+ expect(assessSettlement(status,saved).state).toBe('paid');
+ const altered=structuredClone(response);altered.quoteRequest.recipient='wrong';
+ expect(()=>assessSettlement({...status,quoteResponse:altered},saved)).toThrow();
+ altered.quoteRequest.recipient=response.quoteRequest.recipient;altered.quote.amountOut='1';
+ expect(()=>assessSettlement({...status,quoteResponse:altered},saved)).toThrow();
 });

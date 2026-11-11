@@ -784,3 +784,18 @@ input[aria-invalid="true"] { border-color: #963b2f; }
 .address-example { padding: 14px 16px; background: var(--tint); border-radius: 8px; font-size: 17px; }
 .dialog-actions { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
 .dialog-actions .button { flex: 1; min-width: 130px; }
+
+.live-attempt { border-top: 1px solid var(--line); padding: 24px 0; }
+.live-attempt > .field-hint { margin-top: 12px; }
+.payment-exact { font-size: 34px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; margin: 8px 0; letter-spacing: -1px; }
+.payment-exact span { font-size: 17px; letter-spacing: 0; }
+.payment-copy { margin-top: 24px; }
+.payment-copy .field { margin-bottom: 12px; }
+.payment-copy input { font-size: 14px; }
+.payment-copy-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.live-payment .qr { max-width: 100%; height: auto; }
+.confidential-wallet { margin: 20px 0; }
+.confidential-wallet .address-value { margin: 16px 0 0; }
+.confidential-review { margin: 24px 0; padding-top: 20px; border-top: 1px solid var(--line); }
+.confidential-review summary { cursor: pointer; color: var(--accent); font-size: 13px; padding: 12px 0; }
+.intent-message { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: 12px; color: var(--muted); max-height: 240px; overflow-y: auto; }

@@ -13,15 +13,15 @@ export function transition(current: Status, next: Status): Status {
   throw new Error("This payment cannot change to that state.");
 }
 export function shareStatus(
-  attempts: { status: string; expires_at: number }[],
+  attempts: { status: string; expires_at: number; mode?: string }[],
   now = Date.now(),
 ): Status | "unpaid" {
   if (attempts.some((a) => a.status === "paid")) return "paid";
-  if (attempts.some((a) => a.status === "pending" && a.expires_at > now))
+  if (attempts.some((a) => a.status === "pending" && (a.mode === "live" || a.expires_at > now)))
     return "pending";
   const latest = attempts[0];
   if (!latest) return "unpaid";
-  return latest.status === "pending" ? "expired" : (latest.status as Status);
+  return latest.status === "pending" && latest.mode !== "live" ? "expired" : (latest.status as Status);
 }
 // Never call this in demo mode: a demo has no fundable destination.
 export function zip321(address: string, zec: string) {

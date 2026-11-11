@@ -1,8 +1,8 @@
 # Current status
 
-Updated: November 10, 2026 (KST).
+Updated: November 11, 2026 (KST).
 
-Phase: Supabase persistence connected, native Next.js supported, and the private Site updated. Demo methods represent VIZOR/Zodl ZEC and confidential USDC but cannot move funds. Signed payment estimates now verify in the application adapter; organizer receiving-address entry and storage are implemented, while payer signing, OCR and live reconciliation remain pending. No submission or funded project wallet exists.
+Phase: executable payment backend and compatible external NEAR-wallet signing implemented, with rollout gates disabled. Supabase migrations 001–005 are applied. Real device/refund/funded acceptance, hosted payment credentials, reconciliation scheduling and OCR remain outstanding. The currently published Site is still the November 10 receiving-address version; the November 11 source update is awaiting publication. No submission or funded project wallet exists.
 
 Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site) — owner-only, ChatGPT sign-in required.
 
@@ -33,21 +33,23 @@ Delivery target: a real usable application with receipt extraction and verified 
 
 ## Latest verification
 
-- 38 Vitest checks pass, including quote tampering/expiry, settlement underpayment, provider error redaction, real PostgreSQL migration/transaction behavior and native proxy-origin security checks.
-- Ten desktop/mobile browser scenarios pass against native Next.js with the real Supabase project. The new receiving-address scenarios also pass against the D1 production build; the previous eight D1 scenarios passed after adapter extraction.
+- 78 Vitest checks pass, including quote tampering/expiry, settlement underpayment, provider error redaction, real PostgreSQL migration/transaction behavior and native proxy-origin security checks.
+- Twenty-six desktop/mobile scenarios pass: ten persisted demo journeys against native Next.js/Supabase and sixteen synthetic live-checkout scenarios. The new receiving-address scenarios also pass against the D1 production build; the previous eight D1 scenarios passed after adapter extraction.
 - Both production builds and TypeScript pass. Native Next.js output is isolated in `.next-native/` so it cannot overwrite Vinext route types.
-- Updated Next.js to 16.4.6 and React/RSC to 19.2.8, resolving the audit's critical Next advisory and RSC high advisory. Other audit findings remain (26: 16 moderate, 10 high, including tooling/Vinext/Zod); do not describe this as a completed dependency security review.
+- Next.js is 16.4.6; React/ReactDOM/RSC are patched to 19.2.9, resolving the newly listed critical RSC advisory as well as earlier patched issues. Other audit findings remain (26: 16 moderate, 10 high, including tooling/Vinext/Zod); do not describe this as a completed dependency security review.
 - Hosted API checks passed for Supabase selection, receiving-address persistence and exclusion from diner responses, synthetic receipt round-trip, authorization and idempotent simulated settlement. Deployed Site source `f85efcad807fb136bd8533a4c6457c802dcfe803`, deployment `appgdep_6af2c386b0c081c28b1ca85bfb03d66f`, environment revision 1. Only Supabase credentials were configured in hosted secrets; NEAR AI and Intents keys remain local and unused by the app.
 
 ## Next
 
-New evidence: the user supplied their internal near.com address. Four signed dry quotes to its normalized account passed for both payer methods and both NEAR-/Solana-origin USDC outputs, using CONFIDENTIAL_INTENTS. The user selected direct internal receiving, superseding the earlier Solana deposit plan; see PAYMENT_ADAPTER.md. No funded transfer or balance access. Personal identifier omitted from Git.
+1. Publish the reviewed November 11 update. Automatic approval review rejected the Sites source helper's credential transport (it flagged the raw token inside the tool-call payload despite hidden terminal input). No workaround attempted; the current private Site remains on the previous version.
+2. Run real VIZOR/Zodl URI + usable transparent-refund tests and a compatible external NEAR wallet signing test. near.com-created passkeys remain unsupported by this external-wallet connector.
+3. With an explicitly authorized small budget and user wallet approvals, verify actual confidential recipient credit, fees, partial/late deposits and refunds. No user-wallet signature or funded execution has happened.
+4. Configure hosted provider/cron secrets and a recurring reconciliation job, then activate only accepted routes. Both route switches remain false.
+5. Recheck NEAR AI availability before image-model verification and receipt recognition.
 
-1. Organizer entry, help popup, confirmation and immutable storage of the internal nearcom-prefixed address are implemented. Migration 004 is applied to Supabase. Next bind executable quotes to that saved normalized account using CONFIDENTIAL_INTENTS; no organizer login or ownership proof. Verify actual delivery independently of dry-quote acceptance.
-2. Dinner-sized dry quotes pass. Verify transparent t1/t3 refund access and ZIP-321 handoff in the selected VIZOR/Zodl releases; published bridge support does not include shielded refund addresses.
-3. Validate a different user paying confidential USDC → organizer confidential USDC; finalize receipt → share → payment-attempt records and private checkout access.
-4. Validate an image model with the configured NEAR AI key; wire receipt extraction after validation. The Supabase/native Next.js adapter is complete; configure Vercel only if switching hosting.
-5. Implement real settlement reconciliation and validate funded execution only after a small explicit budget is authorized.
+The new backend binds every quote to the immutable recipient and share, verifies provider signatures, persists private intent payloads and reserves each external call atomically. It hides funding instructions after any observed deposit, continues late settlement checks and blocks replacement quotes until provider finality/cancellation is established. Unknown allocation/submission is retained for operator review.
+
+Unfunded live evidence: ZEC quote HTTP 201, validated partner PENDING_DEPOSIT HTTP 200, anonymous status 404; confidential quote and NEP-413 generation HTTP 201. No funds moved. Status normalization fixes cover omitted signed provider defaults and null pending output.
 
 ## NEAR AI availability — November 10
 

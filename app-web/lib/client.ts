@@ -48,6 +48,15 @@ export type AttemptView = {
   expiresAt: number;
   createdAt: number;
   mode: string;
+  payment?: {
+    amount: string;
+    symbol: "ZEC" | "USDC";
+    address?: string;
+    uri?: string;
+    walletUrl?: string;
+    statusMessage?: string;
+    state?: string;
+  };
 };
 export type Dashboard = {
   bill: BillView;
@@ -59,4 +68,19 @@ export type Checkout = {
   bill: BillView;
   share: ShareView;
   attempts: AttemptView[];
+  live?: {
+    enabled: boolean;
+    reason: string;
+    methods: { zcash: boolean; confidential: boolean };
+  };
+};
+
+export type ConfidentialIntentView = {
+  standard: "nep413";
+  payload: { message: string; nonce: string; recipient: "intents.far" };
+};
+export type PreparedConfidentialPayment = {
+  intent: ConfidentialIntentView;
+  signer: string;
+  state: string;
 };

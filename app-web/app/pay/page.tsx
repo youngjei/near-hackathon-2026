@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Shell, ErrorMessage, Loading } from "@/components/shell";
+import { LivePayment } from "@/components/live-payment";
 import { Receipt } from "@/components/receipt";
 import { api, redeem, Checkout } from "@/lib/client";
 import { formatAmount } from "@/lib/money";
@@ -88,7 +89,7 @@ export default function Pay() {
     ? Math.max(0, Math.ceil((active.expiresAt - now) / 60000))
     : 0;
   return (
-    <Shell>
+    <Shell notice={data.bill.mode === "live" ? "Payment checkout · Review requests in your wallet" : undefined}>
       <div className="flow">
         <div className="intro compact">
           <h1>{state === "paid" ? "Your share is settled." : "Your share."}</h1>
@@ -104,7 +105,9 @@ export default function Pay() {
           <p className="muted">An equal share for {data.bill.diners} people</p>
         </div>
         <Receipt bill={data.bill} kind="shares" id={data.share.id} />
-        {state === "paid" ? (
+        {data.bill.mode === "live" ? (
+          <LivePayment data={data} onChange={setData} />
+        ) : state === "paid" ? (
           <div className="payment-result">
             <span className="check-mark" aria-hidden="true">
               ✓
@@ -209,7 +212,7 @@ export default function Pay() {
             </button>
           </>
         )}
-        {data.attempts.length > 0 && (
+        {data.bill.mode !== "live" && data.attempts.length > 0 && (
           <details className="demo-controls">
             <summary>Test another outcome</summary>
             <p className="field-hint">

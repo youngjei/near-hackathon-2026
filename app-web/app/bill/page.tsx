@@ -58,6 +58,8 @@ export default function Bill() {
         </div>
       </Shell>
     );
+  const isLive = data.bill.mode === "live";
+  const statusLabels = isLive ? {...labels, paid: "Paid", refunded: "Refunded"} : labels;
   const total = data.shares.reduce((v, s) => v + BigInt(s.amountUnits), 0n);
   const received = data.shares
     .filter((s) => s.status === "paid")
@@ -65,7 +67,7 @@ export default function Bill() {
   const paid = data.shares.filter((s) => s.status === "paid").length;
   const share = data.shares.find((s) => s.id === selected);
   return (
-    <Shell>
+    <Shell notice={isLive ? "Payment tracking" : undefined}>
       <div className="flow">
         <div className="intro compact">
           <h1>
@@ -78,7 +80,7 @@ export default function Bill() {
           </p>
         </div>
         <div className="amount-hero">
-          <span className="muted">Received in demo</span>
+          <span className="muted">{isLive ? "Received" : "Received in demo"}</span>
           <div className="big-amount">
             {formatAmount(received.toString())}
             <span>USDC</span>
@@ -118,7 +120,7 @@ export default function Bill() {
                 <span
                   className={s.status === "paid" ? "status paid" : "status"}
                 >
-                  {labels[s.status] || s.status}
+                  {statusLabels[s.status] || s.status}
                 </span>
               </div>
               <div className="share-end">
@@ -163,7 +165,7 @@ export default function Bill() {
           <section className="receiving-summary" aria-label="Receiving address">
             <h2>Your receiving address</h2>
             <p className="address-value">{data.receivingAddress}</p>
-            <p className="field-hint">Saved for this bill. Live payments are not enabled yet.</p>
+            <p className="field-hint">{isLive ? "Saved for this bill. Payments are checked with the provider." : "Saved for this bill. Live payments are not enabled yet."}</p>
           </section>
         )}
         <Receipt bill={data.bill} kind="bills" id={data.bill.id} />

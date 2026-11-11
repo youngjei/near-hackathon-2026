@@ -3,6 +3,7 @@ import { createHandler } from "./api";
 import { d1Store } from "./d1-store";
 import { supabaseStore } from "./supabase-store";
 import { json } from "./security";
+import { paymentOptions } from "./payment-runtime";
 
 export async function handle(request: Request) {
   const settings = env as unknown as Record<string, string | undefined>;
@@ -13,6 +14,7 @@ export async function handle(request: Request) {
     return createHandler(
       supabaseStore(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_ROLE_KEY),
       settings.CRON_SECRET,
+      paymentOptions(settings),
     )(request);
   }
   // A missing/misconfigured selected backend must never silently write elsewhere.
@@ -21,5 +23,6 @@ export async function handle(request: Request) {
   return createHandler(
     d1Store(env.DB, env.BUCKET),
     settings.CRON_SECRET,
+    paymentOptions(settings),
   )(request);
 }

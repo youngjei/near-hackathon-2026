@@ -19,6 +19,7 @@ export const moneyInput = z
   );
 export const billInput = z
   .object({
+    mode: z.enum(["demo", "live"]).default("demo"),
     merchant: z.string().trim().min(1, "Add a name for this bill.").max(80),
     currency: z.enum(currencies),
     total: moneyInput,

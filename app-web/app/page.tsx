@@ -9,6 +9,16 @@ import { ReceivingHelp } from "@/components/receiving-help";
 type FX = { rate: string; date: string; source: string; fixture: boolean };
 export default function CreateBill() {
   const [hydrated, setHydrated] = useState(false);
+  const [liveEnabled, setLiveEnabled] = useState(false);
+  const [sampleMode, setSampleMode] = useState(false);
+  const mode = liveEnabled && !sampleMode ? "live" : "demo";
+  useEffect(() => {
+    let cancelled = false;
+    api<{live: {enabled: boolean}}>("config").then(config => {
+      if (!cancelled) setLiveEnabled(config.live.enabled);
+    }).catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
   useEffect(() => setHydrated(true), []);
   const [step, setStep] = useState<"start" | "details" | "review">("start");
   const [merchant, setMerchant] = useState(""),
@@ -28,6 +38,8 @@ export default function CreateBill() {
   const input = useRef<HTMLInputElement>(null),
     requestKey = useRef("");
   function sample() {
+    setSampleMode(true);
+    requestKey.current = "";
     setMerchant("Dinner in Dubai");
     setTotal("200.00");
     setExtra("0");
@@ -40,6 +52,8 @@ export default function CreateBill() {
     setError("");
   }
   async function upload(file: File) {
+    setSampleMode(false);
+    requestKey.current = "";
     setError("");
     if (file.size > 5 * 1024 * 1024) {
       setError("Choose an image smaller than 5 MB.");
@@ -97,7 +111,7 @@ export default function CreateBill() {
         approvedDate: "2026-11-10",
       });
       await api("session", {});
-      const rate = await api<FX>("fx?currency=" + currency);
+      const rate = await api<FX>("fx?currency=" + currency + "&mode=" + mode);
       allocation(total, extra, rate.rate, diners);
       setFx(rate);
       setStep("review");
@@ -118,6 +132,7 @@ export default function CreateBill() {
     setError("");
     try {
       const d = await api<Dashboard>("bills", {
+        mode,
         merchant,
         total,
         extra,
@@ -139,7 +154,7 @@ export default function CreateBill() {
   const split =
     step === "review" && fx ? allocation(total, extra, fx.rate, diners) : null;
   return (
-    <Shell>
+    <Shell notice={mode === "live" ? "Payment requests · Review before sending" : undefined}>
       <div className="flow">
         {step === "start" ? (
           <>
@@ -197,6 +212,8 @@ export default function CreateBill() {
                 className="text-button"
                 disabled={busy || !hydrated}
                 onClick={() => {
+                  setSampleMode(false);
+                  requestKey.current = "";
                   setStep("details");
                   setNote("");
                 }}
@@ -407,18 +424,15 @@ export default function CreateBill() {
               <p className="field-hint">Check it before creating requests. It stays fixed for this bill.</p>
             </section>
             <div className="receiving-note">
-              <strong>Try the complete flow</strong>
-              <p>
-                Live receiving isn’t connected. These links demonstrate the flow
-                and cannot accept money.
-              </p>
+              <strong>{mode === "live" ? "Ready to request payment" : "Try the complete flow"}</strong>
+              <p>{mode === "live" ? "Friends review a payment quote and approve in their own wallet. You receive USDC in your confidential balance." : "Live receiving isn’t connected. These links demonstrate the flow and cannot accept money."}</p>
             </div>
             <button
               className="button primary full"
               disabled={busy || !hydrated}
               onClick={create}
             >
-              {busy ? "Creating…" : `Create ${diners - 1} demo requests`}
+              {busy ? "Creating…" : `Create ${diners - 1} ${mode === "demo" ? "demo " : ""}requests`}
               <span aria-hidden="true">→</span>
             </button>
           </>

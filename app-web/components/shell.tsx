@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-export function Shell({ children }: { children: React.ReactNode }) {
+export function Shell({ children, notice = "Demo · No real payments" }: { children: React.ReactNode; notice?: string }) {
   const pathname = usePathname();
   return (
     <>
@@ -15,7 +15,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </a>
         )}
       </header>
-      <div className="demo-notice">Demo · No real payments</div>
+      <div className="demo-notice">{notice}</div>
       <main id="main">{children}</main>
     </>
   );

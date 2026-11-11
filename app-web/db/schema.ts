@@ -5,6 +5,7 @@ import {
   uniqueIndex,
   index,
 } from "drizzle-orm/sqlite-core";
+import { sql } from "drizzle-orm";
 export const bills = sqliteTable(
   "bills",
   {
@@ -74,3 +75,23 @@ export const limits = sqliteTable("rate_limits", {
   count: integer("count").notNull(),
   expiresAt: integer("expires_at").notNull(),
 });
+// Server-only provider metadata. Access must always pass capability checks in the API.
+export const liveAttempts = sqliteTable("live_payment_attempts", {
+  attemptId: text("attempt_id").primaryKey().references(() => attempts.id),
+  shareId: text("share_id").notNull().references(() => shares.id),
+  routeFingerprint: text("route_fingerprint").notNull(),
+  allocationState: text("allocation_state").notNull(),
+  quoteJson: text("quote_json"),
+  settlementUpdatedAt: integer("settlement_updated_at"),
+  providerStatus: text("provider_status"),
+  depositObserved: integer("deposit_observed", {mode:"boolean"}).notNull().default(false),
+  settlementState: text("settlement_state"),
+  signerAccount: text("signer_account"),
+  signedIntentJson: text("signed_intent_json"),
+  submissionState: text("submission_state"),
+  submissionHash: text("submission_hash"),
+  lastCheckedAt: integer("last_checked_at").notNull().default(0),
+}, (t) => [
+  uniqueIndex("live_active_share").on(t.shareId).where(sql`${t.allocationState} IN ('allocating','ready','unknown','review')`),
+  index("live_reconcile_order").on(t.lastCheckedAt),
+]);

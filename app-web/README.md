@@ -1,6 +1,6 @@
 # split/d/bill web beta
 
-A persisted receipt-to-reimbursement application with **Supabase PostgreSQL and private Storage**, plus an isolated D1/R2 development mode. Payment execution remains simulated. No live payment can be created, no wallet is connected, and no real funds move. All simulation controls say so explicitly.
+A persisted receipt-to-reimbursement application with **Supabase PostgreSQL and private Storage**, plus an isolated D1/R2 development mode. The default configuration remains an explicitly labelled simulation. Real Zcash quotes, durable reconciliation and existing-confidential-balance NEP-413 wallet signing are implemented behind disabled, per-route gates. No user wallet has been connected and no funded acceptance test has run.
 
 ## Run locally
 
@@ -13,6 +13,7 @@ npm ci
 npm run build
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_organic_jimmy_woo.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_complete_bruce_banner.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_durable_live_payments.sql
 npm run dev -- --port 5173
 ```
 
@@ -22,7 +23,7 @@ The npm legacy peer resolver is pinned in `.npmrc` because the host npm resolver
 
 ## Run with Supabase and native Next.js
 
-The configured Supabase project has all four migrations applied. For a new project, apply `supabase/migrations/*.sql` in filename order. Do not rerun the initial migration on an existing database. Only the server role has table/function access; browser roles cannot call the RPCs.
+The configured Supabase project has all five migrations applied. For a new project, apply `supabase/migrations/*.sql` in filename order. Do not rerun the initial migration on an existing database. Only the server role has table/function access; browser roles cannot call the RPCs.
 
 Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in ignored `.env.local`, then:
 
@@ -71,15 +72,15 @@ The owner-private Sites deployment is for the owner to review. Friends cannot us
 | D1 / R2 | Implemented for the Sites preview and local emulator |
 | Fiat reference rates | Frankfurter adapter with dated, labelled fixture fallback in demo |
 | NEAR AI | Server adapter implemented; no model/credential verified; upload route deliberately uses manual entry |
-| Confidential Intents | Signed quote validation and settlement assessment implemented; six live dry estimates verified; checkout remains disabled |
-| ZIP-321 | URI validation helper tested; no fundable request generated in demo |
-| Wallet signing | Not implemented; requires actual supported signer and partner access |
+| Confidential Intents | Quote allocation, strict signatures, exact route binding and status reconciliation implemented; unfunded ZEC status and confidential intent generation verified; execution gates remain disabled |
+| ZIP-321 | Exact-amount payment QR/open/copy from verified executable quotes; VIZOR/Zodl device/refund tests pending; no fundable request in demo |
+| Wallet signing | NEAR Connect 0.12.0 + NEP-413 for a compatible external NEAR wallet with an existing confidential balance; near.com-created passkey bridge unavailable |
 | Supabase | Server adapter, atomic bill/attempt operations, rate limits and private receipt storage implemented |
-| Cron | Protected demo-expiry endpoint exists; no recurring job or live provider reconciliation is configured |
+| Cron | Protected provider reconciliation endpoint implemented; no recurring schedule configured |
 
-`POST /api/reconcile` requires a server-configured `CRON_SECRET` bearer token. It only expires pending demo attempts and cleans old rate-limit counters. It never checks or marks a live payment paid. Frontend polling is a view refresh, not a substitute for live reconciliation.
+`POST /api/reconcile` requires a server-configured `CRON_SECRET` bearer token. It expires demo attempts, cleans rate counters and reconciles stored live attempts through the provider, up to 20 per call with concurrency 3. It remains available for settlement when new-payment gates are disabled. Live checkout additionally polls its own capability-scoped reconciliation every 15 seconds while visible. Configure a server scheduler before live rollout; no schedule is installed.
 
-See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Partner dry-quote access is verified. Organizer entry now requires the full internal `nearcom:` address, with format validation, finding instructions and confirmation before saving. The normalized account is immutable on the bill and omitted from diner responses. No organizer wallet login or ownership proof is required. The planned execution route strips the display prefix and uses `CONFIDENTIAL_INTENTS`; real dry quotes to the supplied account passed. Actual payment execution is still disabled. Each payer spending from a confidential balance also needs their own wallet signature. Refund/device checks, funded settlement authorization and durable provider reconciliation remain pending. Credentials alone do not enable these paths.
+See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Partner dry-quote access is verified. Organizer entry now requires the full internal `nearcom:` address, with format validation, finding instructions and confirmation before saving. The normalized account is immutable on the bill and omitted from diner responses. No organizer wallet login or ownership proof is required. The planned execution route strips the display prefix and uses `CONFIDENTIAL_INTENTS`; real dry quotes to the supplied account passed. Actual payment execution is still disabled by configuration. Existing confidential payers can connect a supported external NEAR wallet, review the stored exact intent and explicitly sign it; near.com-created passkey accounts are not supported by that connector. Real device, refund and funded settlement checks remain pending. Credentials alone do not enable these paths.
 
 See the [payment adapter and near.com handoff](../docs/technical/PAYMENT_ADAPTER.md) for verified behavior and remaining integration work. `npm run check:intents` explicitly runs six unfunded, signed route estimates using the local partner key; it creates no payment address and saves sanitized evidence. It is separate from default tests and the hosted application.
 
@@ -102,3 +103,17 @@ Vitest includes an embedded PostgreSQL engine that executes the actual migration
 `.openai/hosting.json` owns the existing Site ID. Never create another Site for this app. Use the Sites skill source workflow to build, synchronize the exact source and publish privately. D1 migrations are included in the artifact; local data is not. Keep `.env*`, `.dev.vars*`, `.wrangler`, `.sites-runtime`, test traces and credentials out of Git and deployment archives.
 
 The application is kept in the original GitHub project. Sites publication uses a sanitized copy of this directory so the hosting source repository does not replace the project's Git remote.
+
+## Payment integration and activation
+
+See [wallet compatibility](../docs/technical/WALLET_COMPATIBILITY.md) for source evidence and remaining real-wallet checks. Public HTTP routes use existing private capabilities and same-origin POST checks:
+
+- `POST /api/bills` accepts explicit `mode: live` only when at least one route is enabled. Omitted mode stays demo; sample bills always stay demo. Live FX never falls back to fixture rates.
+- `POST /api/shares/:id/attempts` accepts method, requestKey and refundAddress; amounts, token and recipient come from the saved bill/share.
+- `POST /api/shares/:id/prepare` accepts attemptId and signer; returns the exact server-stored NEP-413 review payload.
+- `POST /api/shares/:id/submit` accepts attemptId plus accountId/publicKey/signature only. It cannot accept an altered intent, amount or recipient. A wallet signature spends funds; no signing happens automatically.
+- `POST /api/shares/:id/refresh` reconciles only that authorized share. `POST /api/reconcile` requires CRON_SECRET and reconciles globally.
+
+Enable neither route merely because credentials exist. The default-off switches in `.env.example` require global activation, a per-method switch and that method's acceptance switch. Set acceptance only after explicitly authorized wallet-device, refund, late-payment and actual confidential-credit checks. Hosted secrets and scheduler configuration are separate from local environment values.
+
+Executable quotes and generated signer payloads are private server records. Atomic reservations prevent duplicate quote allocation and duplicate intent submission. Timeout/unknown outcomes retain their lock. Once an executable quote exists, replacement quotes for that share remain blocked even after failure/refund, because provider finality/cancellation has not been verified; organizer review is required. Same-key network retries reuse the existing attempt, and cancelling a wallet prompt before submission does not spend funds. Old requests continue reconciliation; once any deposit is detected, payment instructions cannot reappear following a status regression.

@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-11-11T05:43:51Z",
+  "ephemeralOwnedAccounts": true,
+  "fundsMoved": false,
+  "signatureRequested": false,
+  "route": "ZEC to confidential USDC",
+  "quoteHttpStatus": 201,
+  "quoteSignatureVerified": true,
+  "executableDepositAllocated": true,
+  "partnerStatusHttpStatus": 200,
+  "partnerStatusValidated": true,
+  "partnerStatus": "PENDING_DEPOSIT",
+  "anonymousStatusHttpStatus": 404,
+  "anonymousResponseContainedRecipientOrRefund": false,
+  "notes": "Status omitted a signed provider default and returned null amountOut; the adapter restores only the verified saved default and accepts null for pending, while null success remains review. No account identifiers or deposit addresses retained."
+}

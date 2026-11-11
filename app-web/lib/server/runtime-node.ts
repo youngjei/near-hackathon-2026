@@ -1,6 +1,7 @@
 import { createHandler } from "./api";
 import { supabaseStore } from "./supabase-store";
 import { json } from "./security";
+import { paymentOptions } from "./payment-runtime";
 
 // Native Next.js entry point; never imported by browser components.
 export async function handle(request: Request) {
@@ -23,5 +24,6 @@ export async function handle(request: Request) {
   return createHandler(
     supabaseStore(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
     CRON_SECRET,
+    paymentOptions(process.env),
   )(canonicalRequest);
 }

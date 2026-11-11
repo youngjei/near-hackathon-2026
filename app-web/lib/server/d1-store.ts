@@ -1,5 +1,6 @@
 import type { Store, Bill, Share, Attempt, Receipt } from "./store";
 import { HttpError } from "./security";
+import { d1LiveStore } from "./d1-live-store";
 
 export function d1Store(db: D1Database, bucket?: R2Bucket): Store {
   const stmt = (sql: string, values: unknown[] = []) =>
@@ -10,6 +11,7 @@ export function d1Store(db: D1Database, bucket?: R2Bucket): Store {
     (await stmt(sql, values).all<T>()).results;
   return {
     kind: "d1",
+    ...d1LiveStore(db),
     bill: (id) => one<Bill>("SELECT * FROM bills WHERE id=?", id),
     billByRequest: (owner, key) =>
       one<Bill>(
@@ -70,6 +72,7 @@ export function d1Store(db: D1Database, bucket?: R2Bucket): Store {
         b.create_key,
       );
       if (!saved) throw new Error("Save failed");
+      if (saved.mode !== b.mode) throw new HttpError(409, "This bill already exists in a different payment mode. Start a new bill.");
       if (saved.recipient_account !== b.recipient_account) throw new HttpError(409, "This bill already has a receiving address. Start a new bill to use a different one.");
       return saved;
     },

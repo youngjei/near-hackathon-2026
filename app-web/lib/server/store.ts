@@ -1,4 +1,5 @@
 import type { Status } from "../payments";
+import type { VerifiedQuote, Settlement, ConfidentialIntent } from "../providers/intents";
 
 export type Bill = {
   id: string;
@@ -42,6 +43,23 @@ export type Receipt = {
   mime: string;
   created_at: number;
 };
+// Never serialize this record to a browser. The quote contains private routing data.
+export type LiveAttempt = Attempt & {
+  route_fingerprint: string;
+  allocation_state: "allocating" | "ready" | "unknown" | "review" | "terminal";
+  quote: VerifiedQuote | null;
+  settlement_updated_at: number | null;
+  last_checked_at: number;
+  provider_status: string | null;
+  deposit_observed: boolean;
+  settlement_state: string | null;
+  signer_account: string | null;
+  signed_intent: ConfidentialIntent | null;
+  submission_state: "prepared" | "submitting" | "accepted" | "unknown" | null;
+  submission_hash: string | null;
+};
+export type LiveReservation = { attempt: Attempt; route_fingerprint: string };
+export type LiveStore = Pick<Store, "reserveLiveAttempt" | "liveAttempt" | "saveLiveQuote" | "markLiveAllocationUnknown" | "reconcilableLiveAttempts" | "recordLiveSettlement" | "prepareConfidentialIntent" | "reserveConfidentialSubmit" | "finishConfidentialSubmit">;
 // Implementations preserve the transaction boundaries in these domain operations.
 // The API alone authorizes capabilities and returns restricted views to browsers.
 export interface Store {
@@ -64,4 +82,13 @@ export interface Store {
   ): Promise<void>;
   incrementLimit(key: string, expires: number): Promise<number>;
   expireDemo(now: number): Promise<void>;
+  reserveLiveAttempt(input: LiveReservation): Promise<{ attempt: LiveAttempt; acquired: boolean }>;
+  liveAttempt(id: string): Promise<LiveAttempt | null>;
+  saveLiveQuote(id: string, quote: VerifiedQuote): Promise<void>;
+  markLiveAllocationUnknown(id: string): Promise<void>;
+  reconcilableLiveAttempts(limit: number, shareId?: string): Promise<LiveAttempt[]>;
+  recordLiveSettlement(id: string, settlement: Settlement | null, checkedAt: number): Promise<void>;
+  prepareConfidentialIntent(id: string, signer: string, intent: ConfidentialIntent): Promise<LiveAttempt>;
+  reserveConfidentialSubmit(id: string, now: number): Promise<{ attempt: LiveAttempt; acquired: boolean }>;
+  finishConfidentialSubmit(id: string, state: "accepted" | "unknown", intentHash?: string): Promise<void>;
 }

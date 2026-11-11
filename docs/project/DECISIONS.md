@@ -87,3 +87,10 @@ For future decisions, record the date, decision, reason, alternatives that mater
 ## 2026-11-10 — Implemented direct internal receiving
 
 The user selected the simpler internal near.com address route, superseding the manual Solana deposit plan. Require the full nearcom: prefix at entry, validate format, normalize only for storage/provider use, and show the address for confirmation. Add an accessible instructions popup. Save the recipient immutably at bill creation; a changed recipient requires a new bill. Only organizer responses contain it. Do not claim ownership validation or live settlement. Migration 004 preserves old rows as null and retains server-only access.
+
+
+## 2026-11-11 — Durable execution and restricted wallet signing
+
+Implement real quote allocation, private storage, exact-route validation, settlement reconciliation and NEP-413 signing through compatible external NEAR wallets. Do not imply that this controls a near.com-created passkey account. Keep each method gated until its real wallet/refund/funded acceptance is complete. Use NEAR Connect 0.12.0, pinned.
+
+Reserve allocation and spending submission atomically before external calls; a timeout retains an unknown lock. Do not issue replacement fundable quotes after failure/refund without verified provider cancellation/finality: the old instruction may still receive a late payment. Same-key requests remain idempotent. Once a deposit is observed, never show funding instructions again merely because status regresses. Preserve existing demo flows and immutable receiving binding.
