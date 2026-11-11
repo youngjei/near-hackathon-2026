@@ -16,11 +16,15 @@ test("live gates keep payment requests and simulation separate", async ({ page }
   await page.goto("/pay?id=share-test");
   await expect(page.getByText("Live payments await funded verification.")).toBeVisible();
   await expect(page.getByRole("button", { name: "Get payment quote" })).toBeDisabled();
+  const refundExplanation = page.getByText("Copy a transparent receive address from your Zcash wallet, starting with t1 or t3. Confirm your wallet can receive at it. Unified and shielded addresses are not supported for refunds.", { exact: true });
+  await expect(refundExplanation).toBeHidden();
+  await page.getByText("Which address should I use?", { exact: true }).click();
+  await expect(refundExplanation).toBeVisible();
   await expect(page.getByText("Demo · No real payments")).toHaveCount(0);
   await expect(page.getByText("Simulate successful payment")).toHaveCount(0);
   await expect(page.locator('a[href^="zcash:"]')).toHaveCount(0);
   await page.getByRole("radio", { name: /Confidential balance/ }).check();
-  await expect(page.getByText(/Confidential USDC needs a verified wallet authorization flow/)).toBeVisible();
+  await expect(page.getByText("Confidential USDC is not available yet.")).toBeVisible();
 });
 
 test("allocated instructions survive gate closure, expire, and retain late-payment history", async ({ page }) => {
@@ -33,19 +37,26 @@ test("allocated instructions survive gate closure, expire, and retain late-payme
   await page.goto("/pay?id=share-test");
   await expect(page.getByText("0.01234567", { exact: false }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: "Open Zcash wallet" })).toHaveAttribute("href", syntheticUri);
+  await expect(page.getByRole("img", { name: "Zcash payment request with the exact amount" })).toBeHidden();
+  const openWallet = await page.getByRole("link", { name: "Open Zcash wallet" }).boundingBox();
+  expect(openWallet!.y + openWallet!.height).toBeLessThan(page.viewportSize()!.height);
+  await page.getByText("Scan with another device", { exact: true }).click();
   await expect(page.getByRole("img", { name: "Zcash payment request with the exact amount" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Copy exact amount", includeHidden: true })).toBeHidden();
+  await page.getByText("Copy payment details", { exact: true }).click();
+  await expect(page.getByLabel("Payment address", { exact: true })).toHaveValue("synthetic-test-address");
   await expect(page.getByRole("button", { name: "Copy exact amount" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Simulate successful payment" })).toHaveCount(0);
   data.attempts[0].expiresAt = Date.now() - 1;
   await page.getByRole("button", { name: "Refresh payment status" }).click();
-  await expect(page.getByRole("heading", { name: "This quote has expired" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Quote expired" })).toBeVisible();
   await expect(page.locator('a[href^="zcash:"]')).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Create a new quote" })).toHaveCount(0);
   await page.getByText("Payment request history (1)").click();
   await expect(page.getByText("Request 1 · Zcash · pending")).toBeVisible();
   data = { ...data, share: { ...data.share, status: "paid" }, attempts: [{ ...data.attempts[0], status: "paid" }] };
   await page.getByRole("button", { name: "Refresh payment status" }).click();
-  await expect(page.getByRole("heading", { name: "Payment received" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Payment complete" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
@@ -62,9 +73,9 @@ test("request creation keeps exact request fields and refresh errors preserve hi
   });
   await page.route("**/api/shares/share-test/refresh", (route) => route.fulfill({ status: 503, json: { error: "Provider unavailable. Try refreshing again." } }));
   await page.goto("/pay?id=share-test");
-  await page.getByLabel("Your Zcash refund address").fill("synthetic-refund-address");
+  await page.getByLabel("Refund address").fill("synthetic-refund-address");
   await page.getByRole("button", { name: "Get payment quote" }).click();
-  await expect(page.getByRole("heading", { name: "Checking your payment request" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Checking payment" })).toBeVisible();
   expect(submitted?.method).toBe("zcash");
   expect(submitted?.refundAddress).toBe("synthetic-refund-address");
   expect(submitted?.requestKey).toMatch(/^[a-f0-9-]{36}$/);
@@ -87,11 +98,11 @@ test("interrupted quote creation retries the same request rather than duplicatin
     await route.fulfill({ json: data });
   });
   await page.goto("/pay?id=share-test");
-  await page.getByLabel("Your Zcash refund address").fill("synthetic-refund-address");
+  await page.getByLabel("Refund address").fill("synthetic-refund-address");
   await page.getByRole("button", { name: "Get payment quote" }).click();
   await expect(page.getByText("Request interrupted. Retry to check the same payment request.")).toBeVisible();
   await page.getByRole("button", { name: "Retry payment request" }).click();
-  await expect(page.getByRole("heading", { name: "Checking your payment request" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Checking payment" })).toBeVisible();
   expect(keys).toHaveLength(2);
   expect(keys[1]).toBe(keys[0]);
   await expect(page.getByText("Payment request history (1)")).toBeVisible();
@@ -113,7 +124,7 @@ test("processing and incomplete payments never offer another send or quote", asy
   data.attempts[0].payment!.statusMessage = "The deposit is insufficient.";
   await page.getByRole("button", { name: "Refresh payment status" }).click();
   await expect(page.getByRole("region", { name: "Current payment request" }).getByText("The deposit is insufficient.")).toBeVisible();
-  await expect(page.getByText(/do not top up this request/)).toBeVisible();
+  await expect(page.getByText(/do not top it up/)).toBeVisible();
   await expect(page.locator('a[href^="zcash:"]')).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Create a new quote" })).toHaveCount(0);
 });
@@ -129,8 +140,8 @@ test("confidential wallet connection and spending review require separate user a
   await page.getByRole("radio", { name: /Confidential balance/ }).check();
   await expect(page.getByRole("button", { name: "Connect NEAR wallet" })).toBeEnabled();
   await expect(page.getByRole("button", { name: "Get payment quote" })).toBeDisabled();
-  await expect(page.getByText(/near.com-created passkey accounts cannot sign here/)).toBeVisible();
-  await expect(page.getByText(/No balance is read or transferred on connection/)).toBeVisible();
+  await expect(page.getByText(/near.com passkey accounts are not supported/)).toBeVisible();
+  await expect(page.getByText(/^Connected account:/)).toHaveCount(0);
   expect(requests).toEqual([]);
   // A server-provided ready quote still cannot sign itself, including on reload.
   data.share.status = "pending";
@@ -150,7 +161,7 @@ for (const status of ["failed", "refunded"] as const) {
     data.attempts = [{ id: "closed-test", method: "confidential", mode: "live", status, createdAt: Date.now(), expiresAt: Date.now() + 60_000, payment: { state: status, amount: "10.000001", symbol: "USDC", statusMessage: "The prior request is closed." } }];
     await page.route("**/api/shares/share-test", (route) => route.fulfill({ json: data }));
     await page.goto("/pay?id=share-test");
-    await expect(page.getByText("This request is closed. Ask the organizer to review the previous payment before arranging another request.")).toBeVisible();
+    await expect(page.getByText("Ask the organizer to review this payment before paying again.")).toBeVisible();
     await expect(page.getByRole("button", { name: "Create a new quote" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Get payment quote" })).toHaveCount(0);
     await expect(page.getByRole("button", { name: "Review USDC payment" })).toHaveCount(0);

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-export function Shell({ children, notice = "Demo · No real payments" }: { children: React.ReactNode; notice?: string }) {
+export function Shell({ children, notice = "Demo · No real payments" }: { children: React.ReactNode; notice?: string | null }) {
   const pathname = usePathname();
   return (
     <>
@@ -11,11 +11,11 @@ export function Shell({ children, notice = "Demo · No real payments" }: { child
         </a>
         {pathname !== "/" && (
           <a className="header-link" href="/">
-            New bill <span aria-hidden="true">↗</span>
+            New bill
           </a>
         )}
       </header>
-      <div className="demo-notice">{notice}</div>
+      {notice && <div className="demo-notice">{notice}</div>}
       <main id="main">{children}</main>
     </>
   );

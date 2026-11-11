@@ -67,17 +67,11 @@ export default function Bill() {
   const paid = data.shares.filter((s) => s.status === "paid").length;
   const share = data.shares.find((s) => s.id === selected);
   return (
-    <Shell notice={isLive ? "Payment tracking" : undefined}>
+    <Shell notice={isLive ? null : undefined}>
       <div className="flow">
         <div className="intro compact">
-          <h1>
-            {paid === data.shares.length
-              ? "All squared up."
-              : "Your bill, shared."}
-          </h1>
-          <p>
-            {data.bill.merchant} · {data.bill.diners} people
-          </p>
+          <h1>{data.bill.merchant}</h1>
+          <p>{data.bill.diners} people</p>
         </div>
         <div className="amount-hero">
           <span className="muted">{isLive ? "Received" : "Received in demo"}</span>
@@ -110,11 +104,6 @@ export default function Bill() {
         <div className="share-list">
           {data.shares.map((s) => (
             <div className="share-row" key={s.id}>
-              <span
-                className={`share-number ${s.status === "paid" ? "settled" : ""}`}
-              >
-                {s.status === "paid" ? "✓" : s.position}
-              </span>
               <div className="share-main">
                 <strong>Friend {s.position}</strong>
                 <span
@@ -157,7 +146,7 @@ export default function Bill() {
               </a>
             </div>
             <p className="field-hint">
-              Invitation QR · Opens the demo checkout, not a wallet payment.
+              {isLive ? "Opens this person’s checkout." : "Opens this person’s demo checkout. No real payments."}
             </p>
           </section>
         )}
@@ -165,13 +154,12 @@ export default function Bill() {
           <section className="receiving-summary" aria-label="Receiving address">
             <h2>Your receiving address</h2>
             <p className="address-value">{data.receivingAddress}</p>
-            <p className="field-hint">{isLive ? "Saved for this bill. Payments are checked with the provider." : "Saved for this bill. Live payments are not enabled yet."}</p>
+            <p className="field-hint">Fixed for this bill.</p>
           </section>
         )}
         <Receipt bill={data.bill} kind="bills" id={data.bill.id} />
         <p className="small-note left">
-          Keep this organizer page open or bookmark it on this device. Only you
-          can see all requests.
+          Bookmark this page on this device to return to all requests.
         </p>
         <ErrorMessage message={error} />
       </div>

@@ -207,7 +207,7 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
             receiptId,
             extracted: null,
             message:
-              "Receipt saved. Automatic reading is not connected in this demo. Please enter the total and currency.",
+              "Receipt saved. Enter the total and currency below; automatic reading is not available yet.",
           },
           201,
         );

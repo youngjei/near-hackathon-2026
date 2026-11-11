@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "split/d/bill — dinner, divided",
+  title: "split/d/bill",
   description:
-    "Turn a shared receipt into simple reimbursement requests. Private beta demo.",
+    "Split a receipt and track reimbursements in USDC. Private demo.",
   referrer: "no-referrer",
   icons: {icon: "/favicon.svg"},
   robots: { index: false, follow: false },

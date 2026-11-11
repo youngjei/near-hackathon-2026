@@ -46,7 +46,7 @@ export default function CreateBill() {
     setCurrency("AED");
     setDiners(4);
     setPreview("/sample-receipt.svg");
-    setNote("Sample receipt · Synthetic data, ready to edit.");
+    setNote("Sample receipt · Synthetic data.");
     setReceiptId(undefined);
     setStep("details");
     setError("");
@@ -154,17 +154,13 @@ export default function CreateBill() {
   const split =
     step === "review" && fx ? allocation(total, extra, fx.rate, diners) : null;
   return (
-    <Shell notice={mode === "live" ? "Payment requests · Review before sending" : undefined}>
+    <Shell notice={mode === "live" ? null : undefined}>
       <div className="flow">
         {step === "start" ? (
           <>
             <div className="intro">
-              <h1>Dinner, divided.</h1>
-              <p>
-                You got the bill.
-                <br />
-                Let’s work out everyone’s share.
-              </p>
+              <h1>Split a bill</h1>
+              <p>Confirm the receipt total and split it equally in USDC.</p>
             </div>
             <input
               ref={input}
@@ -181,30 +177,9 @@ export default function CreateBill() {
               disabled={busy || !hydrated}
               onClick={() => input.current?.click()}
             >
-              <svg
-                className="receipt-mark"
-                width="54"
-                height="66"
-                viewBox="0 0 54 66"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M9 5 15 9 21 5 27 9 33 5 39 9 45 5V60L39 56 33 60 27 56 21 60 15 56 9 60Z"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                />
-                <path
-                  d="M18 24H36M18 31H36M18 43H26M32 43H36"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-              </svg>
               <span className="upload-title">
-                {busy ? "Saving receipt…" : "Add your receipt"}
+                {busy ? "Saving receipt…" : "Upload receipt"}
               </span>
-              <span className="muted">Take a photo or choose an image</span>
               <span className="file-hint">JPG, PNG or WebP · up to 5 MB</span>
             </button>
             <div className="start-actions">
@@ -228,9 +203,6 @@ export default function CreateBill() {
                 Try a sample bill
               </button>
             </div>
-            <p className="small-note">
-              Split equally. Request USDC. Let friends choose how to pay.
-            </p>
           </>
         ) : null}
         {step === "details" ? (
@@ -239,8 +211,7 @@ export default function CreateBill() {
               ← Back
             </button>
             <div className="intro compact">
-              <h1>Check the bill.</h1>
-              <p>A quick look before we split it.</p>
+              <h1>Bill details</h1>
             </div>
             {preview && (
               <details className="receipt-details">
@@ -302,8 +273,7 @@ export default function CreateBill() {
               </label>
               <div className="diner-row">
                 <div>
-                  <label htmlFor="diners">How many people?</label>
-                  <p className="field-hint">Include yourself.</p>
+                  <label htmlFor="diners">People, including you</label>
                 </div>
                 <div className="stepper">
                   <button
@@ -346,7 +316,7 @@ export default function CreateBill() {
                     aria-describedby={recipientError ? "receiving-hint receiving-error" : "receiving-hint"}
                   />
                 </label>
-                <p id="receiving-hint" className="field-hint">Paste your internal address, including nearcom:. No wallet connection needed.</p>
+                <p id="receiving-hint" className="field-hint">Paste your internal address with the nearcom: prefix.</p>
                 {recipientError && <p id="receiving-error" className="field-error" role="alert">{recipientError}</p>}
                 <ReceivingHelp />
               </div>
@@ -366,7 +336,7 @@ export default function CreateBill() {
               ← Edit bill
             </button>
             <div className="intro compact">
-              <h1>Here’s the split.</h1>
+              <h1>Review split</h1>
               <p>
                 {merchant} · {diners} people
               </p>
@@ -409,10 +379,11 @@ export default function CreateBill() {
                 </dd>
               </div>
             </dl>
-            <p className="field-hint">
-              {fx.source} · {fx.date}. We use 1 USD = 1 USDC for this split.
-              Payment fees are separate.
-            </p>
+            {fx.fixture && <p className="field-hint">Demo exchange rate · {fx.date}. This reference rate is not a payment quote.</p>}
+            <details className="receipt-details">
+              <summary>Exchange rate and fees</summary>
+              <p className="field-hint">{fx.source} · {fx.date}. This split uses 1 USD = 1 USDC. Payment fees are separate.</p>
+            </details>
             {new Set(split.shares).size > 1 && (
               <p className="field-hint">
                 A one-cent difference keeps the total exact.
@@ -423,10 +394,6 @@ export default function CreateBill() {
               <p className="address-value">{recipient}</p>
               <p className="field-hint">Check it before creating requests. It stays fixed for this bill.</p>
             </section>
-            <div className="receiving-note">
-              <strong>{mode === "live" ? "Ready to request payment" : "Try the complete flow"}</strong>
-              <p>{mode === "live" ? "Friends review a payment quote and approve in their own wallet. You receive USDC in your confidential balance." : "Live receiving isn’t connected. These links demonstrate the flow and cannot accept money."}</p>
-            </div>
             <button
               className="button primary full"
               disabled={busy || !hydrated}

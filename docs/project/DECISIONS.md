@@ -94,3 +94,8 @@ The user selected the simpler internal near.com address route, superseding the m
 Implement real quote allocation, private storage, exact-route validation, settlement reconciliation and NEP-413 signing through compatible external NEAR wallets. Do not imply that this controls a near.com-created passkey account. Keep each method gated until its real wallet/refund/funded acceptance is complete. Use NEAR Connect 0.12.0, pinned.
 
 Reserve allocation and spending submission atomically before external calls; a timeout retains an unknown lock. Do not issue replacement fundable quotes after failure/refund without verified provider cancellation/finality: the old instruction may still receive a late payment. Same-key requests remain idempotent. Once a deposit is observed, never show funding instructions again merely because status regresses. Preserve existing demo flows and immutable receiving binding.
+
+
+## 2026-11-11 — Literal copy and task-first presentation
+
+User requested removal of redundant captions, corny phrases and common generated-interface patterns. Use the bill name and concrete actions instead of slogans. Keep amount and next action primary; reveal optional explanations and alternate payment handoffs on demand. Preserve consequential disclosures and demo labels. Retain the existing wordmark, restrained palette and single sans-serif instead of substituting another trend. Research and visual acceptance criteria are recorded in DESIGN.md.

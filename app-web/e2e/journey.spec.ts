@@ -13,11 +13,11 @@ test("create, privately share, pay and reconcile a demo dinner", async ({
   await page.getByLabel("Your near.com receiving address", {exact:true}).fill("nearcom:0x" + "a1".repeat(20));
   await page.getByRole("button", { name: "Review split" }).click();
   await expect(
-    page.getByRole("heading", { name: "Here’s the split." }),
+    page.getByRole("heading", { name: "Review split" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Create 3 demo requests" }).click();
   await expect(
-    page.getByRole("heading", { name: "Your bill, shared." }),
+    page.getByRole("heading", { name: "Dinner in Dubai" }),
   ).toBeVisible();
   expect(page.url()).not.toContain("#");
   await expect(page.getByText("0 of 3 paid")).toBeVisible();
@@ -35,7 +35,7 @@ test("create, privately share, pay and reconcile a demo dinner", async ({
   const checkout = await diner.newPage();
   await checkout.goto(payUrl!);
   await expect(
-    checkout.getByRole("heading", { name: "Your share." }),
+    checkout.getByRole("heading", { name: "Your share" }),
   ).toBeVisible();
   expect(checkout.url()).not.toContain("#");
   const billId = new URL(page.url()).searchParams.get("id");
@@ -49,7 +49,7 @@ test("create, privately share, pay and reconcile a demo dinner", async ({
   ).toBe(404);
   await checkout.getByRole("button", { name: "Try Zcash demo" }).click();
   await expect(
-    checkout.getByRole("heading", { name: "Waiting for payment" }),
+    checkout.getByRole("heading", { name: "Demo payment" }),
   ).toBeVisible();
   expect(await checkout.locator('a[href^="zcash:"]').count()).toBe(0);
   await checkout
@@ -173,7 +173,7 @@ test("receipt fallback stays editable, rejects unsafe uploads, and keeps images 
     });
   await expect(
     page.getByText(
-      "Receipt saved. Automatic reading is not connected in this demo. Please enter the total and currency.",
+      "Receipt saved. Enter the total and currency below; automatic reading is not available yet.",
     ),
   ).toBeVisible();
   await page.getByLabel("Bill name").fill("Photo receipt test");
@@ -227,7 +227,7 @@ test("small screens, large amounts, keyboard focus and reduced motion", async ({
   await page.getByLabel("Your near.com receiving address", {exact:true}).fill("nearcom:0x" + "a1".repeat(20));
   await page.getByRole("button", { name: "Review split" }).click();
   await expect(
-    page.getByRole("heading", { name: "Here’s the split." }),
+    page.getByRole("heading", { name: "Review split" }),
   ).toBeVisible();
   expect(
     await page.evaluate(
@@ -276,7 +276,7 @@ test("receiving-address help, validation, confirmation and saved organizer-only 
  await page.screenshot({path:`../outputs/receiving-field-${test.info().project.name}.png`,fullPage:true});
  await page.getByRole('button',{name:'Review split'}).click();
  await page.getByRole('button',{name:'Create 3 demo requests'}).click();
- await expect(page.getByRole('heading',{name:'Your bill, shared.'})).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Dinner in Dubai'})).toBeVisible();
  await page.reload();
  await expect(page.getByLabel('Receiving address').getByText(normalized,{exact:true})).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);

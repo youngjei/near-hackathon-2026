@@ -76,7 +76,7 @@ export default function Pay() {
   if (!data)
     return (
       <Shell>
-        <div className="flow">
+        <div className="flow payment-flow">
           <ErrorMessage message={error} />
           {!error && <Loading />}
         </div>
@@ -89,10 +89,10 @@ export default function Pay() {
     ? Math.max(0, Math.ceil((active.expiresAt - now) / 60000))
     : 0;
   return (
-    <Shell notice={data.bill.mode === "live" ? "Payment checkout · Review requests in your wallet" : undefined}>
-      <div className="flow">
+    <Shell notice={data.bill.mode === "live" ? null : undefined}>
+      <div className="flow payment-flow">
         <div className="intro compact">
-          <h1>{state === "paid" ? "Your share is settled." : "Your share."}</h1>
+          <h1>Your share</h1>
           <p>
             {data.bill.merchant} · Friend {data.share.position}
           </p>
@@ -102,7 +102,6 @@ export default function Pay() {
             {formatAmount(data.share.amountUnits)}
             <span>USDC</span>
           </div>
-          <p className="muted">An equal share for {data.bill.diners} people</p>
         </div>
         <Receipt bill={data.bill} kind="shares" id={data.share.id} />
         {data.bill.mode === "live" ? (
@@ -114,8 +113,6 @@ export default function Pay() {
             </span>
             <h2>Paid in demo</h2>
             <p>
-              Your friend’s progress page has been updated.
-              <br />
               No money was moved.
             </p>
             <a href="/" className="text-button">
@@ -127,13 +124,11 @@ export default function Pay() {
             <span className="pending-mark" aria-hidden="true">
               ···
             </span>
-            <h2>Waiting for payment</h2>
+            <h2>Demo payment</h2>
             <p>
-              This is a simulated{" "}
+              Simulated{" "}
               {active.method === "zcash" ? "Zcash" : "confidential balance"}{" "}
-              request.
-              <br />
-              There is no wallet address to fund.
+              request. No money will move.
             </p>
             <p className="field-hint">Demo request expires in {minutes} min.</p>
             <button
@@ -147,7 +142,7 @@ export default function Pay() {
         ) : (
           <>
             <div className="method-heading">
-              <h2>How would you like to pay?</h2>
+              <h2>Payment method</h2>
             </div>
             {["failed", "expired", "refunded"].includes(state) && (
               <p className="inline-note" role="status">
@@ -175,7 +170,7 @@ export default function Pay() {
                 />
                 <span>
                   <strong>Zcash</strong>
-                  <small>VIZOR or Zodl (formerly Zashi)</small>
+                  <small>VIZOR or Zodl</small>
                 </span>
                 <span className="radio-visual" aria-hidden="true" />
               </label>
@@ -196,10 +191,6 @@ export default function Pay() {
                 <span className="radio-visual" aria-hidden="true" />
               </label>
             </div>
-            <p className="field-hint">
-              Live payments aren’t connected yet. You can try the payment flow
-              without opening a wallet.
-            </p>
             <button
               className="button primary full"
               disabled={busy}
