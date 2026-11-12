@@ -63,6 +63,21 @@ export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingEleme
           ] : []),
         ], { duration: sequenceDuration, fill: "both" });
       });
+      const peeks = element.querySelectorAll<HTMLElement>(".animated-intro-peek-group");
+      animations.current.push(...Array.from(peeks, (peek, index) => {
+        const start = index * phraseDuration;
+        const last = index === phrases.length - 1;
+        const visibleUntil = last ? start + 550 : start + arrival + hold;
+        const hiddenAt = last ? start + 1000 : start + phraseDuration;
+        return peek.animate([
+          { opacity: index ? 0 : .4, offset: 0 },
+          ...(start ? [{ opacity: 0, offset: start / sequenceDuration }] : []),
+          { opacity: .4, offset: (start + arrival) / sequenceDuration },
+          { opacity: .4, offset: visibleUntil / sequenceDuration },
+          { opacity: 0, offset: hiddenAt / sequenceDuration },
+          { opacity: 0, offset: 1 },
+        ], { duration: sequenceDuration, fill: "both" });
+      }));
       animations.current.at(-1)!.onfinish = () => {
         finished = true;
         cancel();
@@ -100,6 +115,13 @@ export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingEleme
 
   const controlLabel = state === "complete" ? "Replay animation" : state === "paused" ? "Resume animation" : "Pause animation";
   return <div ref={root} className="intro start-intro animated-intro" data-motion-state={state}>
+    <div className="animated-intro-stage">
+      <div className="animated-intro-peeks" aria-hidden="true">
+        {phrases.map((phrase, index) => <div className="animated-intro-peek-group" key={phrase}>
+          <span className="animated-intro-trail"><span>{index ? phrases[index - 1].slice(-9) : ""}</span></span>
+          <span className="animated-intro-upcoming">{phrases[index + 1] ?? ""}</span>
+        </div>)}
+      </div>
     <h1 ref={headingRef} tabIndex={-1} className="animated-intro-heading"
       aria-label="Photograph a receipt. Split the amount. Send ready-to-pay requests. Privately.">
       <span aria-hidden="true" className="animated-intro-static">Split a receipt into private requests.</span>
@@ -108,8 +130,9 @@ export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingEleme
         {index === 2 ? <>Send <span className="animated-intro-unbroken">ready-to-pay</span> requests.</> : phrase}
       </span>)}
     </h1>
+    </div>
     <div className="animated-intro-caption">
-      <p>One private payment link for each friend.</p>
+      <p>Get paid back in USDC for the dinner you covered.<span className="animated-intro-secondary">One private payment link for each friend.</span></p>
       {state !== "static" && <button type="button" className="intro-motion-control" onClick={control} aria-label={controlLabel} title={controlLabel}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="square" aria-hidden="true">
           {state === "complete" ? <><path d="M5 9a7.5 7.5 0 1 1-.5 6M5 4v5h5" /></> : state === "paused" ? <path d="m9 6 9 6-9 6Z" /> : <><path d="M9 6v12M15 6v12" /></>}
