@@ -133,7 +133,7 @@ export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingEleme
     </h1>
     </div>
     <div className="animated-intro-caption">
-      <p>Get paid back in USDC for the dinner you covered.<span className="animated-intro-secondary">One private payment link for each friend.</span></p>
+      <p>Get paid back in USDC for the dinner you covered.<span className="animated-intro-secondary">Each friend gets a private link to pay their share.</span></p>
       {state !== "static" && <button type="button" className="intro-motion-control" onClick={control} aria-label={controlLabel} title={controlLabel}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="square" aria-hidden="true">
           {state === "complete" ? <><path d="M5 9a7.5 7.5 0 1 1-.5 6M5 4v5h5" /></> : state === "paused" ? <path d="m9 6 9 6-9 6Z" /> : <><path d="M9 6v12M15 6v12" /></>}

@@ -1,4 +1,6 @@
 "use client";
+
+import { ReceiptIcon } from "./task-frame";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 export function Shell({ children, notice = "Demo · No real payments" }: { children: React.ReactNode; notice?: string | null }) {
@@ -53,7 +55,7 @@ export function CopyButton({
 export function Loading() {
   return (
     <div className="loading" role="status" aria-live="polite">
-      <svg className="loading-receipt" viewBox="0 0 48 48" fill="none" shapeRendering="crispEdges" aria-hidden="true"><path d="M8 0h32v40h-8v8h-8v-8h-8v8H8V0Z" fill="currentColor"/><path d="M16 12h16M16 20h16M16 28h8" stroke="var(--paper)" strokeWidth="4"/></svg>
+      <ReceiptIcon className="loading-receipt" />
       <span>Opening your bill…</span>
       <div className="loading-skeleton" aria-hidden="true"><i /><i /><i /></div>
     </div>

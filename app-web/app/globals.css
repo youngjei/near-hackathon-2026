@@ -403,3 +403,32 @@ footer { max-width: 600px; margin: 48px auto 0; padding: 24px 20px 32px; text-al
   .loading-skeleton i { opacity: .7; }
   .upload-area:hover .receipt-icon { transform: none; }
 }
+
+/* One shared row boundary keeps the story and upload dividers aligned. */
+.step-start { grid-template-rows: auto auto; row-gap: 0; }
+.step-start > .task-context, .step-start > .task-document { display: grid; grid-row: 1 / 3; grid-template-rows: subgrid; padding: 0; }
+.step-start > .task-context { grid-column: 1; }
+.step-start > .task-document { grid-column: 2; }
+.step-start .step-content { display: contents; }
+.start-explanation { grid-row: 1; display: flex; flex-direction: column; min-width: 0; padding-top: 14px; }
+.start-upload { grid-row: 1; display: flex; flex-direction: column; }
+.start-upload .upload-area { flex: 1; }
+.start-upload .start-actions > .text-button { border-bottom: 0; }
+.receipt-story { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; align-items: end; flex: 1; padding: 24px 0; color: var(--accent); }
+.receipt-story svg { display: block; width: min(100%, 100px); height: 100px; justify-self: center; }
+.pixel-face { fill: var(--paper); }
+.step-start .workflow-steps { grid-row: 2; margin: 0; }
+.step-start .workflow-steps li { align-items: center; text-align: center; }
+.start-sample { grid-row: 2; align-self: start; display: block; width: 100%; border-top: 1px solid var(--ink); padding: 18px 0; color: var(--muted); text-align: left; font-weight: 400; }
+@media (max-width: 1000px) { .receipt-story { gap: 12px; } }
+@media (max-width: 760px) {
+  .step-start { display: flex; flex-direction: column; gap: 26px; }
+  .step-start > .task-context, .step-start > .task-document { display: block; width: 100%; }
+  .start-explanation { padding-top: 0; }
+  .receipt-story { padding: 18px 0; }
+  .receipt-story svg { width: 72px; height: 72px; }
+  .step-start .workflow-steps { margin: 0; padding-top: 16px; }
+  .step-start .workflow-steps li { flex-direction: column; gap: 8px; }
+  .start-sample { padding: 16px 0; font-size: 13px; }
+}
+@media (max-width: 380px) { .receipt-story { gap: 8px; } }

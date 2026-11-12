@@ -121,3 +121,8 @@ See [wallet compatibility](../docs/technical/WALLET_COMPATIBILITY.md) for source
 Enable neither route merely because credentials exist. The default-off switches in `.env.example` require global activation, a per-method switch and that method's acceptance switch. Set acceptance only after explicitly authorized wallet-device, refund, late-payment and actual confidential-credit checks. Hosted secrets and scheduler configuration are separate from local environment values.
 
 Executable quotes and generated signer payloads are private server records. Atomic reservations prevent duplicate quote allocation and duplicate intent submission. Timeout/unknown outcomes retain their lock. Once an executable quote exists, replacement quotes for that share remain blocked even after failure/refund, because provider finality/cancellation has not been verified; organizer review is required. Same-key network retries reuse the existing attempt, and cancelling a wallet prompt before submission does not spend funds. Old requests continue reconciliation; once any deposit is detected, payment instructions cannot reappear following a status regression.
+
+
+### Regenerate app icons
+
+From `app-web`, run `node scripts/generate-brand-icons.mjs`. Expected result: SVG/ICO and PNG favicon, Apple touch and app icons are regenerated in `public/` from the `PixelReceipt` matrix in `components/task-frame.tsx`, using the cream/cobalt brand colors. `public/site.webmanifest` declares the app icons; this adds home-screen branding, not offline functionality.

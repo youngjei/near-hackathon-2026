@@ -35,7 +35,7 @@ test("reduced motion keeps a readable static introduction and narrow layouts fit
   await page.goto("/");
   await expect(page.locator(".animated-intro-static")).toHaveCSS("opacity", "1");
   await expect(page.getByRole("button", { name: /animation/ })).toHaveCount(0);
-  await expect(page.getByText("One private payment link for each friend.")).toBeVisible();
+  await expect(page.getByText("Each friend gets a private link to pay their share.")).toBeVisible();
   expect(await page.locator(".animated-intro").evaluate(element => element.getAnimations({ subtree: true }).length)).toBe(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole("button", { name: "Enter details manually" }).click();
@@ -61,4 +61,25 @@ test("phrase handoffs never leave an empty or dim headline", async ({ page }) =>
     expect(sample.total).toBeCloseTo(1, 2);
     expect(sample.strongest).toBeGreaterThanOrEqual(.49);
   }
+});
+
+test("pixel story follows its steps and desktop dividers share a baseline", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await page.goto("/");
+  for (const width of [1280, 960, 761, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    const geometry = await page.evaluate(() => {
+      const box = (selector: string) => document.querySelector(selector)!.getBoundingClientRect();
+      const pictures = Array.from(document.querySelectorAll(".receipt-story > svg"), el => el.getBoundingClientRect());
+      const numbers = Array.from(document.querySelectorAll(".step-index"), el => el.getBoundingClientRect());
+      return { left: box(".workflow-steps").top, right: box(".start-sample").top,
+        offsets: pictures.map((rect, index) => Math.abs(rect.x + rect.width / 2 - numbers[index].x - numbers[index].width / 2)),
+        overflow: document.documentElement.scrollWidth > innerWidth };
+    });
+    if (width > 760) expect(Math.abs(geometry.left - geometry.right)).toBeLessThan(1);
+    expect(geometry.offsets.every(offset => offset < 1)).toBe(true);
+    expect(geometry.overflow).toBe(false);
+  }
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute("href", "/site.webmanifest");
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", "/apple-touch-icon.png");
 });

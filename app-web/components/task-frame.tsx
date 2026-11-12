@@ -28,8 +28,24 @@ function PixelReceipt({ x = 0, y = 0, cell = 3, gap = 1 }: { x?: number; y?: num
       x={x + column * (cell + gap)} y={y + rowIndex * (cell + gap)} width={cell} height={cell}
       opacity={column === 0 || rowIndex === 0 ? .55 : 1} /> : null))}</g>;
 }
-export function ReceiptIcon() {
-  return <svg className="receipt-icon" viewBox="0 0 40 44" fill="none" shapeRendering="crispEdges" aria-hidden="true"><PixelReceipt /></svg>;
+export function ReceiptIcon({ className = "receipt-icon" }: { className?: string }) {
+  return <svg className={className} viewBox="0 0 40 44" fill="none" shapeRendering="crispEdges" aria-hidden="true"><PixelReceipt /></svg>;
+}
+
+export function ReceiptStory() {
+  return <div className="receipt-story" aria-hidden="true">
+    <svg viewBox="0 0 100 100" shapeRendering="crispEdges"><PixelReceipt x={20} y={15} cell={5} gap={1} /></svg>
+    <svg viewBox="0 0 100 100" shapeRendering="crispEdges">
+      {[{ x: 5, y: 49 }, { x: 37, y: 33 }, { x: 69, y: 17 }].map(({ x, y }) => <PixelReceipt key={x} x={x} y={y} cell={2} gap={1} />)}
+    </svg>
+    <svg viewBox="0 0 100 100" shapeRendering="crispEdges">
+      {[{ x: 4, y: 42 }, { x: 37, y: 28 }, { x: 70, y: 42 }].map(({ x, y }, index) => <g key={x} transform={`translate(${x} ${y})`}>
+        <path fill="currentColor" d={index === 1 ? "M6 0h15v3h3v3h3v21h-3v3H3v-3H0V9h3V3h3Z" : "M6 0h15v3h3v3h3v18h-3v3h-3v3H6v-3H3v-3H0V6h3V3h3Z"} />
+        <path className="pixel-face" d="M6 12h3v3H6zm12 0h3v3h-3zM6 18h3v3H6zm12 0h3v3h-3zM9 21h9v3H9z" />
+        {index === 2 && <path className="pixel-face" d="M3 9h21v3H3z" />}
+      </g>)}
+    </svg>
+  </div>;
 }
 
 export function SplitGraphic({ split = false }: { split?: boolean }) {

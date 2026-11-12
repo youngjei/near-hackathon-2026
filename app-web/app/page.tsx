@@ -6,7 +6,7 @@ import { allocation, currencies, formatAmount, billInput } from "@/lib/money";
 import Decimal from "decimal.js";
 import { receivingAddress as addressSchema } from "@/lib/receiving";
 import { ReceivingHelp } from "@/components/receiving-help";
-import { TaskFrame, WorkflowSteps, ReceiptIcon, SplitGraphic } from "@/components/task-frame";
+import { TaskFrame, WorkflowSteps, ReceiptIcon, ReceiptStory, SplitGraphic } from "@/components/task-frame";
 import { AnimatedIntro } from "@/components/animated-intro";
 type FX = { rate: string; date: string; source: string; fixture: boolean };
 export default function CreateBill() {
@@ -166,13 +166,14 @@ export default function CreateBill() {
   return (
     <Shell notice={mode === "live" ? null : undefined}>
       <TaskFrame className={`create-layout step-${step}`} context={<>
-        {step === "start" && <AnimatedIntro headingRef={heading} />}
+        {step === "start" && <div className="start-explanation"><AnimatedIntro headingRef={heading} /><ReceiptStory /></div>}
         {step !== "start" && <SplitGraphic key={step} split={step === "review"} />}
         <WorkflowSteps current={step === "start" ? 0 : 1} />
       </>}>
         <div key={step} className="step-content" aria-busy={busy}>
         {step === "start" ? (
           <>
+            <div className="start-upload">
             <input
               ref={input}
               type="file"
@@ -208,14 +209,15 @@ export default function CreateBill() {
               >
                 Enter details manually <span aria-hidden="true">→</span>
               </button>
+            </div>
+            </div>
               <button
-                className="text-button sample-link"
+                className="text-button sample-link start-sample"
                 disabled={busy || !hydrated}
                 onClick={sample}
               >
                 Try a sample bill
               </button>
-            </div>
           </>
         ) : null}
         {step === "details" ? (

@@ -62,3 +62,8 @@ User requested replacing the redundant home heading and description with a phras
 The persistent line “One private payment link for each friend” scopes privacy to individual requests, without claiming that every wallet/chain route is untraceable. Remove the home decorative split illustration so the words are the focal motion; preserve the review graphic and meaningful interaction feedback elsewhere.
 
 Follow-up refinement: precede that smaller explanation with “Get paid back in USDC for the dinner you covered.” Large, clipped, scanline-faded letter fragments at the heading edges suggest the preceding and upcoming phrases. They share the main timeline and disappear as Privately settles; reduced motion hides them. Preserve the pending palette selection.
+
+
+## November 12 — Receipt brand and three-step story
+
+User explicitly restored homepage pixel imagery: one receipt → three shares → three friends. Center each group over its numbered workflow step and align both desktop divider lines via shared grid rows. Keep the smaller mobile story and the animated headline. Supporting line now reads “Each friend gets a private link to pay their share.” The existing pixel receipt is the app symbol for favicon, browser/home-screen icons, upload and loading; the large split/d/bill wordmark remains. Regenerate raster/SVG/ICO assets with the documented script; no offline behavior is implied by the manifest. This supersedes the earlier removal of homepage illustration.
