@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("intro pauses, resumes without replaying old words, and settles without moving the action", async ({ page }) => {
+test("intro pauses, resumes without replaying old words, and loops with a longer final hold without moving the action", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await page.goto("/");
   const root = page.locator(".animated-intro");
@@ -17,12 +17,14 @@ test("intro pauses, resumes without replaying old words, and settles without mov
   await page.waitForTimeout(450);
   await expect(phrases.nth(0)).toHaveCSS("opacity", "0");
   await expect(phrases.nth(1)).toHaveCSS("opacity", "1");
-  await expect(root).toHaveAttribute("data-motion-state", "complete", { timeout: 15000 });
+  await expect(phrases.nth(3)).toHaveCSS("opacity", "1", { timeout: 12000 });
+  await page.waitForTimeout(3200);
   await expect(phrases.nth(3)).toHaveCSS("opacity", "1");
   const final = await page.locator(".upload-area").boundingBox();
   expect(Math.abs(initial!.y - final!.y)).toBeLessThan(1);
-  await page.getByRole("button", { name: "Replay animation" }).click();
-  await expect(phrases.nth(0)).toHaveCSS("opacity", "1");
+  await expect(phrases.nth(0)).toHaveCSS("opacity", "1", { timeout: 6000 });
+  await expect(root).toHaveAttribute("data-motion-state", "running");
+  await expect(page.getByRole("button", { name: "Replay animation" })).toHaveCount(0);
   await page.getByRole("button", { name: "Enter details manually" }).click();
   await expect(page.getByRole("heading", { name: "Bill details" })).toBeFocused();
   await page.getByRole("button", { name: "Back", exact: false }).first().click();
@@ -50,7 +52,7 @@ test("phrase handoffs never leave an empty or dim headline", async ({ page }) =>
     const animations = element.getAnimations({ subtree: true });
     const words = Array.from(element.querySelectorAll(".animated-intro-phrase"));
     const samples = [];
-    for (let time = 1000; time <= 10000; time += 50) {
+    for (let time = 1000; time <= 29000; time += 50) {
       animations.forEach(animation => { animation.currentTime = time; });
       const opacities = words.map(word => Number(getComputedStyle(word).opacity));
       samples.push({ total: opacities.reduce((a, b) => a + b, 0), strongest: Math.max(...opacities) });

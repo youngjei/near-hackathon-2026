@@ -233,3 +233,8 @@ Applied the user-selected porcelain/petrol palette across shared UI tokens, rece
 ## 2026-11-13 — Approved pixel/clean wordmark
 
 Applied approved logo option 1 in the global header and organizer receipt: pixel receipt, clean lettering and petrol stepped slashes. Receipt bands separate slightly on hover/focus with a reduced-motion override. Moved organizer FX source/date/rate and the USD-to-USDC accounting assumption into optional Conversion details. Calculation and settlement behavior are unchanged. TypeScript, production build and six desktop/mobile receipt, disclosure, layout and reduced-motion scenarios passed; responsive captures inspected. Published source `542bfda3df780f52b6fa114d77de692cdfc9f1c9`, deployment `appgdep_6af5d909ad9881c2bc463357a0b9e206`, environment revision 1. Owner-only access and disabled payment gates preserved.
+
+
+## 2026-11-13 — Continuous headline loop and wider previews
+
+Headline now repeats on a seamless 13.7-second timeline, holding Privately for 4.5 seconds versus 2.4 seconds for other phrases. Removed completion/replay state; retained pause/resume, hidden/offscreen pause and static reduced-motion fallback. Cyclic previous/next previews are widened to 1.15em (roughly two to three characters) with reserved text gutters. TypeScript, production build and eight desktop/mobile tests passed, including real loop return, longer hold, pause/resume and opacity sampling across two loop boundaries. Final nine responsive captures had no overflow/page errors; desktop and small-phone states inspected. Published source `aa1fba43de148595216fd166fd7054135b963d9b`, deployment `appgdep_6af5daf00d0c81c29dad8096c9efe457`, environment revision 1. No payment, data or audience changes.

@@ -82,3 +82,8 @@ The final user selection is porcelain #F3F4EF with petrol #14645E. This supersed
 ## November 13 — Approved logo option 1
 
 Use the shared BrandWordmark: the existing pixel receipt beside clean split/d/bill lettering, with petrol staircase slashes. Header hover/focus separates the receipt into three bands briefly; reduced motion preserves the static symbol. Receipt branding uses the same wordmark at a smaller size. Organizer conversion provenance is secondary information under Conversion details, with labelled exchange rate, source/date and plain-language USDC accounting assumption.
+
+
+## November 13 — Continuous introduction (current motion)
+
+User explicitly selected indefinite looping over restart. The current sequence lasts 13.7 seconds, with a 4.5-second Privately hold and 2.4-second holds elsewhere. Final/first phrases share the same 500ms handoff across the cycle boundary. Keep pause/resume, offscreen/hidden suspension and static reduced-motion text. Adjacent cyclic phrase glimpses are 1.15em wide, approximately two to three glyphs, with matching gutters. This supersedes earlier once-only/replay behavior.
