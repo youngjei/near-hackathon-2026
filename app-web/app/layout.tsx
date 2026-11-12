@@ -6,18 +6,18 @@ export const metadata: Metadata = {
     "Split a receipt and track reimbursements in USDC. Private demo.",
   referrer: "no-referrer",
   applicationName: "split/d/bill",
-  manifest: "/site.webmanifest",
+  manifest: "/site.webmanifest?v=petrol-1",
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon.svg", sizes: "any", type: "image/svg+xml" },
+      { url: "/favicon.ico?v=petrol-1", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
+      { url: "/favicon-32x32.png?v=petrol-1", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.svg?v=petrol-1", sizes: "any", type: "image/svg+xml" },
     ],
-    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    apple: [{ url: "/apple-touch-icon.png?v=petrol-1", sizes: "180x180", type: "image/png" }],
   },
   robots: { index: false, follow: false },
 };
-export const viewport: Viewport = { themeColor: "#2e60bd" };
+export const viewport: Viewport = { themeColor: "#14645e" };
 export default function RootLayout({
   children,
 }: {

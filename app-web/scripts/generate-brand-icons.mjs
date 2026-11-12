@@ -7,8 +7,8 @@ const component = await readFile(new URL("../components/task-frame.tsx", import.
 const source = component.match(/const receiptCells = \[([\s\S]*?)\];/)?.[1];
 const rows = [...(source ?? "").matchAll(/"([01]+)"/g)].map((match) => match[1]);
 if (rows.length !== 11 || rows.some((row) => row.length !== 10)) throw new Error("PixelReceipt matrix changed; review icon geometry.");
-const paper = [233, 225, 205];
-const blue = [46, 96, 189];
+const paper = [243, 244, 239];
+const accent = [20, 100, 94];
 const output = new URL("../public/", import.meta.url);
 
 function cells(size, maskable = false) {
@@ -42,14 +42,14 @@ function png(size, maskable = false) {
   const pixels = Buffer.alloc(size * (1 + size * 3));
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      blue.forEach((value, channel) => { pixels[y * (1 + size * 3) + 1 + x * 3 + channel] = value; });
+      accent.forEach((value, channel) => { pixels[y * (1 + size * 3) + 1 + x * 3 + channel] = value; });
     }
   }
   for (const cell of cells(size, maskable)) {
     for (let y = cell.y; y < cell.y + cell.size; y++) {
       for (let x = cell.x; x < cell.x + cell.size; x++) {
         paper.forEach((value, channel) => {
-          pixels[y * (1 + size * 3) + 1 + x * 3 + channel] = Math.round(value * cell.opacity + blue[channel] * (1 - cell.opacity));
+          pixels[y * (1 + size * 3) + 1 + x * 3 + channel] = Math.round(value * cell.opacity + accent[channel] * (1 - cell.opacity));
         });
       }
     }
@@ -63,7 +63,7 @@ function png(size, maskable = false) {
 }
 
 const rects = cells(64).map((cell) => `<rect x="${cell.x}" y="${cell.y}" width="${cell.size}" height="${cell.size}"${cell.opacity < 1 ? ` opacity="${cell.opacity}"` : ""}/>`).join("");
-await writeFile(new URL("favicon.svg", output), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" shape-rendering="crispEdges"><rect width="64" height="64" fill="#2e60bd"/><g fill="#e9e1cd">${rects}</g></svg>\n`);
+await writeFile(new URL("favicon.svg", output), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" shape-rendering="crispEdges"><rect width="64" height="64" fill="#14645e"/><g fill="#f3f4ef">${rects}</g></svg>\n`);
 for (const [name, size, maskable] of [
   ["favicon-16x16.png", 16], ["favicon-32x32.png", 32], ["apple-touch-icon.png", 180],
   ["app-icon-192.png", 192], ["app-icon-512.png", 512], ["app-icon-maskable-512.png", 512, true],

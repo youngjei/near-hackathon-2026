@@ -126,3 +126,8 @@ User explicitly approved the whole nearhackathon.com visual reference: cream and
 ## 2026-11-12 — One-pass animated homepage explanation
 
 User requested animated phrases to replace repeated split copy and emphasize convenience/privacy. Use one readable sequence ending on Privately, with pause/replay and a static reduced-motion alternative; actions are never gated by animation. Keep private-link wording explicit and do not claim verified end-to-end wallet anonymity. Palette selection remains pending.
+
+
+## 2026-11-12 — Final brand palette
+
+User selected the porcelain/petrol comparison after feedback from friends. Adopt #F3F4EF porcelain and #14645E petrol across the app and brand assets, superseding cream/cobalt and closing the palette choice. Preserve the pixel receipt identity, typography, animations and sharp layout. Retain contrasting semantic error states.

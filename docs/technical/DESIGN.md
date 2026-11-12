@@ -72,3 +72,8 @@ User explicitly restored homepage pixel imagery: one receipt → three shares �
 ## November 12 — Organizer digital receipt
 
 Replace the organizer amount hero and tucked-away bill details with one paper receipt: warm ivory, pixel receipt mark, real bill name/date, aligned amounts, perforated dividers and a torn lower edge. Include original/converted totals, organizer share and current repayments together; distinguish requested reimbursements from the full bill total. Preserve actual stored FX references and demo wording. Updates reuse the existing polling; only the original photograph remains an optional disclosure. Payment requests and private recovery stay adjacent on desktop, after the receipt on mobile.
+
+
+## November 12 — Approved porcelain/petrol palette (current)
+
+The final user selection is porcelain #F3F4EF with petrol #14645E. This supersedes the earlier cream/cobalt colors and all pending palette notes. Ink #202C29, muted #56635D, dividers #BAC4BC, field boundaries #74837A, hover #0F514C, tint #DCE9E3 and receipt paper #FCFDF8 complete the system. App/favicon assets and browser theme use the same palette; error red keeps its semantic role. Current layout, pixel graphics, wordmark and motion remain unchanged.

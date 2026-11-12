@@ -80,6 +80,6 @@ test("pixel story follows its steps and desktop dividers share a baseline", asyn
     expect(geometry.offsets.every(offset => offset < 1)).toBe(true);
     expect(geometry.overflow).toBe(false);
   }
-  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute("href", "/site.webmanifest");
-  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", "/apple-touch-icon.png");
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute("href", "/site.webmanifest?v=petrol-1");
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", "/apple-touch-icon.png?v=petrol-1");
 });

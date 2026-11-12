@@ -125,4 +125,4 @@ Executable quotes and generated signer payloads are private server records. Atom
 
 ### Regenerate app icons
 
-From `app-web`, run `node scripts/generate-brand-icons.mjs`. Expected result: SVG/ICO and PNG favicon, Apple touch and app icons are regenerated in `public/` from the `PixelReceipt` matrix in `components/task-frame.tsx`, using the cream/cobalt brand colors. `public/site.webmanifest` declares the app icons; this adds home-screen branding, not offline functionality.
+From `app-web`, run `node scripts/generate-brand-icons.mjs`. Expected result: SVG/ICO and PNG favicon, Apple touch and app icons are regenerated in `public/` from the `PixelReceipt` matrix in `components/task-frame.tsx`, using the porcelain/petrol brand colors. `public/site.webmanifest` declares the app icons; this adds home-screen branding, not offline functionality.

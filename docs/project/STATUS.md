@@ -2,7 +2,7 @@
 
 Updated: November 12, 2026 (KST).
 
-Phase: executable payment backend and compatible external NEAR-wallet signing implemented, with rollout gates disabled. Supabase migrations 001–005 are applied. Real device/refund/funded acceptance, hosted payment credentials, reconciliation scheduling and OCR remain outstanding. The November 12 cream/blue redesign and organizer recovery are now published on the owner-private Site; execution gates remain disabled. No submission or funded project wallet exists.
+Phase: executable payment backend and compatible external NEAR-wallet signing implemented, with rollout gates disabled. Supabase migrations 001–005 are applied. Real device/refund/funded acceptance, hosted payment credentials, reconciliation scheduling and OCR remain outstanding. The November 12 porcelain/petrol styling, digital receipt and organizer recovery are now published on the owner-private Site; execution gates remain disabled. No submission or funded project wallet exists.
 
 Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site) — owner-only, ChatGPT sign-in required.
 
@@ -32,6 +32,8 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 Delivery target: a real usable application with receipt extraction and verified NEAR payments. Supabase schema and runtime connection are complete; payment execution remains simulated and is clearly labelled. Existing D1 test records are preserved but not migrated; create new links in the Supabase-backed preview.
 
 ## Latest verification
+
+- November 12 final palette selection: Applied the user-selected porcelain/petrol palette across shared UI tokens, receipt paper, modal backdrop, QR colors, browser theme, favicon and all app icons. Exact primary colors are #F3F4EF and #14645E. Versioned icon/manifest URLs refresh old cached branding. Production build and six focused desktop/mobile receipt, metadata/alignment and complete demo-journey scenarios passed. Contrast ratios on porcelain: ink 13.07, muted 5.69, petrol 6.30, control boundaries 3.60. Responsive screenshots and regenerated icon reviewed; no prior cream/cobalt hex colors remain in active app code/assets. Published source `c31127c70981c9ce587a2a4bce551e71aa739221`, deployment `appgdep_6af5631da2b481c29a9d71c3ba9a4cd3`, environment revision 1.
 
 - November 12 digital organizer receipt: Organizer dashboard now uses an always-visible paper-style digital receipt instead of the separate amount hero and Bill details dropdown. It shows persisted totals, optional extra charge, diner count, converted total, organizer share, requested/received/remaining USDC, payment progress and recorded FX source/date. Existing five-second polling drives updates; original photo remains optionally expandable. TypeScript, production build and 14 desktop/mobile checks passed, plus a final focused rerun after footer spacing adjustment. Responsive and large-value screenshots inspected. Published source `d7b8bc1ed348c28bb427c642535d7fe1a4543905`, deployment `appgdep_6af56223ea2c81c2ad6da1c035db99a9`, environment revision 1. Demo labels, private access and disabled payment gates preserved.
 

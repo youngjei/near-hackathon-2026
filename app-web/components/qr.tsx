@@ -8,7 +8,7 @@ export function QR({ value }: { value: string }) {
     QRCode.toDataURL(value, {
       width: 224,
       margin: 2,
-      color: { dark: "#182b25", light: "#ffffff" },
+      color: { dark: "#202c29", light: "#f3f4ef" },
       errorCorrectionLevel: "M",
     }).then((v) => active && setSrc(v));
     return () => {
