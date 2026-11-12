@@ -67,3 +67,8 @@ Follow-up refinement: precede that smaller explanation with “Get paid back in 
 ## November 12 — Receipt brand and three-step story
 
 User explicitly restored homepage pixel imagery: one receipt → three shares → three friends. Center each group over its numbered workflow step and align both desktop divider lines via shared grid rows. Keep the smaller mobile story and the animated headline. Supporting line now reads “Each friend gets a private link to pay their share.” The existing pixel receipt is the app symbol for favicon, browser/home-screen icons, upload and loading; the large split/d/bill wordmark remains. Regenerate raster/SVG/ICO assets with the documented script; no offline behavior is implied by the manifest. This supersedes the earlier removal of homepage illustration.
+
+
+## November 12 — Organizer digital receipt
+
+Replace the organizer amount hero and tucked-away bill details with one paper receipt: warm ivory, pixel receipt mark, real bill name/date, aligned amounts, perforated dividers and a torn lower edge. Include original/converted totals, organizer share and current repayments together; distinguish requested reimbursements from the full bill total. Preserve actual stored FX references and demo wording. Updates reuse the existing polling; only the original photograph remains an optional disclosure. Payment requests and private recovery stay adjacent on desktop, after the receipt on mobile.

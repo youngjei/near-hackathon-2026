@@ -216,3 +216,10 @@ TypeScript and production build passed. Sixteen existing intro/journey checks pl
 ## 2026-11-12 — Give introduction text more room
 
 Removed the 30ch caption width limit and balanced short-line wrapping. Caption now uses available width, with a separate right column for motion controls, 18px/16px desktop text, 1.6 line spacing and 12px between sentences. Headline tracking loosened to -0.025em. Eight intro/alignment browser checks and production build passed; nine responsive captures had no overflow or page errors. Published source `532fd3322b31f2b7464a59f80e7328352ec837f3`, deployment `appgdep_6af55dfb6cf481c29bfa4fcfee111026`, environment revision 1. No copy, payment or audience changes.
+
+
+## 2026-11-12 — Always-visible digital bill receipt
+
+Organizer dashboard now uses an always-visible paper-style digital receipt instead of the separate amount hero and Bill details dropdown. It shows persisted totals, optional extra charge, diner count, converted total, organizer share, requested/received/remaining USDC, payment progress and recorded FX source/date. Existing five-second polling drives updates; original photo remains optionally expandable. TypeScript, production build and 14 desktop/mobile checks passed, plus a final focused rerun after footer spacing adjustment. Responsive and large-value screenshots inspected. Published source `d7b8bc1ed348c28bb427c642535d7fe1a4543905`, deployment `appgdep_6af56223ea2c81c2ad6da1c035db99a9`, environment revision 1. Demo labels, private access and disabled payment gates preserved.
+
+Receipt assertions verify exact-cent organizer/reimbursement totals, tip display, payment/refund changes, progress and live-versus-demo wording using synthetic API projections. Existing bill creation, payer isolation and receipt privacy journeys remain passing. The payer checkout details presentation is unchanged; this request implements the organizer screenshots. No funds moved or new data collected.

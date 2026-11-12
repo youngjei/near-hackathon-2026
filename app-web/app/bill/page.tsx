@@ -2,10 +2,10 @@
 import { useEffect, useState, useRef } from "react";
 import { Shell, ErrorMessage, Loading, CopyButton } from "@/components/shell";
 import { QR } from "@/components/qr";
-import { Receipt } from "@/components/receipt";
+import { BillReceipt } from "@/components/bill-receipt";
 import { api, redeem, link, Dashboard } from "@/lib/client";
 import { formatAmount } from "@/lib/money";
-import { TaskFrame, SuccessMark } from "@/components/task-frame";
+import { TaskFrame } from "@/components/task-frame";
 import { BillRecovery } from "@/components/bill-recovery";
 const labels: Record<string, string> = {
   paid: "Paid in demo",
@@ -62,49 +62,10 @@ export default function Bill() {
     );
   const isLive = data.bill.mode === "live";
   const statusLabels = isLive ? {...labels, paid: "Paid", refunded: "Refunded"} : labels;
-  const total = data.shares.reduce((v, s) => v + BigInt(s.amountUnits), 0n);
-  const received = data.shares
-    .filter((s) => s.status === "paid")
-    .reduce((v, s) => v + BigInt(s.amountUnits), 0n);
-  const paid = data.shares.filter((s) => s.status === "paid").length;
   const share = data.shares.find((s) => s.id === selected);
   return (
     <Shell notice={isLive ? null : undefined}>
-      <TaskFrame className="organizer-layout" context={<>
-        <div className="intro compact bill-context">
-          <h1>{data.bill.merchant}</h1>
-          <p>{data.bill.diners} people</p>
-        </div>
-        <div className="amount-hero">
-          <span className="muted">{isLive ? "Received" : "Received in demo"}</span>
-          <div className="big-amount">
-            {formatAmount(received.toString())}
-            <span>USDC</span>
-          </div>
-          <p className="muted">
-            of {formatAmount(total.toString())} USDC requested
-          </p>
-        </div>
-        <div
-          className="progress-track"
-          role="progressbar"
-          aria-label="Reimbursement progress"
-          aria-valuenow={paid}
-          aria-valuemin={0}
-          aria-valuemax={data.shares.length}
-        >
-          <div
-            style={{ transform: `scaleX(${Number(received) / Number(total)})` }}
-          />
-        </div>
-        <div className="progress-caption">
-          <span>
-            {paid} of {data.shares.length} paid
-          </span>
-          <span>{formatAmount((total - received).toString())} USDC left</span>
-        </div>
-        {paid === data.shares.length && <div className="all-paid" role="status"><SuccessMark /><span>{isLive ? "Everyone has paid" : "Everyone has paid in demo"}</span></div>}
-      </>}>
+      <TaskFrame className="organizer-layout" context={<BillReceipt bill={data.bill} shares={data.shares} />}>
         <div className="document-heading"><h2>Payment requests</h2><span>{data.shares.length} friends</span></div>
         <div className="share-list">
           {data.shares.map((s) => (
@@ -165,7 +126,6 @@ export default function Bill() {
             <p className="field-hint">Fixed for this bill.</p>
           </section>
         )}
-        <Receipt bill={data.bill} kind="bills" id={data.bill.id} />
         <BillRecovery dashboard={data} />
         <ErrorMessage message={error} />
       </TaskFrame>
