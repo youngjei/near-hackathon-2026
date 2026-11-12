@@ -171,3 +171,10 @@ Sanitized Sites build passed and source `e3c5ca03b656f9e7f1472eb5c6cbf4c23c246fd
 ## 2026-11-12 — Larger slash wordmark
 
 User requested a much larger centered split/d/bill logo. Updated the shared header, accessible home-link name and browser title. Desktop wordmark is 56px; mobile is 42–52px with navigation on a separate row. TypeScript and Sites build passed; centered/non-overlap checks passed on home and payer routes at 320/390/1440px. Mobile/desktop screenshots reviewed; two existing keyboard/reduced-motion scenarios passed. Published source `1eb498a6a728d9ef2973aa89f94edad1c8f44733`, deployment `appgdep_6af52de249b881c28b2a906821f87771`. Private audience and runtime environment preserved.
+
+
+## 2026-11-12 — Cream/blue visual rebuild
+
+User rejected the slate/rounded-card presentation and approved all aspects of the NEAR Hackathon reference: cream/blue, bold typography, sharp layout and pixel graphics/motion. Rebuilt the shared visual system across creation, details/review, payment, organizer history, receiving help and loading. Large centered split/d/bill retained. Space Grotesk is self-hosted with its SIL OFL; authored pixel receipt/share geometry has brief review feedback and reduced-motion support. No payment, persistence or authentication logic changed.
+
+Delegation: Sol implemented frontend styling/markup; Terra independently reviewed stable code and five representative captures; root inspected rendered screens, checked the diff and corrected short-phone checkout spacing. TypeScript and whitespace checks passed. Full browser suite: 33/34 initially; the wallet button was 27px below the 664px viewport. Scoped short-screen checkout spacing fixed this; all eight mobile checkout cases passed on rerun (34 distinct scenarios passing overall). Eighteen screenshots across desktop/mobile/320px showed no overflow or page errors. Six header alignment checks passed at 320/390/1440px. Production build passed; published source `5bac538805037f92674075358055c11ae4b70274`, deployment `appgdep_6af53876ada081c29d8209c0030194b0`, environment revision 1. Existing private audience and disabled live-payment gates preserved.

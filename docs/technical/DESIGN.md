@@ -4,10 +4,10 @@ User-authored build brief accepted November 10, 2026.
 
 - Product: a receipt becoming clear reimbursement requests for travelling friends.
 - Trust first; task completion is the primary interaction. No marketing landing page.
-- Wordmark: `split/d/bill` in lowercase, centered in the header; 56px desktop and 42–52px mobile (updated at the user’s request on November 12). Mobile navigation sits on its own row below the logo.
-- Palette (November 12): slate canvas `#f3f5f6`, white document surface, ink `#1e2932`, muted `#5d6973`, accent `#236347`, tint `#edf5ef`.
-- Single sans-serif stack, proportional text, tabular amounts. Native form controls for small-screen accessibility.
-- Responsive 960px desktop task frame with context alongside a document surface; single-column mobile composition. Saved bills use a compact 600px list. Typography and rules establish hierarchy.
+- Wordmark: `split/d/bill` in lowercase, centered in the header; 64px desktop and 44–56px mobile (updated at the user’s request on November 12). Mobile navigation sits on its own row below the logo.
+- Visual direction (November 12, superseding the earlier slate/green release): the user approved the whole nearhackathon.com reference—warm cream, strong blue, bold typography, sharp dividing rules and pixel graphics/motion. Preserve the existing task flow and centered slash wordmark. Final tokens are defined in app-web/app/globals.css.
+- Self-hosted Space Grotesk variable font (SIL OFL) for the expressive sans-serif identity, proportional UI text and tabular amounts. Preserve native form controls and clear labels. No external font requests or monospace theme.
+- Responsive task layout with context alongside the working area on desktop and one column on mobile. Flat surfaces and clear rules replace floating rounded cards; the reference supplies visual character without adding marketing sections to checkout.
 - Motion: 150–300ms transitions for entry, feedback and progress. Reduced-motion disables them. No ASCII effect because it did not clarify the core flow.
 - No filler badges, italic emphasis, monospace theme, gradient decoration, nested dashboard cards or invented metrics.
 - Three journeys: confirm/create, pay an individual share, track reimbursements.
@@ -42,3 +42,14 @@ Motion acknowledges a press immediately, explains loading and confirms successfu
 Organizer continuity: automatically remember authorized bills on the same browser, expose Your bills in navigation and provide a private recovery link for another device. Browser storage is convenience, not an identity system or cloud account. Losing both browser data and the private link loses organizer access. The receiving wallet identifier never authorizes bill management.
 
 Design guidance: [Impeccable](https://github.com/pbakaus/impeccable), especially Operate, craft-floor and animate references, plus [Vercel Web Interface Guidelines](https://github.com/vercel-labs/web-interface-guidelines). Both agent skills installed locally through the skill installer. Impeccable's binary context launcher could not initialize its cache; guidance is being applied directly, without claiming an automated detector result.
+
+
+## November 12 — Approved cream, blue and pixel direction
+
+The user rejected the slate/white/green release as bland and cited [NEAR Hackathon](https://nearhackathon.com/#tracks). Asked whether the appeal was colors, typography/layout, pixel graphics/motion or the whole combination, they answered “all of it”. This pins the new visual world and supersedes earlier palette/card guidance. Keep the existing receipt → review → requests experience and the large centered split/d/bill wordmark.
+
+Product thesis: make cross-border dinner reimbursements feel easy and worth using. Audience: friends meeting at conferences. Primary metaphor: a clear receipt becoming individual payment requests. The first screen must show the brand, receipt action and manual alternative. Voice stays direct; visual expression comes from type, color, composition and useful pixel motion. No filler badges, promotional claims, random italics, forced terminal styling or artificial waits.
+
+Motion should acknowledge an upload, splitting or confirmed completion. Static graphics still convey the same information with reduced motion. Readable amounts, truthful demo/payment states, keyboard access, mobile usability, receiving help and organizer recovery remain acceptance requirements. No payment rollout changes are part of this redesign.
+
+Font source: [Google Fonts Space Grotesk](https://github.com/google/fonts/tree/main/ofl/spacegrotesk), with the license distributed in app-web/public/fonts/OFL-Space-Grotesk.txt.

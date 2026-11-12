@@ -2,7 +2,7 @@
 
 Updated: November 12, 2026 (KST).
 
-Phase: executable payment backend and compatible external NEAR-wallet signing implemented, with rollout gates disabled. Supabase migrations 001–005 are applied. Real device/refund/funded acceptance, hosted payment credentials, reconciliation scheduling and OCR remain outstanding. The November 12 redesign and organizer recovery release is now published on the owner-private Site; execution gates remain disabled. No submission or funded project wallet exists.
+Phase: executable payment backend and compatible external NEAR-wallet signing implemented, with rollout gates disabled. Supabase migrations 001–005 are applied. Real device/refund/funded acceptance, hosted payment credentials, reconciliation scheduling and OCR remain outstanding. The November 12 cream/blue redesign and organizer recovery are now published on the owner-private Site; execution gates remain disabled. No submission or funded project wallet exists.
 
 Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site) — owner-only, ChatGPT sign-in required.
 
@@ -32,6 +32,8 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 Delivery target: a real usable application with receipt extraction and verified NEAR payments. Supabase schema and runtime connection are complete; payment execution remains simulated and is clearly labelled. Existing D1 test records are preserved but not migrated; create new links in the Supabase-backed preview.
 
 ## Latest verification
+
+- November 12 cream/blue release: user-approved NEAR Hackathon visual reference applied across creation, review, checkout, organizer/history and help/loading. Self-hosted OFL Space Grotesk, sharp rules and authored pixel receipt graphics replace floating gray/green cards. TypeScript and Sites production build passed. 34 distinct browser scenarios passed across a full run (33 pass, one short-screen positioning failure) and the corrected eight-scenario mobile checkout rerun. Eighteen desktop/mobile/320px screenshots reported no overflow or page errors; independent source/visual review completed. Published privately: source `5bac538805037f92674075358055c11ae4b70274`, deployment `appgdep_6af53876ada081c29d8209c0030194b0`, environment revision 1.
 
 - November 12 logo update: enlarged centered `split/d/bill` to 56px desktop and 42–52px mobile, with mobile navigation below. TypeScript, production build, six responsive logo checks and two keyboard/reduced-motion browser scenarios passed. Published privately: source `1eb498a6a728d9ef2973aa89f94edad1c8f44733`, deployment `appgdep_6af52de249b881c28b2a906821f87771`, environment revision 1.
 

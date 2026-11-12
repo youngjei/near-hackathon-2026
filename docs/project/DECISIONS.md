@@ -116,3 +116,8 @@ Use brief interaction/loading/completion feedback, respect reduced motion and pr
 ## 2026-11-12 — Larger split/d/bill wordmark
 
 User restored slash-separated split/d/bill branding and requested a much bigger centered logo, superseding the November 11 plain spelling. Give the mobile logo its own row so navigation remains usable.
+
+
+## 2026-11-12 — Reference-led visual redesign
+
+User explicitly approved the whole nearhackathon.com visual reference: cream and blue, bold type, sharp layout, pixel graphics and motion. Replace the slate/green floating-card visual system across creation, payment and tracking while retaining the existing product flow, centered split/d/bill wordmark and truthful demo states. Self-host open-licensed Space Grotesk; no external font requests.

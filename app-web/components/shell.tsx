@@ -10,7 +10,7 @@ export function Shell({ children, notice = "Demo · No real payments" }: { child
         <a className="wordmark" href="/" aria-label="split/d/bill home">
           split/d/bill
         </a>
-        <a className="header-link new-bill-link" href="/" aria-current={pathname === "/" ? "page" : undefined}><span aria-hidden="true">+</span> New bill</a>
+        <a className="header-link new-bill-link" href="/" aria-current={pathname === "/" ? "page" : undefined}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v14M3 10h14" /></svg> New bill</a>
       </header>
       {notice && <div className="demo-notice">{notice}</div>}
       <main id="main">{children}</main>
@@ -53,6 +53,7 @@ export function CopyButton({
 export function Loading() {
   return (
     <div className="loading" role="status" aria-live="polite">
+      <svg className="loading-receipt" viewBox="0 0 48 48" fill="none" shapeRendering="crispEdges" aria-hidden="true"><path d="M8 0h32v40h-8v8h-8v-8h-8v8H8V0Z" fill="currentColor"/><path d="M16 12h16M16 20h16M16 28h8" stroke="var(--paper)" strokeWidth="4"/></svg>
       <span>Opening your bill…</span>
       <div className="loading-skeleton" aria-hidden="true"><i /><i /><i /></div>
     </div>

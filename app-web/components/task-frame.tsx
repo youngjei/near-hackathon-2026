@@ -17,8 +17,27 @@ export function WorkflowSteps({ current }: { current: number }) {
   </ol>;
 }
 
+const receiptCells = [
+  "1111111111", "1111111111", "1100000011", "1111111111",
+  "1100000011", "1111111111", "1100110011", "1111111111",
+  "1111111111", "1101101101", "0100100100",
+];
+function PixelReceipt({ x = 0, y = 0, cell = 3, gap = 1 }: { x?: number; y?: number; cell?: number; gap?: number }) {
+  return <g fill="currentColor">{receiptCells.flatMap((row, rowIndex) =>
+    [...row].map((value, column) => value === "1" ? <rect key={`${rowIndex}-${column}`}
+      x={x + column * (cell + gap)} y={y + rowIndex * (cell + gap)} width={cell} height={cell}
+      opacity={column === 0 || rowIndex === 0 ? .55 : 1} /> : null))}</g>;
+}
 export function ReceiptIcon() {
-  return <svg className="receipt-icon" viewBox="0 0 32 36" fill="none" aria-hidden="true"><path d="M7 3h18v29l-3-2-3 2-3-2-3 2-3-2-3 2V3Z" /><path d="M11 10h10M11 15h10M11 20h4M19 20h2" /></svg>;
+  return <svg className="receipt-icon" viewBox="0 0 40 44" fill="none" shapeRendering="crispEdges" aria-hidden="true"><PixelReceipt /></svg>;
+}
+
+export function SplitGraphic({ split = false }: { split?: boolean }) {
+  return <svg className={`split-graphic ${split ? "is-split" : ""}`} viewBox="0 0 320 150" fill="none" shapeRendering="crispEdges" aria-hidden="true">
+    <g className="graphic-receipt"><PixelReceipt x={8} y={18} cell={6} gap={2}/></g>
+    {[{x: 148, y: 72}, {x: 204, y: 48}, {x: 260, y: 24}].map(({x, y}, index) =>
+      <g key={index} className={`graphic-share graphic-share-${index}`}><PixelReceipt x={x} y={y}/></g>)}
+  </svg>;
 }
 
 export function SuccessMark() {

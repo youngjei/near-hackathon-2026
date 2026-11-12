@@ -98,6 +98,10 @@ PLAYWRIGHT_BASE_URL=http://127.0.0.1:5180 npm run test:e2e
 
 Vitest includes an embedded PostgreSQL engine that executes the actual migrations, tests transaction rollback, access grants, duplicate requests, late updates and bigint serialization. Native-origin tests cover proxy requests and spoofed headers. Playwright uses separate browser contexts to check organizer/diner access boundaries and tests mobile and desktop journeys. It also tests image fallback/privacy, stale requests, concurrent retries, late settlement, refunds, keyboard entry, reduced motion and small-screen overflow. Outputs are synthetic data only. Real VIZOR/Zodl app handoffs and real payments are not tested by this suite.
 
+## Visual design
+
+The November 12 cream/blue redesign follows the user-approved NEAR Hackathon reference, with a large centered split/d/bill wordmark, sharp rules, self-hosted Space Grotesk and pixel receipt graphics. Creation, checkout and organizer history share the same styling. Reduced-motion preferences disable animation; payment statuses and rollout gates are unchanged. The font license is included in `public/fonts/OFL-Space-Grotesk.txt`. See [design direction](../docs/technical/DESIGN.md).
+
 ## Publishing
 
 `.openai/hosting.json` owns the existing Site ID. Never create another Site for this app. Use the Sites skill source workflow to build, synchronize the exact source and publish privately. D1 migrations are included in the artifact; local data is not. Keep `.env*`, `.dev.vars*`, `.wrangler`, `.sites-runtime`, test traces and credentials out of Git and deployment archives.

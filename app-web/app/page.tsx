@@ -6,7 +6,7 @@ import { allocation, currencies, formatAmount, billInput } from "@/lib/money";
 import Decimal from "decimal.js";
 import { receivingAddress as addressSchema } from "@/lib/receiving";
 import { ReceivingHelp } from "@/components/receiving-help";
-import { TaskFrame, WorkflowSteps, ReceiptIcon } from "@/components/task-frame";
+import { TaskFrame, WorkflowSteps, ReceiptIcon, SplitGraphic } from "@/components/task-frame";
 type FX = { rate: string; date: string; source: string; fixture: boolean };
 export default function CreateBill() {
   const [hydrated, setHydrated] = useState(false);
@@ -165,15 +165,16 @@ export default function CreateBill() {
   return (
     <Shell notice={mode === "live" ? null : undefined}>
       <TaskFrame className={`create-layout step-${step}`} context={<>
+        {step === "start" && <div className="intro start-intro">
+          <h1 ref={heading} tabIndex={-1}>Split a bill</h1>
+          <p>Split the total equally in USDC. Send each friend a payment link.</p>
+        </div>}
+        <SplitGraphic key={step} split={step === "review"} />
         <WorkflowSteps current={step === "start" ? 0 : 1} />
       </>}>
         <div key={step} className="step-content" aria-busy={busy}>
         {step === "start" ? (
           <>
-            <div className="intro">
-              <h1 ref={heading} tabIndex={-1}>Split a bill</h1>
-              <p>Split the total equally in USDC. Send each friend a payment link.</p>
-            </div>
             <input
               ref={input}
               type="file"
