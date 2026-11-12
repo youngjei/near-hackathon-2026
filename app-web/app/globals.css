@@ -462,3 +462,25 @@ footer { max-width: 600px; margin: 48px auto 0; padding: 24px 20px 32px; text-al
 @media (max-width: 1000px) and (min-width: 761px) { .bill-receipt { padding: 24px 18px; } .bill-receipt-lines > div { gap: 8px; } }
 @media (max-width: 760px) { .bill-receipt { padding: 24px; max-width: 480px; margin: 0 auto 14px; } }
 @media (max-width: 380px) { .bill-receipt { padding: 22px 18px; } .bill-receipt-lines { font-size: 13px; } }
+
+/* Approved wordmark: readable letters, receipt symbol and stepped slashes. */
+.brand-wordmark { display: inline-flex; align-items: center; gap: .22em; white-space: nowrap; line-height: 1; letter-spacing: -.035em; font-weight: 700; }
+.brand-lettering { display: inline-flex; align-items: center; }
+.brand-receipt { width: .62em; height: .7em; flex: 0 0 auto; color: var(--accent); overflow: visible; }
+.brand-slash { width: .4em; height: .69em; margin: .04em .045em 0 .06em; flex: 0 0 auto; color: var(--accent); }
+.wordmark { color: var(--ink); line-height: 1; }
+.wordmark:hover { color: var(--ink); }
+.brand-receipt rect { transition: transform 220ms var(--ease); }
+.wordmark:is(:hover, :focus-visible) .receipt-band-0 { transform: translateY(-3px); }
+.wordmark:is(:hover, :focus-visible) .receipt-band-2 { transform: translateY(3px); }
+.bill-receipt-brand { font-size: 22px; }
+.conversion-details summary { min-height: 44px; padding: 11px 0; cursor: pointer; color: var(--accent); font-size: 13px; }
+.conversion-details dl { display: grid; gap: 8px; margin: 12px 0; text-align: left; }
+.conversion-details dl > div { display: flex; justify-content: space-between; gap: 16px; }
+.conversion-details dd { margin: 0; text-align: right; color: var(--ink); }
+.conversion-details p { text-align: left; }
+@media (max-width: 760px) { .wordmark { font-size: clamp(36px, 9.5vw, 52px); } }
+@media (prefers-reduced-motion: reduce) {
+  .brand-receipt rect { transition: none; }
+  .wordmark:is(:hover, :focus-visible) .brand-receipt rect { transform: none; }
+}

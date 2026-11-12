@@ -24,7 +24,7 @@ const receiptCells = [
 ];
 function PixelReceipt({ x = 0, y = 0, cell = 3, gap = 1 }: { x?: number; y?: number; cell?: number; gap?: number }) {
   return <g fill="currentColor">{receiptCells.flatMap((row, rowIndex) =>
-    [...row].map((value, column) => value === "1" ? <rect key={`${rowIndex}-${column}`}
+    [...row].map((value, column) => value === "1" ? <rect key={`${rowIndex}-${column}`} className={`receipt-band-${Math.floor(rowIndex / 4)}`}
       x={x + column * (cell + gap)} y={y + rowIndex * (cell + gap)} width={cell} height={cell}
       opacity={column === 0 || rowIndex === 0 ? .55 : 1} /> : null))}</g>;
 }

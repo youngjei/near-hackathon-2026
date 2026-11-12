@@ -1,6 +1,7 @@
 "use client";
 
 import { ReceiptIcon } from "./task-frame";
+import { BrandWordmark } from "./brand-wordmark";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 export function Shell({ children, notice = "Demo · No real payments" }: { children: React.ReactNode; notice?: string | null }) {
@@ -10,7 +11,7 @@ export function Shell({ children, notice = "Demo · No real payments" }: { child
       <header className="site-header">
         <a className="header-link bills-link" href="/bills" aria-current={pathname === "/bills" ? "page" : undefined}>Your bills</a>
         <a className="wordmark" href="/" aria-label="split/d/bill home">
-          split/d/bill
+          <BrandWordmark />
         </a>
         <a className="header-link new-bill-link" href="/" aria-current={pathname === "/" ? "page" : undefined}><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v14M3 10h14" /></svg> New bill</a>
       </header>

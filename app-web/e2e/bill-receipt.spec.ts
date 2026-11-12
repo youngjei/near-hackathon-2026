@@ -19,7 +19,11 @@ test("digital receipt shows stored amounts and follows repayment updates", async
   await expect(receipt.getByText("44.93 USDC", { exact: true })).toBeVisible();
   await expect(receipt.getByText("14.98 USDC", { exact: true })).toBeVisible();
   await expect(receipt.getByText("Received in demo")).toBeVisible();
+  await expect(receipt.getByText("1 AED = 0.2723 USD")).toBeHidden();
+  await receipt.getByText("Conversion details", { exact: true }).click();
   await expect(receipt.getByText("1 AED = 0.2723 USD")).toBeVisible();
+  await expect(receipt.getByText("This bill counts 1 USDC as 1 USD.")).toBeVisible();
+  await receipt.getByText("Conversion details", { exact: true }).click();
   await expect(page.locator('summary').filter({ hasText: "Bill details" })).toHaveCount(0);
   data.shares[0].status = "paid";
   await expect(receipt.locator('.receipt-received')).toHaveText("14.98USDC", { timeout: 12000 });

@@ -77,3 +77,8 @@ Replace the organizer amount hero and tucked-away bill details with one paper re
 ## November 12 — Approved porcelain/petrol palette (current)
 
 The final user selection is porcelain #F3F4EF with petrol #14645E. This supersedes the earlier cream/cobalt colors and all pending palette notes. Ink #202C29, muted #56635D, dividers #BAC4BC, field boundaries #74837A, hover #0F514C, tint #DCE9E3 and receipt paper #FCFDF8 complete the system. App/favicon assets and browser theme use the same palette; error red keeps its semantic role. Current layout, pixel graphics, wordmark and motion remain unchanged.
+
+
+## November 13 — Approved logo option 1
+
+Use the shared BrandWordmark: the existing pixel receipt beside clean split/d/bill lettering, with petrol staircase slashes. Header hover/focus separates the receipt into three bands briefly; reduced motion preserves the static symbol. Receipt branding uses the same wordmark at a smaller size. Organizer conversion provenance is secondary information under Conversion details, with labelled exchange rate, source/date and plain-language USDC accounting assumption.

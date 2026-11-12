@@ -1,6 +1,6 @@
 # Current status
 
-Updated: November 12, 2026 (KST).
+Updated: November 13, 2026 (KST).
 
 Phase: executable payment backend and compatible external NEAR-wallet signing implemented, with rollout gates disabled. Supabase migrations 001–005 are applied. Real device/refund/funded acceptance, hosted payment credentials, reconciliation scheduling and OCR remain outstanding. The November 12 porcelain/petrol styling, digital receipt and organizer recovery are now published on the owner-private Site; execution gates remain disabled. No submission or funded project wallet exists.
 
@@ -32,6 +32,8 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 Delivery target: a real usable application with receipt extraction and verified NEAR payments. Supabase schema and runtime connection are complete; payment execution remains simulated and is clearly labelled. Existing D1 test records are preserved but not migrated; create new links in the Supabase-backed preview.
 
 ## Latest verification
+
+- November 13 approved logo and conversion disclosure: Applied approved logo option 1 in the global header and organizer receipt: pixel receipt, clean lettering and petrol stepped slashes. Receipt bands separate slightly on hover/focus with a reduced-motion override. Moved organizer FX source/date/rate and the USD-to-USDC accounting assumption into optional Conversion details. Calculation and settlement behavior are unchanged. TypeScript, production build and six desktop/mobile receipt, disclosure, layout and reduced-motion scenarios passed; responsive captures inspected. Published source `542bfda3df780f52b6fa114d77de692cdfc9f1c9`, deployment `appgdep_6af5d909ad9881c2bc463357a0b9e206`, environment revision 1.
 
 - November 12 final palette selection: Applied the user-selected porcelain/petrol palette across shared UI tokens, receipt paper, modal backdrop, QR colors, browser theme, favicon and all app icons. Exact primary colors are #F3F4EF and #14645E. Versioned icon/manifest URLs refresh old cached branding. Production build and six focused desktop/mobile receipt, metadata/alignment and complete demo-journey scenarios passed. Contrast ratios on porcelain: ink 13.07, muted 5.69, petrol 6.30, control boundaries 3.60. Responsive screenshots and regenerated icon reviewed; no prior cream/cobalt hex colors remain in active app code/assets. Published source `c31127c70981c9ce587a2a4bce551e71aa739221`, deployment `appgdep_6af5631da2b481c29a9d71c3ba9a4cd3`, environment revision 1.
 

@@ -131,3 +131,8 @@ User requested animated phrases to replace repeated split copy and emphasize con
 ## 2026-11-12 — Final brand palette
 
 User selected the porcelain/petrol comparison after feedback from friends. Adopt #F3F4EF porcelain and #14645E petrol across the app and brand assets, superseding cream/cobalt and closing the palette choice. Preserve the pixel receipt identity, typography, animations and sharp layout. Retain contrasting semantic error states.
+
+
+## 2026-11-13 — Wordmark selection and rate explanation
+
+User selected logo comparison option 1: pixel receipt plus readable lettering and pixel slashes, using the approved petrol palette. Retain the receipt as the standalone app symbol. Keep FX provenance and the USD/USDC calculation assumption available in an optional disclosure instead of always printing it on the organizer receipt. This is presentation only, not a change to rate selection or settlement.

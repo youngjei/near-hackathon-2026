@@ -1,6 +1,7 @@
 import type { Dashboard } from "@/lib/client";
 import { formatAmount } from "@/lib/money";
-import { ReceiptIcon, SuccessMark } from "./task-frame";
+import { BrandWordmark } from "./brand-wordmark";
+import { SuccessMark } from "./task-frame";
 
 export function BillReceipt({ bill, shares }: Pick<Dashboard, "bill" | "shares">) {
   const requested = shares.reduce((sum, share) => sum + BigInt(share.amountUnits), 0n);
@@ -13,8 +14,7 @@ export function BillReceipt({ bill, shares }: Pick<Dashboard, "bill" | "shares">
   const date = created.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric", timeZone: "UTC" });
   return <article className="bill-receipt" aria-label="Bill receipt">
     <header className="bill-receipt-header">
-      <ReceiptIcon className="bill-receipt-mark" />
-      <span className="bill-receipt-brand">split/d/bill</span>
+      <span className="bill-receipt-brand"><BrandWordmark /></span>
       <h1>{bill.merchant}</h1>
       <p>Created <time dateTime={created.toISOString()}>{date}</time></p>
     </header>
@@ -38,9 +38,15 @@ export function BillReceipt({ bill, shares }: Pick<Dashboard, "bill" | "shares">
       {complete && <div className="all-paid" role="status"><SuccessMark /><span>{live ? "Everyone has paid" : "Everyone has paid in demo"}</span></div>}
     </section>
     <footer className="bill-receipt-footer">
-      <p>1 {bill.currency} = {bill.fxRate} USD</p>
-      <p>{bill.fxSource} · {bill.fxDate}</p>
-      <p>1 USD = 1 USDC for this split.</p>
+      <details className="conversion-details">
+        <summary>Conversion details</summary>
+        <dl>
+          <div><dt>Exchange rate</dt><dd>1 {bill.currency} = {bill.fxRate} USD</dd></div>
+          <div><dt>Source</dt><dd>{bill.fxSource}</dd></div>
+          <div><dt>Rate date</dt><dd><time dateTime={bill.fxDate}>{bill.fxDate}</time></dd></div>
+        </dl>
+        <p>This bill counts 1 USDC as 1 USD.</p>
+      </details>
       {!live && <p className="receipt-demo-note">Demo record · No real payments</p>}
     </footer>
     {bill.hasReceipt && <details className="receipt-original"><summary>View original receipt</summary><img className="receipt-image" src={`/api/bills/${bill.id}/receipt`} alt="Original bill receipt" /></details>}
