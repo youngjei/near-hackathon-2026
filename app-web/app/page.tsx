@@ -12,12 +12,16 @@ type FX = { rate: string; date: string; source: string; fixture: boolean };
 export default function CreateBill() {
   const [hydrated, setHydrated] = useState(false);
   const [liveEnabled, setLiveEnabled] = useState(false);
+  const [liveTesting, setLiveTesting] = useState(false);
   const [sampleMode, setSampleMode] = useState(false);
   const mode = liveEnabled && !sampleMode ? "live" : "demo";
   useEffect(() => {
     let cancelled = false;
-    api<{live: {enabled: boolean}}>("config").then(config => {
-      if (!cancelled) setLiveEnabled(config.live.enabled);
+    api<{live: {enabled: boolean; testing?: boolean}}>("config").then(config => {
+      if (!cancelled) {
+        setLiveEnabled(config.live.enabled);
+        setLiveTesting(config.live.testing === true);
+      }
     }).catch(() => {});
     return () => { cancelled = true; };
   }, []);
@@ -164,7 +168,7 @@ export default function CreateBill() {
   const split =
     step === "review" && fx ? allocation(total, extra, fx.rate, diners) : null;
   return (
-    <Shell notice={mode === "live" ? null : undefined}>
+    <Shell notice={mode === "live" ? liveTesting ? "Live testing · Real funds" : "Live · Real funds" : undefined}>
       <TaskFrame className={`create-layout step-${step}`} context={<>
         {step === "start" && <div className="start-explanation"><AnimatedIntro headingRef={heading} /><ReceiptStory /></div>}
         {step !== "start" && <SplitGraphic key={step} split={step === "review"} />}

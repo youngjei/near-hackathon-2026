@@ -64,7 +64,7 @@ export default function Bill() {
   const statusLabels = isLive ? {...labels, paid: "Paid", refunded: "Refunded"} : labels;
   const share = data.shares.find((s) => s.id === selected);
   return (
-    <Shell notice={isLive ? null : undefined}>
+    <Shell notice={isLive ? data.live?.testing ? "Live testing · Real funds" : "Live · Real funds" : undefined}>
       <TaskFrame className="organizer-layout" context={<BillReceipt bill={data.bill} shares={data.shares} />}>
         <div className="document-heading"><h2>Payment requests</h2><span>{data.shares.length} friends</span></div>
         <div className="share-list">

@@ -7,6 +7,11 @@ import { paymentOptions } from "./payment-runtime";
 
 export async function handle(request: Request) {
   const settings = env as unknown as Record<string, string | undefined>;
+  // Sites authenticates and injects this header before the Worker is reached.
+  // Set this host flag only after verifying the Site is owner-private. Native
+  // Next.js never trusts these headers and validates its own owner session.
+  const ownerTesting = settings.PRIVATE_LIVE_TEST_HOST === "true" &&
+    !!request.headers.get("oai-authenticated-user-id");
   const backend = settings.STORAGE_BACKEND || "d1";
   if (backend === "supabase") {
     if (!settings.SUPABASE_URL || !settings.SUPABASE_SERVICE_ROLE_KEY)
@@ -14,7 +19,7 @@ export async function handle(request: Request) {
     return createHandler(
       supabaseStore(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_ROLE_KEY),
       settings.CRON_SECRET,
-      paymentOptions(settings),
+      paymentOptions(settings, ownerTesting),
     )(request);
   }
   // A missing/misconfigured selected backend must never silently write elsewhere.
@@ -23,6 +28,6 @@ export async function handle(request: Request) {
   return createHandler(
     d1Store(env.DB, env.BUCKET),
     settings.CRON_SECRET,
-    paymentOptions(settings),
+    paymentOptions(settings, ownerTesting),
   )(request);
 }

@@ -143,3 +143,18 @@ User selected logo comparison option 1: pixel receipt plus readable lettering an
 User explicitly expanded the beta to a third Solana wallet payment method, superseding the November 10 prohibition on Solana payers. Limit this increment to native USDC on Solana through the existing exact-output Intents route into confidential USDC. Preserve separate disabled rollout/acceptance gates until wallet, refund and funded settlement acceptance. Do not silently enable mainnet spending, add other assets or claim standard Solana transfers hide the sender. Label Zcash as Zcash (VIZOR or Zodl), and NEAR Confidential balance explicitly; describe shielded-source sender protection separately from confidential receiving and visible bridge data.
 
 The approved headline sequence is Photograph a receipt → Split the amount → Send payment requests → Get paid back privately. Keep existing loop timing, asymmetric multiline previews, pause and reduced-motion behavior.
+
+
+## 2026-11-13 — Separate owner live testing from funded acceptance
+
+- User requested real tests with their own Solana and VIZOR wallets, keeping spending approval in the wallet. Introduce explicit `LIVE_PAYMENT_TESTING` instead of falsely marking refund, device or funded acceptance complete.
+- Permit Solana/Zcash deposit routes before acceptance only with server-proven owner access, a configured partner key and global/per-route activation. Keep every acceptance flag false. Confidential-balance spending has no testing bypass and stays disabled.
+- Sites uses its platform-authenticated owner-private hosting boundary only in the Cloudflare runtime. Native Vercel uses an independent signed owner-password session and never trusts a caller-supplied Sites identity header. Keep application capability checks inside either hosting boundary.
+- Label manual/uploaded bills **Live testing · Real funds**; retain samples and all demo settlement controls as explicit simulations. A generated request, dry quote or synthetic browser test cannot establish actual wallet compatibility, refund delivery or confidential credit.
+- Prepare a separate native Next.js owner-password Vercel deployment for wallet opening outside the Sites browser; do not change the Sites audience. Vercel owner access and Supabase Cron/Vault scheduling were verified later in this session; funded acceptance remains incomplete. General public rollout remains a separate decision after acceptance evidence.
+
+
+## 2026-11-13 — Standalone origin and background reconciliation
+
+- Use `https://split-d-bill.vercel.app` as the canonical native owner-pilot origin and pin `APP_ORIGIN` to it. Vercel must collect the existing `.next-native` output; keep Sites-only Vite configuration out of native deployment. The final production deployment is READY with hosted owner login and canonical-origin checks verified.
+- Run provider status reconciliation every minute through Supabase `pg_cron`/`pg_net`, using the existing bearer token held in Vault as `splitdbill_reconcile_token`. Keep token values out of operational SQL and source. The verified HTTP 200 empty run establishes scheduling and authorization, not funded settlement or acceptance. This job reads statuses and never authorizes wallet spending.

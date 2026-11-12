@@ -115,7 +115,7 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
       <SuccessMark />
       <h2>Payment complete</h2>
     </div> : <>
-      {!data.live?.enabled && <p className="inline-note" role="status">{data.live?.reason || "Live payments are not enabled. No payment request can be created yet."}</p>}
+      {(!data.live?.enabled || data.live.testing) && <p className="inline-note" role="status">{data.live?.reason || "Live payments are not enabled. No payment request can be created yet."}</p>}
       {active && <section className="live-attempt" aria-label="Current payment request">
         {!instructions && <h2>{unresolved ? "Checking payment" : expired && active.status === "pending" ? "Quote expired" : active.status === "pending" ? "Payment details" : `Payment ${active.status}`}</h2>}
         {!instructions && payment?.statusMessage && <p className="inline-note" role="status">{payment.statusMessage}</p>}

@@ -89,6 +89,7 @@ export type AttemptView = {
   };
 };
 export type Dashboard = {
+  live?: Checkout["live"];
   bill: BillView;
   receivingAddress: string | null;
   shares: ShareView[];
@@ -100,6 +101,7 @@ export type Checkout = {
   attempts: AttemptView[];
   live?: {
     enabled: boolean;
+    testing?: boolean;
     reason: string;
     methods: { zcash: boolean; confidential: boolean; solana: boolean };
   };

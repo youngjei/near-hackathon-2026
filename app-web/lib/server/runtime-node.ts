@@ -2,6 +2,7 @@ import { createHandler } from "./api";
 import { supabaseStore } from "./supabase-store";
 import { json } from "./security";
 import { paymentOptions } from "./payment-runtime";
+import { testAccess, testOwnerAuthorized } from "./test-access";
 
 // Native Next.js entry point; never imported by browser components.
 export async function handle(request: Request) {
@@ -17,6 +18,8 @@ export async function handle(request: Request) {
   } catch { /* Invalid deployment configuration fails closed. */ }
   if (!validOrigin)
     return json({ error: "Application origin is not configured." }, 503);
+  const accessResponse = await testAccess(request, process.env);
+  if (accessResponse) return accessResponse;
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY)
     return json({ error: "Supabase storage is not configured." }, 503);
   const url = new URL(request.url);
@@ -24,6 +27,6 @@ export async function handle(request: Request) {
   return createHandler(
     supabaseStore(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
     CRON_SECRET,
-    paymentOptions(process.env),
+    paymentOptions(process.env, testOwnerAuthorized(request, process.env)),
   )(canonicalRequest);
 }

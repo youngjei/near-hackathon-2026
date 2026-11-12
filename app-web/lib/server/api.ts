@@ -108,7 +108,7 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
         token: await shareToken(token, s.id),
       })),
     );
-    return { bill: billView(bill), organizerToken: token, receivingAddress: bill.recipient_account ? displayReceivingAddress(bill.recipient_account) : null, shares: result };
+    return { bill: billView(bill), live: readiness, organizerToken: token, receivingAddress: bill.recipient_account ? displayReceivingAddress(bill.recipient_account) : null, shares: result };
   }
   async function checkout(share: Share, bill: Bill) {
     const attempts = await store.attempts(share.id);

@@ -1,0 +1,14 @@
+.env*
+.dev.vars*
+.openai
+.wrangler
+.sites-runtime
+vite.config.ts
+node_modules
+.next
+.next-native
+dist
+test-results
+playwright-report
+coverage
+*.log

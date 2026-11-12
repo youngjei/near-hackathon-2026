@@ -1,10 +1,10 @@
 # split/d/bill web beta
 
-A persisted receipt-to-reimbursement application with **Supabase PostgreSQL and private Storage**, plus an isolated D1/R2 development mode. The default configuration remains an explicitly labelled simulation. Real Zcash quotes, durable reconciliation and existing-confidential-balance NEP-413 wallet signing are implemented behind disabled, per-route gates. No user wallet has been connected and no funded acceptance test has run.
+A persisted receipt-to-reimbursement application with **Supabase PostgreSQL and private Storage**, plus an isolated D1/R2 development mode. The default configuration remains an explicitly labelled simulation. Real quotes, durable reconciliation and existing-confidential-balance NEP-413 wallet signing are implemented. The owner-private Site now enables Solana USDC and Zcash in an explicit **Live testing · Real funds** mode; confidential sending stays disabled. All funded-acceptance flags remain false, and no funded acceptance test has completed. Sample bills remain simulations.
 
 ## Run locally
 
-Use Node 24 LTS and npm. The current implementation uses React and Next.js App Router conventions through Vinext, with Sites Cloudflare Workers, D1 and private R2 storage. It is not deployed to Vercel. Supabase is connected through a server-only adapter and transactional RPCs. Native Next.js also builds and runs against Supabase.
+Use Node 24 LTS and npm. The current implementation uses React and Next.js App Router conventions through Vinext, with Sites Cloudflare Workers, D1 and private R2 storage. The native Next.js Vercel owner pilot is deployed and its canonical origin, owner login and API access checks passed. Supabase is connected through a server-only adapter and transactional RPCs. Native Next.js also builds and runs against Supabase.
 
 From this directory:
 
@@ -39,9 +39,51 @@ npm run build:next
 APP_ORIGIN=http://127.0.0.1:5180 npm run start:next
 ```
 
-Set `APP_ORIGIN` to the exact HTTPS deployment origin for hosting, without a trailing slash. It pins CSRF validation and secure cookies independently of proxy headers. A Vercel deployment can use `npm run build:next`; no Vercel project has been provisioned.
+Set `APP_ORIGIN` to the exact HTTPS deployment origin for hosting, without a trailing slash. It pins CSRF validation and secure cookies independently of proxy headers. The Vercel project uses `vercel.json` with `npm run build:next` and Node 24. The owner-password gate is implemented; the production deployment, canonical origin and hosted owner login are verified. See the reproducible hosting steps below.
 
 Sites uses the Cloudflare entry point. Set hosted `STORAGE_BACKEND=supabase` plus the two server credentials using runtime secret configuration to use the same database. D1 remains available with `STORAGE_BACKEND=d1`; selecting an unavailable backend never silently falls back. Old D1 preview records are retained but are not copied to Supabase.
+
+## Native Vercel owner pilot
+
+Use Node 24 and Vercel CLI 65.15.0. The canonical address is [the standalone pilot](https://split-d-bill.vercel.app). Production deployment `dpl_BCMYhr1jDLgV1BSzX32gjHEqDhAR` is READY with this exact `APP_ORIGIN`. Hosted owner-password login and the real-funds notice were verified. `vercel.json` selects native Next.js with the `.next-native` output directory. `.vercelignore` excludes Sites-only configuration, including `vite.config.ts`, and local secrets/artifacts.
+
+From the repository root:
+
+```sh
+cd app-web
+node --version
+npm ci
+npx vercel@65.15.0 login
+npx vercel@65.15.0 link --yes --project split-d-bill --scope youngjei326-9568s-projects
+```
+
+Expected result: Node reports v24.x, dependencies install, and this directory links to the existing Vercel project. In Vercel project settings select Node.js 24.x. Add server-only production configuration through the CLI prompts; commands below contain names only. Enter values privately, never in source or chat:
+
+```sh
+npx vercel@65.15.0 env add APP_ORIGIN --environment production --sensitive --yes
+npx vercel@65.15.0 env add SUPABASE_URL --environment production --sensitive --yes
+npx vercel@65.15.0 env add SUPABASE_SERVICE_ROLE_KEY --environment production --sensitive --yes
+npx vercel@65.15.0 env add NEAR_INTENTS_API_KEY --environment production --sensitive --yes
+npx vercel@65.15.0 env add CRON_SECRET --environment production --sensitive --yes
+npx vercel@65.15.0 env add PRIVATE_TEST_PASSWORD --environment production --sensitive --yes
+npx vercel@65.15.0 env add STANDALONE_PRIVATE_ACCESS --environment production --sensitive --yes
+npx vercel@65.15.0 env add LIVE_PAYMENT_TESTING --environment production --sensitive --yes
+npx vercel@65.15.0 env add LIVE_PAYMENTS_ENABLED --environment production --sensitive --yes
+npx vercel@65.15.0 env add LIVE_ZCASH_ENABLED --environment production --sensitive --yes
+npx vercel@65.15.0 env add LIVE_SOLANA_ENABLED --environment production --sensitive --yes
+npx vercel@65.15.0 env add LIVE_CONFIDENTIAL_ENABLED --environment production --sensitive --yes
+npx vercel@65.15.0 env add ZCASH_ACCEPTANCE_VERIFIED --environment production --sensitive --yes
+npx vercel@65.15.0 env add SOLANA_ACCEPTANCE_VERIFIED --environment production --sensitive --yes
+npx vercel@65.15.0 env add CONFIDENTIAL_ACCEPTANCE_VERIFIED --environment production --sensitive --yes
+npm run typecheck
+npm test
+npm run build:next
+npx vercel@65.15.0 deploy --prod --yes --scope youngjei326-9568s-projects
+```
+
+Use `APP_ORIGIN` equal to the exact canonical HTTPS origin above, without a trailing slash. Use a random owner password of at least 32 characters. Set `STANDALONE_PRIVATE_ACCESS=true` to protect pages and `LIVE_PAYMENT_TESTING=true` to enforce owner API sessions. Enable the global/Zcash/Solana switches for this pilot; leave confidential sending and every acceptance flag false. `PRIVATE_LIVE_TEST_HOST` is Sites-only and must not authorize native access. Do not replace existing production environment values blindly; inspect variable names in Vercel settings first. Deployment is an operator action requiring authorization.
+
+Expected result after a successful deployment: the canonical URL opens the owner-password form; unauthenticated API requests are denied. Owner login creates an origin-bound, HTTP-only signed session for 12 hours. Native access never trusts Sites identity headers. Open **Try a sample bill** → expect **Demo · No real payments**. Start a manual/uploaded bill → expect **Live testing · Real funds**. Do not treat either UI check as wallet/refund acceptance. Hosted checks passed: unauthenticated API access returns 401; owner login returns 303 with its session cookie; authorized config returns live/testing with Zcash and Solana enabled, confidential sending disabled, Supabase storage and OCR disabled. An actual browser owner login reached the homepage and its real-funds notice. These checks made no funded payment.
 
 ## Demo walkthrough
 
@@ -53,7 +95,7 @@ Sites uses the Cloudflare entry point. Set hosted `STORAGE_BACKEND=supabase` plu
 6. Open checkout → choose Zcash, confidential USDC or Solana USDC → **Try … demo** → **Simulate successful payment**. No address, live quote, wallet signature or spending submission exists in this mode.
 7. The organizer page updates within about five seconds while open. Close it, reopen the app and select **Your bills** → open the saved bill to see current payment progress. **Keep your organizer link** exposes a private recovery link for a different browser; save it privately. **Test another outcome** exercises expiry, failure, refund and late settlement.
 
-The owner-private Sites deployment is for the owner to review. Friends cannot use it until an explicitly authorized audience change/deployment is made. Individual application capabilities remain required even within the hosting access boundary.
+The owner-private Sites deployment is for owner review and explicitly authorized wallet testing. Friends cannot use it until an explicitly authorized audience change/deployment is made. Individual application capabilities remain required even within the hosting access boundary.
 
 ## Privacy and correctness
 
@@ -72,15 +114,17 @@ The owner-private Sites deployment is for the owner to review. Friends cannot us
 | D1 / R2 | Implemented for the Sites preview and local emulator |
 | Fiat reference rates | Frankfurter adapter with dated, labelled fixture fallback in demo |
 | NEAR AI | Server adapter implemented; no model/credential verified; upload route deliberately uses manual entry |
-| Confidential Intents | Quote allocation, strict signatures, exact route binding and status reconciliation implemented; unfunded ZEC status and confidential intent generation verified; execution gates remain disabled |
+| Confidential Intents | Quote allocation, strict signatures, route binding and reconciliation implemented; owner-only Solana/Zcash testing enabled; confidential spending disabled; funded acceptance incomplete |
 | ZIP-321 | Exact-amount payment QR/open/copy from verified executable quotes; VIZOR/Zodl device/refund tests pending; no fundable request in demo |
 | Wallet signing | NEAR Connect 0.12.0 + NEP-413 for a compatible external NEAR wallet with an existing confidential balance; near.com-created passkey bridge unavailable |
 | Supabase | Server adapter, atomic bill/attempt operations, rate limits and private receipt storage implemented |
-| Cron | Protected provider reconciliation endpoint implemented; no recurring schedule configured |
+| Cron | Supabase pg_cron/pg_net job runs every minute with a Vault-held token; HTTP 200 empty-run result verified |
 
-`POST /api/reconcile` requires a server-configured `CRON_SECRET` bearer token. It expires demo attempts, cleans rate counters and reconciles stored live attempts through the provider, up to 20 per call with concurrency 3. It remains available for settlement when new-payment gates are disabled. Live checkout additionally polls its own capability-scoped reconciliation every 15 seconds while visible. Configure a server scheduler before live rollout; no schedule is installed.
+`POST /api/reconcile` requires a server-configured `CRON_SECRET` bearer token. It expires demo attempts, cleans rate counters and reconciles stored live attempts through the provider, up to 20 per call with concurrency 3. It remains available for settlement when new-payment gates are disabled. Live checkout additionally polls its own capability-scoped reconciliation every 15 seconds while visible. Supabase `pg_cron`/`pg_net` now run job `splitdbill-reconcile` (job ID 1) every minute. The existing server token is stored in Vault as `splitdbill_reconcile_token`. A real scheduled HTTP 200 response with `{ok:true,checked:0,updated:0,unavailable:0}` was verified; this confirms background invocation, not funded settlement.
 
-See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Partner dry-quote access is verified. Organizer entry now requires the full internal `nearcom:` address, with format validation, finding instructions and confirmation before saving. The normalized account is immutable on the bill and omitted from diner responses. No organizer wallet login or ownership proof is required. The planned execution route strips the display prefix and uses `CONFIDENTIAL_INTENTS`; real dry quotes to the supplied account passed. Actual payment execution is still disabled by configuration. Existing confidential payers can connect a supported external NEAR wallet, review the stored exact intent and explicitly sign it; near.com-created passkey accounts are not supported by that connector. Real device, refund and funded settlement checks remain pending. Credentials alone do not enable these paths.
+The repeatable operational script is [reconciliation-cron.sql](supabase/operations/reconciliation-cron.sql). In a new project's SQL editor: store the server's existing `CRON_SECRET` privately in Vault under `splitdbill_reconcile_token`, then run that script → expect one active `splitdbill-reconcile` job with schedule `* * * * *`. Inspect `net._http_response` after the next minute → expect status 200 and the reconciliation result. The SQL contains no secret value, performs status reads and never signs or sends wallet funds. The file also contains the command to pause the job when owner testing ends.
+
+See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Partner dry-quote access is verified. Organizer entry now requires the full internal `nearcom:` address, with format validation, finding instructions and confirmation before saving. The normalized account is immutable on the bill and omitted from diner responses. No organizer wallet login or ownership proof is required. The planned execution route strips the display prefix and uses `CONFIDENTIAL_INTENTS`; real dry quotes to the supplied account passed. The owner-only pilot can allocate real Solana/Zcash payment requests. General rollout and confidential-balance spending remain disabled. Existing confidential payers can connect a supported external NEAR wallet, review the stored exact intent and explicitly sign it; near.com-created passkey accounts are not supported by that connector. Real device, refund and funded settlement checks remain pending. Credentials alone do not enable these paths.
 
 See the [payment adapter and near.com handoff](../docs/technical/PAYMENT_ADAPTER.md) for verified behavior and remaining integration work. `npm run check:intents` explicitly runs nine unfunded, signed route estimates across Zcash, confidential USDC and Solana USDC using the local partner key; it creates no payment address and saves sanitized evidence. It is separate from default tests and the hosted application.
 
@@ -118,7 +162,7 @@ See [wallet compatibility](../docs/technical/WALLET_COMPATIBILITY.md) for source
 - `POST /api/shares/:id/submit` accepts attemptId plus accountId/publicKey/signature only. It cannot accept an altered intent, amount or recipient. A wallet signature spends funds; no signing happens automatically.
 - `POST /api/shares/:id/refresh` reconciles only that authorized share. `POST /api/reconcile` requires CRON_SECRET and reconciles globally.
 
-Do not enable any route merely because credentials exist. The default-off switches in `.env.example` require global activation, a per-method switch and that method's acceptance switch. Set acceptance only after explicitly authorized wallet-device, refund, late-payment and actual confidential-credit checks. Hosted secrets and scheduler configuration are separate from local environment values.
+Credentials alone never enable a route. General rollout requires global activation, a per-method switch and that method's acceptance switch. The separate owner-only pilot uses `LIVE_PAYMENT_TESTING=true` plus verified server-side owner access to allow Solana/Zcash testing before acceptance. It still requires `LIVE_PAYMENTS_ENABLED`, the route switch and `NEAR_INTENTS_API_KEY`; all acceptance flags stay false. Confidential spending has no testing bypass. Set acceptance only after wallet-device, refund, late-payment and actual confidential-credit checks. Hosted secrets and scheduling remain separate from local environment values.
 
 Executable quotes and generated signer payloads are private server records. Atomic reservations prevent duplicate quote allocation and duplicate intent submission. Timeout/unknown outcomes retain their lock. Once an executable quote exists, replacement quotes for that share remain blocked even after failure/refund, because provider finality/cancellation has not been verified; organizer review is required. Same-key network retries reuse the existing attempt, and cancelling a wallet prompt before submission does not spend funds. Old requests continue reconciliation; once any deposit is detected, payment instructions cannot reappear following a status regression.
 
@@ -139,4 +183,4 @@ Migration `supabase/migrations/202611130006_solana_usdc_method.sql` extends the 
 
 The implemented real route uses exact-output mainnet Solana USDC → confidential USDC and Solana Pay wallet-open/QR/copy instructions. It pins the USDC mint and validates amounts, quote signatures, expiry and wallet-owner address format. Ordinary keypair wallet addresses are supported; off-curve PDA/ATA addresses and memo-dependent quotes are rejected. An address-format check cannot establish ownership or recognize every exchange/token account.
 
-`LIVE_SOLANA_ENABLED` and `SOLANA_ACCEPTANCE_VERIFIED` remain false. Real Solana-wallet compatibility, SOL fees, refund delivery and actual confidential credit are unverified. A dry quote or simulated payment is not acceptance. Solana signing stays in the user's wallet; no sender privacy layer is added.
+`LIVE_SOLANA_ENABLED` is true in the owner-only Sites and Vercel pilots; `SOLANA_ACCEPTANCE_VERIFIED` remains false. Real Solana-wallet compatibility, SOL fees, refund delivery and actual confidential credit are unverified. A dry quote or simulated payment is not acceptance. Solana signing stays in the user's wallet; no sender privacy layer is added.
