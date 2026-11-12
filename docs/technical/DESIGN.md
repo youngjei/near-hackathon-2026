@@ -53,3 +53,10 @@ Product thesis: make cross-border dinner reimbursements feel easy and worth usin
 Motion should acknowledge an upload, splitting or confirmed completion. Static graphics still convey the same information with reduced motion. Readable amounts, truthful demo/payment states, keyboard access, mobile usability, receiving help and organizer recovery remain acceptance requirements. No payment rollout changes are part of this redesign.
 
 Font source: [Google Fonts Space Grotesk](https://github.com/google/fonts/tree/main/ofl/spacegrotesk), with the license distributed in app-web/public/fonts/OFL-Space-Grotesk.txt.
+
+
+## November 12 — Animated receipt-to-request introduction
+
+User requested replacing the redundant home heading and description with a phrase sequence: Photograph a receipt → Split the amount → Send ready-to-pay requests → Privately. Keep the logo and pending palette choice. One 12.2-second pass uses 350ms decelerating arrivals, readable holds and 200ms accelerating exits, then settles on the accent-colored final phrase. A stable grid reserves text space; upload remains available immediately. Pause/resume/replay, hidden/offscreen pausing and a static reduced-motion/no-script alternative preserve access. Screen readers receive one complete stable heading, without repeated live announcements.
+
+The persistent line “One private payment link for each friend” scopes privacy to individual requests, without claiming that every wallet/chain route is untraceable. Remove the home decorative split illustration so the words are the focal motion; preserve the review graphic and meaningful interaction feedback elsewhere.

@@ -121,3 +121,8 @@ User restored slash-separated split/d/bill branding and requested a much bigger 
 ## 2026-11-12 — Reference-led visual redesign
 
 User explicitly approved the whole nearhackathon.com visual reference: cream and blue, bold type, sharp layout, pixel graphics and motion. Replace the slate/green floating-card visual system across creation, payment and tracking while retaining the existing product flow, centered split/d/bill wordmark and truthful demo states. Self-host open-licensed Space Grotesk; no external font requests.
+
+
+## 2026-11-12 — One-pass animated homepage explanation
+
+User requested animated phrases to replace repeated split copy and emphasize convenience/privacy. Use one readable sequence ending on Privately, with pause/replay and a static reduced-motion alternative; actions are never gated by animation. Keep private-link wording explicit and do not claim verified end-to-end wallet anonymity. Palette selection remains pending.
