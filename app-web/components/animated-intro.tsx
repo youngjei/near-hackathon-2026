@@ -4,11 +4,12 @@ import { useEffect, useRef, useState, type Ref } from "react";
 import "./animated-intro.css";
 
 const phrases = ["Photograph a receipt.", "Split the amount.", "Send ready-to-pay requests.", "Privately."];
-const arrival = 350;
+const arrival = 500;
 const hold = 2400;
-const exit = 200;
-const phraseDuration = arrival + hold + exit;
+// The next arrival shares the outgoing phrase's 500ms exit: no empty beat.
+const phraseDuration = arrival + hold;
 const sequenceDuration = (phrases.length - 1) * phraseDuration + arrival + 3000;
+const handoffEasing = "cubic-bezier(.4, 0, .2, 1)";
 type MotionState = "static" | "running" | "paused" | "complete";
 
 export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingElement> }) {
@@ -53,13 +54,13 @@ export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingEleme
         const last = index === words.length - 1;
         const start = index * phraseDuration;
         return word.animate([
-          { opacity: 0, transform: "translateX(28px)", offset: 0, easing: start ? "linear" : "cubic-bezier(.16, 1, .3, 1)" },
-          ...(start ? [{ opacity: 0, transform: "translateX(28px)", offset: start / sequenceDuration, easing: "cubic-bezier(.16, 1, .3, 1)" }] : []),
+          { opacity: 0, transform: "translateX(12px)", offset: 0, easing: start ? "linear" : handoffEasing },
+          ...(start ? [{ opacity: 0, transform: "translateX(12px)", offset: start / sequenceDuration, easing: handoffEasing }] : []),
           { opacity: 1, transform: "translateX(0)", offset: (start + arrival) / sequenceDuration },
-          { opacity: 1, transform: "translateX(0)", offset: last ? 1 : (start + arrival + hold) / sequenceDuration, easing: "cubic-bezier(.7, 0, .84, 0)" },
+          { opacity: 1, transform: "translateX(0)", offset: last ? 1 : (start + phraseDuration) / sequenceDuration, easing: handoffEasing },
           ...(!last ? [
-            { opacity: 0, transform: "translateX(-24px)", offset: (start + phraseDuration) / sequenceDuration },
-            { opacity: 0, transform: "translateX(-24px)", offset: 1 },
+            { opacity: 0, transform: "translateX(-12px)", offset: (start + phraseDuration + arrival) / sequenceDuration },
+            { opacity: 0, transform: "translateX(-12px)", offset: 1 },
           ] : []),
         ], { duration: sequenceDuration, fill: "both" });
       });
@@ -68,12 +69,12 @@ export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingEleme
         const start = index * phraseDuration;
         const last = index === phrases.length - 1;
         const visibleUntil = last ? start + 550 : start + arrival + hold;
-        const hiddenAt = last ? start + 1000 : start + phraseDuration;
+        const hiddenAt = last ? start + 1000 : start + phraseDuration + arrival;
         return peek.animate([
           { opacity: index ? 0 : .4, offset: 0 },
-          ...(start ? [{ opacity: 0, offset: start / sequenceDuration }] : []),
+          ...(start ? [{ opacity: 0, offset: start / sequenceDuration, easing: handoffEasing }] : []),
           { opacity: .4, offset: (start + arrival) / sequenceDuration },
-          { opacity: .4, offset: visibleUntil / sequenceDuration },
+          { opacity: .4, offset: visibleUntil / sequenceDuration, easing: handoffEasing },
           { opacity: 0, offset: hiddenAt / sequenceDuration },
           { opacity: 0, offset: 1 },
         ], { duration: sequenceDuration, fill: "both" });

@@ -197,3 +197,10 @@ TypeScript, four focused desktop/mobile animation tests, whitespace and producti
 ## 2026-11-12 — Publishing retry succeeded
 
 Restarted the supported Sites publishing helper in a fresh session with a new short-lived credential. The same hidden-stdin approval path succeeded; no bypass or application code changes were needed. Reused the already validated production build, pushed and packaged source `dc5ed40a1d95153e054d19703748ce465529d14a`, and published successfully as deployment `appgdep_6af556b0a5fc81c29de581f31251d05a`, environment revision 1. Native deployment returned succeeded and the existing Site URL. The precise cause of the earlier review-service Bad Request is unknown. Existing owner-only audience and disabled live-payment gates are preserved.
+
+
+## 2026-11-12 — Smooth phrase handoffs
+
+User reported transitions felt rough. Source inspection found separate exit/arrival beats and a sharply accelerating 200ms exit. Replaced these with concurrent 500ms handoffs using a common smooth curve, reduced travel to 12px and synchronized the edge fragments. Retained 2.4-second reading holds, the overall 12.2-second pass, final Privately state and all motion controls.
+
+TypeScript and production build passed. Six desktop/mobile browser tests passed, including continuous opacity sampling to catch blank/dim handoffs, pause/resume/replay, stable layout and reduced motion. Nine responsive captures reported no page errors or overflow; representative mobile/desktop states inspected and autoplay recording saved. Published source `da5ecbf83cac4431b9911864d3615a14b6d75613`, deployment `appgdep_6af55962d52081c295f59d5601412e20`, environment revision 1. Physical-device frame-rate profiling was not performed. No backend, palette, audience or rollout changes.

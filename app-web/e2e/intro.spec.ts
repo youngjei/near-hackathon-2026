@@ -41,3 +41,24 @@ test("reduced motion keeps a readable static introduction and narrow layouts fit
   await page.getByRole("button", { name: "Enter details manually" }).click();
   await expect(page.getByRole("heading", { name: "Bill details" })).toBeVisible();
 });
+
+test("phrase handoffs never leave an empty or dim headline", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Pause animation" }).click();
+  const samples = await page.locator(".animated-intro").evaluate(element => {
+    const animations = element.getAnimations({ subtree: true });
+    const words = Array.from(element.querySelectorAll(".animated-intro-phrase"));
+    const samples = [];
+    for (let time = 1000; time <= 10000; time += 50) {
+      animations.forEach(animation => { animation.currentTime = time; });
+      const opacities = words.map(word => Number(getComputedStyle(word).opacity));
+      samples.push({ total: opacities.reduce((a, b) => a + b, 0), strongest: Math.max(...opacities) });
+    }
+    return samples;
+  });
+  for (const sample of samples) {
+    expect(sample.total).toBeCloseTo(1, 2);
+    expect(sample.strongest).toBeGreaterThanOrEqual(.49);
+  }
+});
