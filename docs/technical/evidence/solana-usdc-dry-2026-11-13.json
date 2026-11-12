@@ -1,0 +1,38 @@
+{
+  "checkedAt": "2026-11-12T16:19:48.224Z",
+  "syntheticAccounts": true,
+  "dryOnly": true,
+  "fundsMoved": false,
+  "originAsset": "nep141:sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near",
+  "mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+  "recipientType": "CONFIDENTIAL_INTENTS",
+  "results": [
+    {
+      "kind": "estimate",
+      "inputAsset": "USDC",
+      "inputAmount": "5.051102",
+      "outputUnits": "5000000",
+      "quotedAt": "2026-11-12T16:19:47.645Z",
+      "estimatedSeconds": 20,
+      "signatureVerified": true
+    },
+    {
+      "kind": "estimate",
+      "inputAsset": "USDC",
+      "inputAmount": "15.154497",
+      "outputUnits": "15000000",
+      "quotedAt": "2026-11-12T16:19:48.816Z",
+      "estimatedSeconds": 20,
+      "signatureVerified": true
+    },
+    {
+      "kind": "estimate",
+      "inputAsset": "USDC",
+      "inputAmount": "50.513705",
+      "outputUnits": "50000000",
+      "quotedAt": "2026-11-12T16:19:49.796Z",
+      "estimatedSeconds": 20,
+      "signatureVerified": true
+    }
+  ]
+}

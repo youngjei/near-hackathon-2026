@@ -30,7 +30,7 @@ function sqliteD1() {
 }
 beforeAll(async()=>{
  await pg.exec(`create role anon;create role authenticated;create role service_role bypassrls;create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);`);
- for(const filename of ['202611100001_beta.sql','202611100002_application_modes.sql','202611100003_server_adapter.sql','202611100004_receiving_account.sql','202611110005_durable_live_payments.sql']) await pg.exec(await readFile(new URL('../supabase/migrations/'+filename,import.meta.url),'utf8'));
+ for(const filename of ['202611100001_beta.sql','202611100002_application_modes.sql','202611100003_server_adapter.sql','202611100004_receiving_account.sql','202611110005_durable_live_payments.sql','202611130006_solana_usdc_method.sql']) await pg.exec(await readFile(new URL('../supabase/migrations/'+filename,import.meta.url),'utf8'));
  for(const filename of ['0000_organic_jimmy_woo.sql','0001_complete_bruce_banner.sql','0002_durable_live_payments.sql']) sqlite.exec(await readFile(new URL('../drizzle/'+filename,import.meta.url),'utf8'));
  vi.stubGlobal('fetch',async(input:string|URL|Request,init?:RequestInit)=>{
   const request=new Request(input,init),name=new URL(request.url).pathname.split('/').pop()!;
@@ -136,7 +136,7 @@ const refund='t1NYKoZGziMsyMvgK9K5b2qZGym3UQsw3Tz';
 function executable(route:PaymentRoute):VerifiedQuote {
  const now=Date.now(),q=quote(now+14*60000);
  q.quoteRequest=paymentQuoteRequest(route,false,now);q.quote.amountOut=route.amountUnits;q.quote.minAmountOut=route.amountUnits;
- q.quote.depositAddress=route.method==='zcash'?refund:'synthetic.deposit';return q;
+ q.quote.depositAddress=route.method==='zcash'?refund:route.method==='solana'?'GmaDrppBC7P5ARKV8g3djiwP89vz1jLK23V2GBjuAEGB':'synthetic.deposit';return q;
 }
 const makeProvider=()=>({allocate:vi.fn(async(route:PaymentRoute)=>executable(route)),status:vi.fn(async()=>({state:'pending' as const,providerStatus:'PENDING_DEPOSIT',updatedAt:new Date().toISOString()}))});
 for(const kind of ['supabase','d1'])describe(kind+' synthetic service',()=>{
@@ -149,6 +149,33 @@ for(const kind of ['supabase','d1'])describe(kind+' synthetic service',()=>{
   expect(provider.allocate).toHaveBeenCalledTimes(1);const a=(await db.reconcilableLiveAttempts(1,s.id))[0];
   const view=await livePaymentView(db,a);expect(view?.uri).toBe('zcash:'+refund+'?amount=0.01000000');
   expect(JSON.stringify(view)).not.toMatch(/recipient|refundTo|signature|correlationId|synthetic.near/);
+ });
+ test('Solana persists once, projects USDC URI, hides it after deposit and reconciles credit',async()=>{
+  const db=store(),{b,s}=await dinner(db),provider=makeProvider();
+  const input={method:'solana' as const,requestKey:crypto.randomUUID(),refundAddress:'GmaDrppBC7P5ARKV8g3djiwP89vz1jLK23V2GBjuAEGB'};
+  const gates={zcash:false,confidential:false,solana:true};
+  await expect(createLivePayment(db,provider,s,b,input,{...gates,solana:false})).rejects.toMatchObject({status:503});
+  const a=await createLivePayment(db,provider,s,b,input,gates);
+  expect((await createLivePayment(db,provider,s,b,input,gates)).id).toBe(a.id);
+  expect(provider.allocate).toHaveBeenCalledTimes(1);
+  expect(await livePaymentView(db,a)).toMatchObject({symbol:'USDC',uri:'solana:'+input.refundAddress+'?amount=1.000000&spl-token=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'});
+  expect(JSON.stringify(await livePaymentView(db,a))).not.toMatch(/recipient|refundTo|signature|synthetic.near/);
+  await expect(createLivePayment(db,provider,s,b,{...input,requestKey:crypto.randomUUID()},gates)).rejects.toMatchObject({status:409});
+  const now=Date.now();
+  await db.recordLiveSettlement(a.id,{state:'pending',providerStatus:'KNOWN_DEPOSIT_TX',updatedAt:new Date(now).toISOString()},now);
+  expect((await livePaymentView(db,(await db.liveAttempt(a.id))!))?.uri).toBeUndefined();
+  const status=vi.fn(async()=>({state:'paid' as const,providerStatus:'SUCCESS',updatedAt:new Date(now+1000).toISOString()}));
+  await reconcileLivePayments(db,{...provider,status},{shareId:s.id,now:now+1000});
+  expect(status).toHaveBeenCalledTimes(1);expect((await db.attempts(s.id))[0].status).toBe('paid');
+ });
+ test('unsupported Solana memo leaves an unknown lock and no fundable instructions',async()=>{
+  const db=store(),{b,s}=await dinner(db),provider=makeProvider();
+  provider.allocate.mockImplementation(async(route)=>{const q=executable(route);q.quote.depositMemo='required';return q;});
+  await expect(createLivePayment(db,provider,s,b,{method:'solana',requestKey:crypto.randomUUID(),refundAddress:'GmaDrppBC7P5ARKV8g3djiwP89vz1jLK23V2GBjuAEGB'},{zcash:false,confidential:false,solana:true})).rejects.toMatchObject({status:503});
+  const attempt=(await db.reconcilableLiveAttempts(1,s.id))[0];
+  // Unknown allocations without a persisted quote are kept locked for review.
+  const saved=attempt??await db.liveAttempt((await db.attempts(s.id))[0].id);
+  expect(saved?.allocation_state).toBe('unknown');expect((await livePaymentView(db,saved!))?.uri).toBeUndefined();
  });
  test('unknown provider result never causes automatic second allocation',async()=>{
   const db=store(),{b,s}=await dinner(db),provider=makeProvider();provider.allocate.mockRejectedValue(new Error('private upstream error'));

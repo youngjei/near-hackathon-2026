@@ -24,3 +24,12 @@ An external NEAR wallet with an existing confidential balance can use the implem
 Two unfunded executable quotes and `/generate-intent` requests with disposable synthetic accounts returned HTTP 201. The generated message contained one transfer to the quote deposit, equal to the quoted input, on `intents.far`; the token followed the [documented confidential IMT mapping](https://docs.agentsonintents.com/integration/agent-api/native-accounts). Those checks did not access any balance or sign or submit the provider payload. The signature test uses a locally generated disposable test key and synthetic data only.
 
 Both live routes default off and require explicit route and acceptance switches. Source checks and unit tests are not a wallet, refund or funded settlement acceptance record. No personal accounts or funds were used in these checks.
+
+
+## November 13 — Solana USDC addition
+
+The user explicitly expanded payer scope. Solana Pay requests now encode the signed provider's owner address, six-decimal input amount and mainnet USDC mint. Standard transfers publicly reveal the source wallet and amount; confidential receiving protects the destination balance, not the public source transaction. Compatible URI handlers can open the request; QR and exact address/amount copying provide fallbacks. Actual wallet-device compatibility remains untested, including Phantom/Solflare; do not infer it from the protocol alone.
+
+Three real signed dry quotes at 5/15/50 USDC passed; see [evidence](evidence/solana-usdc-dry-2026-11-13.json). No executable Solana quote, funded payment, refund or confidential credit was tested. Require SOL for fees and possible associated token account creation. Only ordinary on-curve keypair wallet-owner addresses are accepted in this increment, with known program/mint keys rejected; this is not proof of ownership. Memo-dependent routes remain unsupported. Execution and acceptance flags are false.
+
+Primary references checked November 13: [Solana Pay transfer requests](https://solana.com/docs/tools/solana-pay/quickstart/transfer-requests), [Solana privacy](https://solana.com/docs/finance/privacy), [1Click token catalogue](https://1click.chaindefuser.com/v0/tokens).

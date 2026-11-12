@@ -136,3 +136,10 @@ User selected the porcelain/petrol comparison after feedback from friends. Adopt
 ## 2026-11-13 — Wordmark selection and rate explanation
 
 User selected logo comparison option 1: pixel receipt plus readable lettering and pixel slashes, using the approved petrol palette. Retain the receipt as the standalone app symbol. Keep FX provenance and the USD/USDC calculation assumption available in an optional disclosure instead of always printing it on the organizer receipt. This is presentation only, not a change to rate selection or settlement.
+
+
+## 2026-11-13 — Solana USDC and route-specific privacy
+
+User explicitly expanded the beta to a third Solana wallet payment method, superseding the November 10 prohibition on Solana payers. Limit this increment to native USDC on Solana through the existing exact-output Intents route into confidential USDC. Preserve separate disabled rollout/acceptance gates until wallet, refund and funded settlement acceptance. Do not silently enable mainnet spending, add other assets or claim standard Solana transfers hide the sender. Label Zcash as Zcash (VIZOR or Zodl), and NEAR Confidential balance explicitly; describe shielded-source sender protection separately from confidential receiving and visible bridge data.
+
+The approved headline sequence is Photograph a receipt → Split the amount → Send payment requests → Get paid back privately. Keep existing loop timing, asymmetric multiline previews, pause and reduced-motion behavior.

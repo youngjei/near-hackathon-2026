@@ -10,7 +10,7 @@ vi.mock('../lib/server/live-payments',()=>({
  reconcileLivePayments:calls.reconcile,livePaymentView:vi.fn(),
 }));
 const origin='https://split.test',token='aa'.repeat(32),id='22222222-2222-4222-8222-222222222222',billId='11111111-1111-4111-8111-111111111111';
-const readiness={enabled:true,reason:'Configured',methods:{zcash:true,confidential:true}};
+const readiness={enabled:true,reason:'Configured',methods:{zcash:true,confidential:true,solana:true}};
 let store:Store,provider:LivePaymentProvider,bill:Bill,share:Share;
 beforeEach(async()=>{
  vi.clearAllMocks();calls.reconcile.mockResolvedValue({checked:1,updated:1,unavailable:0});calls.prepare.mockResolvedValue({intent:{},signer:'payer.near',state:'prepared'});
@@ -44,7 +44,7 @@ test('wallet endpoints require capability, active route and signature-only stric
  expect(calls.prepare).toHaveBeenCalledWith(store,provider,id,attemptId,'payer.near',readiness.methods);
  expect((await handle(request(`shares/${id}/submit`,{attemptId,accountId:'payer.near',publicKey:'key',signature:'proof',intent:{amount:'1'}}))).status).toBe(400);
  expect(calls.submit).not.toHaveBeenCalled();
- const disabled=createHandler(store,undefined,{provider,readiness:{...readiness,enabled:false,methods:{zcash:false,confidential:false}}});
+ const disabled=createHandler(store,undefined,{provider,readiness:{...readiness,enabled:false,methods:{zcash:false,confidential:false,solana:false}}});
  expect((await disabled(request(`shares/${id}/prepare`,{attemptId,signer:'payer.near'}))).status).toBe(503);
 });
 test('refresh is scoped to the diner and cron is authorized separately even with allocation gate off',async()=>{
@@ -54,4 +54,12 @@ test('refresh is scoped to the diner and cron is authorized separately even with
  expect((await handle(request('reconcile',{}))).status).toBe(401);
  const req=new Request(origin+'/api/reconcile',{method:'POST',headers:{Authorization:'Bearer cron-test'}});
  expect((await handle(req)).status).toBe(200);expect(calls.reconcile).toHaveBeenCalledTimes(2);
+});
+
+test('Solana live allocation keeps amounts and receiving account bound to the saved share',async()=>{
+ const handle=createHandler(store,undefined,{provider,readiness});
+ const key=crypto.randomUUID();
+ const response=await handle(request(`shares/${id}/attempts`,{method:'solana',requestKey:key,refundAddress:'GmaDrppBC7P5ARKV8g3djiwP89vz1jLK23V2GBjuAEGB',amountUnits:'1',recipient:'attacker.near'}));
+ expect(response.status).toBe(201);
+ expect(calls.create).toHaveBeenCalledWith(store,provider,share,bill,{method:'solana',requestKey:key,refundAddress:'GmaDrppBC7P5ARKV8g3djiwP89vz1jLK23V2GBjuAEGB'},readiness.methods);
 });

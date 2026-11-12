@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Shell, ErrorMessage, Loading } from "@/components/shell";
 import { LivePayment } from "@/components/live-payment";
+import { PaymentMethods, PaymentMethod } from "@/components/payment-methods";
 import { Receipt } from "@/components/receipt";
 import { api, redeem, Checkout } from "@/lib/client";
 import { formatAmount } from "@/lib/money";
@@ -10,7 +11,7 @@ export default function Pay() {
   const [data, setData] = useState<Checkout>(),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
-    [method, setMethod] = useState<"zcash" | "confidential">("zcash"),
+    [method, setMethod] = useState<PaymentMethod>("zcash"),
     [now, setNow] = useState(Date.now());
   const boot = useRef<Promise<void> | null>(null);
   useEffect(() => {
@@ -126,7 +127,7 @@ export default function Pay() {
             <h2>Demo payment</h2>
             <p>
               Simulated{" "}
-              {active.method === "zcash" ? "Zcash" : "confidential balance"}{" "}
+              {active.method === "zcash" ? "Zcash" : active.method === "solana" ? "Solana USDC" : "confidential balance"}{" "}
               request. No money will move.
             </p>
             <p className="field-hint">Demo request expires in {minutes} min.</p>
@@ -153,44 +154,7 @@ export default function Pay() {
                     : "The demo payment was refunded. No real funds were moved."}
               </p>
             )}
-            <div
-              className="methods"
-              role="radiogroup"
-              aria-label="Payment method"
-            >
-              <label
-                className={`method ${method === "zcash" ? "selected" : ""}`}
-              >
-                <input
-                  type="radio"
-                  name="method"
-                  value="zcash"
-                  checked={method === "zcash"}
-                  onChange={() => setMethod("zcash")}
-                />
-                <span>
-                  <strong>Zcash</strong>
-                  <small>VIZOR or Zodl</small>
-                </span>
-                <span className="radio-visual" aria-hidden="true" />
-              </label>
-              <label
-                className={`method ${method === "confidential" ? "selected" : ""}`}
-              >
-                <input
-                  type="radio"
-                  name="method"
-                  value="confidential"
-                  checked={method === "confidential"}
-                  onChange={() => setMethod("confidential")}
-                />
-                <span>
-                  <strong>Confidential balance</strong>
-                  <small>Pay with USDC</small>
-                </span>
-                <span className="radio-visual" aria-hidden="true" />
-              </label>
-            </div>
+            <PaymentMethods method={method} onChange={setMethod} name="method" />
             <button
               className="button primary full"
               aria-busy={busy}
@@ -199,7 +163,7 @@ export default function Pay() {
             >
               {busy
                 ? "Preparing…"
-                : `Try ${method === "zcash" ? "Zcash" : "USDC"} demo`}
+                : `Try ${method === "zcash" ? "Zcash" : method === "solana" ? "Solana USDC" : "USDC"} demo`}
               <span aria-hidden="true">→</span>
             </button>
           </>

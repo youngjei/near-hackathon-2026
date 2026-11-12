@@ -6,10 +6,11 @@ import { api, Checkout, PreparedConfidentialPayment } from "@/lib/client";
 import { connectConfidentialWallet, disconnectConfidentialWallet, signConfidentialIntent } from "@/lib/wallets/confidential-client";
 import { CopyButton, ErrorMessage } from "@/components/shell";
 import { SuccessMark } from "@/components/task-frame";
+import { PaymentMethods, PaymentMethod } from "@/components/payment-methods";
 
 /** This component only consumes the server's capability-scoped payment projection. */
 export function LivePayment({ data, onChange }: { data: Checkout; onChange: (data: Checkout) => void }) {
-  const [method, setMethod] = useState<"zcash" | "confidential">("zcash");
+  const [method, setMethod] = useState<PaymentMethod>("zcash");
   const [refundAddress, setRefundAddress] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -29,7 +30,7 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
   const canCreate = !!data.live?.enabled && !!data.live.methods[method] && !paid && data.attempts.length === 0;
   const instructions = !paid && !expired && active?.status === "pending" && payment?.state === "ready" ? payment : undefined;
   useEffect(() => { setPrepared(undefined); setSubmissionStarted(false); }, [active?.id]);
-  const uri = instructions?.uri?.startsWith("zcash:") ? instructions.uri : undefined;
+  const uri = ((active?.method === "zcash" && instructions?.uri?.startsWith("zcash:")) || (active?.method === "solana" && instructions?.uri?.startsWith("solana:"))) ? instructions?.uri : undefined;
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
@@ -123,9 +124,9 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
           <p className="payment-exact">{instructions.amount} <span>{instructions.symbol}</span></p>
           <p className="field-hint">Expires in {Math.max(1, Math.ceil((active.expiresAt - now) / 1000))} seconds. Check the amount and destination in your wallet.</p>
           {uri && <>
-            <a className="button primary full" href={uri}>Open Zcash wallet <span aria-hidden="true">↗</span></a>
-            <p className="field-hint">Use VIZOR or Zodl if your version supports payment requests. Network fees are additional.</p>
-            {qr && <details className="payment-copy"><summary>Scan with another device</summary><img className="qr" src={qr} width={232} height={232} alt="Zcash payment request with the exact amount" /></details>}
+            <a className="button primary full" href={uri}>Open {active.method === "solana" ? "Solana" : "Zcash"} wallet <span aria-hidden="true">↗</span></a>
+            <p className="field-hint">{active.method === "solana" ? "Use a wallet that supports Solana Pay requests. You need SOL for network fees and possible token account creation." : "Use VIZOR or Zodl if your version supports payment requests. Network fees are additional."}</p>
+            {qr && <details className="payment-copy"><summary>Scan with another device</summary><img className="qr" src={qr} width={232} height={232} alt={`${active.method === "solana" ? "Solana" : "Zcash"} payment request with the exact amount`} /></details>}
           </>}
           {active.method === "confidential" && <>
             {walletControls}
@@ -140,7 +141,7 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
           {instructions.address && <details className="payment-copy"><summary>Copy payment details</summary>
             <label className="field">Payment address<input readOnly value={instructions.address} onFocus={(e) => e.target.select()} /></label>
             <div className="payment-copy-actions"><CopyButton value={instructions.address} label="Copy address" /><CopyButton value={instructions.amount} label="Copy exact amount" /></div>
-            <p className="field-hint">If scanning fails, paste the address and exact amount. Do not start a separate swap.</p>
+            <p className="field-hint">If scanning fails, paste the address and exact amount{active.method === "solana" ? " and select USDC on Solana" : ""}. Do not start a separate swap.</p>
           </details>}
         </>}
         {expired && <p className="inline-note">Do not send to this expired request. Refresh for late payments and ask the organizer before paying again.</p>}
@@ -149,24 +150,22 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
       {active && ["failed", "refunded"].includes(active.status) && <p className="inline-note" role="status">Ask the organizer to review this payment before paying again.</p>}
       {data.attempts.length === 0 && <>
         <div className="method-heading"><h2>Payment method</h2></div>
-        <div className="methods" role="radiogroup" aria-label="Payment method">
-          {([ ["zcash", "Zcash", "VIZOR or Zodl"], ["confidential", "Confidential balance", "Existing confidential USDC"] ] as const).map(([value, label, hint]) => <label key={value} className={`method ${method === value ? "selected" : ""}`}>
-            <input type="radio" name="live-method" value={value} checked={method === value} aria-busy={busy} disabled={busy} onChange={() => { setMethod(value); setRefundAddress(""); setRequestKey(""); }} />
-            <span><strong>{label}</strong><small>{hint}{!data.live?.methods[value] ? " · Not available yet" : ""}</small></span><span className="radio-visual" aria-hidden="true" />
-          </label>)}
-        </div>
+        <PaymentMethods method={method} name="live-method" disabled={busy} available={data.live?.methods} onChange={(value) => { setMethod(value); setRefundAddress(""); setRequestKey(""); }} />
         {method === "zcash" ? <><label className="field">Refund address
           <input value={refundAddress} aria-busy={busy} disabled={busy} autoComplete="off" spellCheck={false} maxLength={128} onChange={(e) => { setRefundAddress(e.target.value); setRequestKey(""); }} placeholder="t1… or t3…" aria-describedby="refund-help" />
           <span className="field-hint" id="refund-help">Unused ZEC is returned here. Refunds are publicly visible.</span>
-        </label><details className="payment-help"><summary>Which address should I use?</summary><p className="field-hint">Copy a transparent receive address from your Zcash wallet, starting with t1 or t3. Confirm your wallet can receive at it. Unified and shielded addresses are not supported for refunds.</p></details></> : <>{!data.live?.methods.confidential && <p className="inline-note">Confidential USDC is not available yet.</p>}{walletControls}</>}
-        <button className="button primary full" aria-busy={busy} disabled={busy || !canCreate || (method === "zcash" && !refundAddress.trim()) || (method === "confidential" && !walletAccount)} onClick={start}>{busy ? "Preparing quote…" : requestKey ? "Retry payment request" : "Get payment quote"}<span aria-hidden="true">→</span></button>
+        </label><details className="payment-help"><summary>Which address should I use?</summary><p className="field-hint">Copy a transparent receive address from your Zcash wallet, starting with t1 or t3. Confirm your wallet can receive at it. Unified and shielded addresses are not supported for refunds.</p></details></> : method === "confidential" ? <>{!data.live?.methods.confidential && <p className="inline-note">Confidential USDC is not available yet.</p>}{walletControls}</> : <><label className="field">Refund address
+          <input value={refundAddress} aria-busy={busy} disabled={busy} autoComplete="off" spellCheck={false} maxLength={128} onChange={(e) => { setRefundAddress(e.target.value); setRequestKey(""); }} placeholder="Solana wallet address" />
+          <span className="field-hint">Use your Solana wallet address that can receive USDC, not a token account address. Refunds are publicly visible.</span>
+        </label></>}
+        <button className="button primary full" aria-busy={busy} disabled={busy || !canCreate || (method !== "confidential" && !refundAddress.trim()) || (method === "confidential" && !walletAccount)} onClick={start}>{busy ? "Preparing quote…" : requestKey ? "Retry payment request" : "Get payment quote"}<span aria-hidden="true">→</span></button>
       </>}
     </>}
     {data.attempts.length > 0 && <>
       <button className="text-button" aria-busy={busy} disabled={busy} onClick={refresh}>{busy ? "Checking…" : "Refresh payment status"}</button>
       <details className="demo-controls"><summary>Payment request history ({data.attempts.length})</summary>
         <p className="field-hint">Ask the organizer to review the outcome before paying again.</p>
-        {data.attempts.map((a, i) => <div key={a.id} className="attempt-controls"><span>Request {data.attempts.length - i} · {a.method === "zcash" ? "Zcash" : "USDC"} · {a.status}</span>{a.payment?.statusMessage && <p>{a.payment.statusMessage}</p>}</div>)}
+        {data.attempts.map((a, i) => <div key={a.id} className="attempt-controls"><span>Request {data.attempts.length - i} · {a.method === "zcash" ? "Zcash" : a.method === "solana" ? "Solana USDC" : "USDC"} · {a.status}</span>{a.payment?.statusMessage && <p>{a.payment.statusMessage}</p>}</div>)}
       </details>
     </>}
     <ErrorMessage message={error} />

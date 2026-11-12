@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 const base = process.env.PLAYWRIGHT_BASE_URL || "http://127.0.0.1:5173";
-test("create, privately share, pay and reconcile a demo dinner", async ({
+for (const method of ["zcash", "solana"] as const) test(`create, privately share, pay and reconcile a ${method} demo dinner`, async ({
   page,
   browser,
 }) => {
@@ -47,11 +47,12 @@ test("create, privately share, pay and reconcile a demo dinner", async ({
   expect(
     (await guest.request.get(`${base}/api/shares/${shareId}`)).status(),
   ).toBe(404);
-  await checkout.getByRole("button", { name: "Try Zcash demo" }).click();
+  if (method === "solana") await checkout.getByRole("radio", { name: /Solana wallet/ }).check();
+  await checkout.getByRole("button", { name: method === "solana" ? "Try Solana USDC demo" : "Try Zcash demo" }).click();
   await expect(
     checkout.getByRole("heading", { name: "Demo payment" }),
   ).toBeVisible();
-  expect(await checkout.locator('a[href^="zcash:"]').count()).toBe(0);
+  expect(await checkout.locator('a[href^="zcash:"], a[href^="solana:"]').count()).toBe(0);
   await checkout
     .getByRole("button", { name: "Simulate successful payment" })
     .click();

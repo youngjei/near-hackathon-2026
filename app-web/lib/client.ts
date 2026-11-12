@@ -73,7 +73,7 @@ export type ShareView = {
 };
 export type AttemptView = {
   id: string;
-  method: "zcash" | "confidential";
+  method: "zcash" | "confidential" | "solana";
   status: string;
   expiresAt: number;
   createdAt: number;
@@ -101,7 +101,7 @@ export type Checkout = {
   live?: {
     enabled: boolean;
     reason: string;
-    methods: { zcash: boolean; confidential: boolean };
+    methods: { zcash: boolean; confidential: boolean; solana: boolean };
   };
 };
 

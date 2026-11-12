@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type Ref } from "react";
 import "./animated-intro.css";
 
-const phrases = ["Photograph a receipt.", "Split the amount.", "Send ready-to-pay requests.", "Privately."];
+const phrases = ["Photograph a receipt.", "Split the amount.", "Send payment requests.", "Get paid back privately."];
 const arrival = 500;
 const hold = 2400;
 // The next arrival shares the outgoing phrase's 500ms exit: no empty beat.
@@ -13,7 +13,7 @@ const handoffEasing = "cubic-bezier(.4, 0, .2, 1)";
 type MotionState = "static" | "running" | "paused";
 
 function PhraseText({ index }: { index: number }) {
-  return index === 2 ? <>Send <span className="animated-intro-unbroken">ready-to-pay</span> requests.</> : phrases[index];
+  return phrases[index];
 }
 
 export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingElement> }) {
@@ -114,7 +114,7 @@ export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingEleme
         </div>)}
       </div>
     <h1 ref={headingRef} tabIndex={-1} className="animated-intro-heading"
-      aria-label="Photograph a receipt. Split the amount. Send ready-to-pay requests. Privately.">
+      aria-label={phrases.join(" ")}>
       <span aria-hidden="true" className="animated-intro-static">Split a receipt into private requests.</span>
       {phrases.map((phrase, index) => <span key={phrase} aria-hidden="true"
         className={`animated-intro-phrase${index === phrases.length - 1 ? " animated-intro-private" : ""}`}>

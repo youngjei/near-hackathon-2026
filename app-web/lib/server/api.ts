@@ -360,7 +360,7 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
         const { share, bill } = await authorizedShare(req, id);
         const body = z
           .object({
-            method: z.enum(["zcash", "confidential"]),
+            method: z.enum(["zcash", "confidential", "solana"]),
             requestKey: uuid,
             refundAddress: z.string().trim().max(256).optional(),
           })

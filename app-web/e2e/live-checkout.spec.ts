@@ -7,7 +7,7 @@ function checkout(): Checkout {
     bill: { id: "bill-test", merchant: "Synthetic dinner", currency: "USD", originalTotal: "20", extra: "0", diners: 2, totalUnits: "20000000", fxRate: "1", fxDate: "2026-11-11", fxSource: "test", mode: "live", hasReceipt: false, createdAt: Date.now() },
     share: { id: "share-test", position: 1, amountUnits: "10000000", status: "unpaid" },
     attempts: [],
-    live: { enabled: false, reason: "Live payments await funded verification.", methods: { zcash: false, confidential: false } },
+    live: { enabled: false, reason: "Live payments await funded verification.", methods: { zcash: false, confidential: false, solana: false } },
   };
 }
 test("live gates keep payment requests and simulation separate", async ({ page }) => {
@@ -23,7 +23,7 @@ test("live gates keep payment requests and simulation separate", async ({ page }
   await expect(page.getByText("Demo · No real payments")).toHaveCount(0);
   await expect(page.getByText("Simulate successful payment")).toHaveCount(0);
   await expect(page.locator('a[href^="zcash:"]')).toHaveCount(0);
-  await page.getByRole("radio", { name: /Confidential balance/ }).check();
+  await page.getByRole("radio", { name: /NEAR Confidential balance/ }).check();
   await expect(page.getByText("Confidential USDC is not available yet.")).toBeVisible();
 });
 
@@ -62,7 +62,7 @@ test("allocated instructions survive gate closure, expire, and retain late-payme
 
 test("request creation keeps exact request fields and refresh errors preserve history", async ({ page }) => {
   const data = checkout();
-  data.live = { enabled: true, reason: "", methods: { zcash: true, confidential: false } };
+  data.live = { enabled: true, reason: "", methods: { zcash: true, confidential: false, solana: false } };
   await page.route("**/api/shares/share-test", (route) => route.fulfill({ json: data }));
   let submitted: Record<string, string> | undefined;
   await page.route("**/api/shares/share-test/attempts", async (route) => {
@@ -87,7 +87,7 @@ test("request creation keeps exact request fields and refresh errors preserve hi
 
 test("interrupted quote creation retries the same request rather than duplicating it", async ({ page }) => {
   const data = checkout();
-  data.live = { enabled: true, reason: "", methods: { zcash: true, confidential: false } };
+  data.live = { enabled: true, reason: "", methods: { zcash: true, confidential: false, solana: false } };
   await page.route("**/api/shares/share-test", (route) => route.fulfill({ json: data }));
   const keys: string[] = [];
   await page.route("**/api/shares/share-test/attempts", async (route) => {
@@ -110,7 +110,7 @@ test("interrupted quote creation retries the same request rather than duplicatin
 
 test("processing and incomplete payments never offer another send or quote", async ({ page }) => {
   const data = checkout();
-  data.live = { enabled: true, reason: "", methods: { zcash: true, confidential: false } };
+  data.live = { enabled: true, reason: "", methods: { zcash: true, confidential: false, solana: false } };
   data.share.status = "pending";
   data.attempts = [{ id: "in-progress", mode: "live", method: "zcash", status: "pending", expiresAt: Date.now() + 60_000, createdAt: Date.now(), payment: { state: "processing", amount: "0.01", symbol: "ZEC", statusMessage: "A deposit is being processed.", uri: "zcash:synthetic-test-address?amount=0.01", address: "synthetic-test-address" } }];
   await page.route("**/api/shares/share-test", (route) => route.fulfill({ json: data }));
@@ -131,13 +131,13 @@ test("processing and incomplete payments never offer another send or quote", asy
 
 test("confidential wallet connection and spending review require separate user actions", async ({ page }) => {
   const data = checkout();
-  data.live = { enabled: true, reason: "", methods: { zcash: false, confidential: true } };
+  data.live = { enabled: true, reason: "", methods: { zcash: false, confidential: true, solana: false } };
   const requests: string[] = [];
   await page.route("**/api/shares/share-test", (route) => route.fulfill({ json: data }));
   await page.route("**/api/shares/share-test/prepare", (route) => { requests.push("prepare"); return route.fulfill({ status: 500, json: { error: "Unexpected automatic prepare" } }); });
   await page.route("**/api/shares/share-test/submit", (route) => { requests.push("submit"); return route.fulfill({ status: 500, json: { error: "Unexpected automatic submit" } }); });
   await page.goto("/pay?id=share-test");
-  await page.getByRole("radio", { name: /Confidential balance/ }).check();
+  await page.getByRole("radio", { name: /NEAR Confidential balance/ }).check();
   await expect(page.getByRole("button", { name: "Connect NEAR wallet" })).toBeEnabled();
   await expect(page.getByRole("button", { name: "Get payment quote" })).toBeDisabled();
   await expect(page.getByText(/near.com passkey accounts are not supported/)).toBeVisible();
@@ -156,7 +156,7 @@ test("confidential wallet connection and spending review require separate user a
 for (const status of ["failed", "refunded"] as const) {
   test(`closed ${status} live request cannot create another quote or sign again`, async ({ page }) => {
     const data = checkout();
-    data.live = { enabled: true, reason: "", methods: { zcash: true, confidential: true } };
+    data.live = { enabled: true, reason: "", methods: { zcash: true, confidential: true, solana: false } };
     data.share.status = status;
     data.attempts = [{ id: "closed-test", method: "confidential", mode: "live", status, createdAt: Date.now(), expiresAt: Date.now() + 60_000, payment: { state: status, amount: "10.000001", symbol: "USDC", statusMessage: "The prior request is closed." } }];
     await page.route("**/api/shares/share-test", (route) => route.fulfill({ json: data }));
@@ -169,3 +169,31 @@ for (const status of ["failed", "refunded"] as const) {
     await expect(page.getByText("Payment request history (1)")).toBeVisible();
   });
 }
+
+
+test("Solana quote uses the gated method and exposes a Solana Pay request", async ({ page }) => {
+  const data = checkout();
+  data.live = { enabled: true, reason: "", methods: { zcash: false, confidential: false, solana: true } };
+  const uri = "solana:synthetic-address?amount=10.000001&spl-token=synthetic-token";
+  let submitted: Record<string, string> | undefined;
+  await page.route("**/api/shares/share-test", (route) => route.fulfill({ json: data }));
+  await page.route("**/api/shares/share-test/attempts", async (route) => {
+    submitted = route.request().postDataJSON();
+    data.share.status = "pending";
+    data.attempts = [{ id: "solana-test", mode: "live", method: "solana", status: "pending", expiresAt: Date.now() + 60_000, createdAt: Date.now(), payment: { state: "ready", amount: "10.000001", symbol: "USDC", address: "synthetic-address", uri } }];
+    await route.fulfill({ json: data });
+  });
+  await page.goto("/pay?id=share-test");
+  await page.getByRole("radio", { name: /Solana wallet/ }).check();
+  await expect(page.getByText(/Standard transfers reveal your wallet and amount/)).toBeVisible();
+  await page.getByLabel("Refund address").fill("synthetic-refund");
+  await page.getByRole("button", { name: "Get payment quote" }).click();
+  expect(submitted?.method).toBe("solana");
+  expect(submitted?.refundAddress).toBe("synthetic-refund");
+  await expect(page.getByRole("link", { name: "Open Solana wallet" })).toHaveAttribute("href", uri);
+  await page.getByText("Scan with another device", { exact: true }).click();
+  await expect(page.getByRole("img", { name: "Solana payment request with the exact amount" })).toBeVisible();
+  await page.getByText("Copy payment details", { exact: true }).click();
+  await expect(page.getByLabel("Payment address", { exact: true })).toHaveValue("synthetic-address");
+  await expect(page.getByRole("button", { name: "Copy exact amount" })).toBeVisible();
+});

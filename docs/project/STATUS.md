@@ -2,7 +2,7 @@
 
 Updated: November 13, 2026 (KST).
 
-Phase: executable payment backend and compatible external NEAR-wallet signing implemented, with rollout gates disabled. Supabase migrations 001–005 are applied. Real device/refund/funded acceptance, hosted payment credentials, reconciliation scheduling and OCR remain outstanding. The November 12 porcelain/petrol styling, digital receipt and organizer recovery are now published on the owner-private Site; execution gates remain disabled. No submission or funded project wallet exists.
+Phase: executable payment backend and compatible external NEAR-wallet signing implemented, with rollout gates disabled. Supabase migrations 001–006 are applied. Real device/refund/funded acceptance, hosted payment credentials, reconciliation scheduling and OCR remain outstanding. The November 12 porcelain/petrol styling, digital receipt and organizer recovery are now published on the owner-private Site; execution gates remain disabled. No submission or funded project wallet exists.
 
 Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site) — owner-only, ChatGPT sign-in required.
 
@@ -32,6 +32,8 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 Delivery target: a real usable application with receipt extraction and verified NEAR payments. Supabase schema and runtime connection are complete; payment execution remains simulated and is clearly labelled. Existing D1 test records are preserved but not migrated; create new links in the Supabase-backed preview.
 
 ## Latest verification
+
+- November 13 Solana USDC and privacy explanations: Approved headline now ends Get paid back privately, with Send payment requests as the prior phrase. Added shared Zcash (VIZOR or Zodl), NEAR Confidential balance and Solana wallet (USDC) choices with route-specific privacy explanations. Solana backend requests exact-output mainnet USDC to confidential USDC and produces verified Solana Pay URI/QR/copy instructions; separate rollout and acceptance gates remain false. Added pinned @noble/curves 2.4.0 address validation. Migration 006 applied to splitdbill Supabase through its authenticated SQL editor and the resulting three-method constraint verified; existing records and grants preserved. TypeScript, all 99 unit/integration checks, 18 synthetic live-checkout checks, 10 intro checks and four persisted demo journeys passed; final transactional migration rerun passed 29 database checks. Nine headline and six checkout responsive captures reviewed. Three official signed dry Solana quotes passed for 5/15/50 USDC; no executable Solana quote, wallet-device, funded payment or refund test. Production build passed and owner-private deployment succeeded: source `d0e5131b4f09f40540760899d916d5c04cf586f6`, deployment `appgdep_6af5e82b248481c28b6761cc235ab5b2`, environment revision 1.
 
 - November 13 multiline preview continuity: Replaced single-line preview snippets with full neighboring phrases, sharing phrase markup, text width, tracking and balanced line wrapping with the main headline. Previous line ends and upcoming line starts remain cropped to the chosen asymmetric widths. Preview blocks stay vertically centered at their natural multiline height. TypeScript, production build and all 10 intro browser checks passed, including character-by-character line grouping at five viewport widths. Nine responsive captures had no overflow/page errors; desktop and 320px layouts visually inspected. Published source `bbe4b9cd8d7fe5bb4a383a77bc45a7008ced27ae`, deployment `appgdep_6af5dd98acfc81c299d43fcb69d4fe4d`, environment revision 1.
 
@@ -75,7 +77,7 @@ Delivery target: a real usable application with receipt extraction and verified 
 ## Next
 
 1. Publication completed after the user explicitly approved the publishing helper credential transport. Site source `e3c5ca03b656f9e7f1472eb5c6cbf4c23c246fdc`, deployment `appgdep_6af52526c3fc81c2b5988e0aeef97fb1`, environment revision 1. Both live routes remain disabled; publication does not establish wallet or settlement acceptance.
-2. Run real VIZOR/Zodl URI + usable transparent-refund tests and a compatible external NEAR wallet signing test. near.com-created passkeys remain unsupported by this external-wallet connector.
+2. Run real VIZOR/Zodl URI + usable transparent-refund tests, Solana USDC wallet-open/QR/refund tests and a compatible external NEAR wallet signing test. near.com-created passkeys remain unsupported by this external-wallet connector.
 3. With an explicitly authorized small budget and user wallet approvals, verify actual confidential recipient credit, fees, partial/late deposits and refunds. No user-wallet signature or funded execution has happened.
 4. Configure hosted provider/cron secrets and a recurring reconciliation job, then activate only accepted routes. Both route switches remain false.
 5. Recheck NEAR AI availability before image-model verification and receipt recognition.

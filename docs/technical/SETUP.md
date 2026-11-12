@@ -60,3 +60,8 @@ Tell me when the local values are configured, without sending the values. I can 
 The executable backend and external NEAR-wallet signing path are implemented. The partner key is still local; hosted execution remains disabled. Do not set acceptance switches merely to try the UI. First arrange explicitly authorized, bounded wallet/device tests and verify actual confidential credit/refunds. Existing confidential payers need the same compatible external NEAR account that controls their balance; near.com-created passkey accounts require a separate integration. No key export or replacement account is needed.
 
 Before general rollout, configure the provider key and CRON_SECRET in server-only hosting secrets and schedule POST /api/reconcile. Closing a browser must not stop settlement checks. Retain the rollout gates until the complete acceptance record exists. See the app README and WALLET_COMPATIBILITY.md.
+
+
+## November 13 — Solana USDC addition
+
+Supabase migration 006 is applied. New projects must run migrations 001–006 in order. The third route uses the existing partner key; it does not need a separate Solana RPC credential for generating payment requests. The payer's compatible wallet signs and sends the Solana Pay USDC transfer and supplies SOL network fees. `LIVE_SOLANA_ENABLED=false` and `SOLANA_ACCEPTANCE_VERIFIED=false` remain the required configuration until real wallet/refund/confidential-credit acceptance. No provider key or activation switch was changed in hosted secrets for this release.

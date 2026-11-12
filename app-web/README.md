@@ -23,7 +23,7 @@ The npm legacy peer resolver is pinned in `.npmrc` because the host npm resolver
 
 ## Run with Supabase and native Next.js
 
-The configured Supabase project has all five migrations applied. For a new project, apply `supabase/migrations/*.sql` in filename order. Do not rerun the initial migration on an existing database. Only the server role has table/function access; browser roles cannot call the RPCs.
+The configured Supabase project has all six migrations applied. For a new project, apply `supabase/migrations/*.sql` in filename order. Do not rerun the initial migration on an existing database. Only the server role has table/function access; browser roles cannot call the RPCs.
 
 Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in ignored `.env.local`, then:
 
@@ -50,7 +50,7 @@ Sites uses the Cloudflare entry point. Set hosted `STORAGE_BACKEND=supabase` plu
 3. **Review split** → confirm the receiving address and approve the dated fiat reference rate and USDC amounts. One USD equals one USDC for bill accounting; this is not a swap quote. A dated, labelled demo reference rate is used if the rate service fails.
 4. **Create demo requests** → one persisted bill and N−1 individual reimbursement shares. The organizer's share is excluded from the reimbursement total.
 5. **Share link** on a friend → copy that private link or scan its invitation QR. It opens a checkout, never a fundable wallet request.
-6. Open checkout → choose Zcash or confidential USDC → **Try … demo** → **Simulate successful payment**. No address, live quote, wallet signature or spending submission exists in this mode.
+6. Open checkout → choose Zcash, confidential USDC or Solana USDC → **Try … demo** → **Simulate successful payment**. No address, live quote, wallet signature or spending submission exists in this mode.
 7. The organizer page updates within about five seconds while open. Close it, reopen the app and select **Your bills** → open the saved bill to see current payment progress. **Keep your organizer link** exposes a private recovery link for a different browser; save it privately. **Test another outcome** exercises expiry, failure, refund and late settlement.
 
 The owner-private Sites deployment is for the owner to review. Friends cannot use it until an explicitly authorized audience change/deployment is made. Individual application capabilities remain required even within the hosting access boundary.
@@ -82,7 +82,7 @@ The owner-private Sites deployment is for the owner to review. Friends cannot us
 
 See [credential setup](../docs/technical/SETUP.md) and [implementation direction](../docs/technical/DESIGN.md). Partner dry-quote access is verified. Organizer entry now requires the full internal `nearcom:` address, with format validation, finding instructions and confirmation before saving. The normalized account is immutable on the bill and omitted from diner responses. No organizer wallet login or ownership proof is required. The planned execution route strips the display prefix and uses `CONFIDENTIAL_INTENTS`; real dry quotes to the supplied account passed. Actual payment execution is still disabled by configuration. Existing confidential payers can connect a supported external NEAR wallet, review the stored exact intent and explicitly sign it; near.com-created passkey accounts are not supported by that connector. Real device, refund and funded settlement checks remain pending. Credentials alone do not enable these paths.
 
-See the [payment adapter and near.com handoff](../docs/technical/PAYMENT_ADAPTER.md) for verified behavior and remaining integration work. `npm run check:intents` explicitly runs six unfunded, signed route estimates using the local partner key; it creates no payment address and saves sanitized evidence. It is separate from default tests and the hosted application.
+See the [payment adapter and near.com handoff](../docs/technical/PAYMENT_ADAPTER.md) for verified behavior and remaining integration work. `npm run check:intents` explicitly runs nine unfunded, signed route estimates across Zcash, confidential USDC and Solana USDC using the local partner key; it creates no payment address and saves sanitized evidence. It is separate from default tests and the hosted application.
 
 ## Validation
 
@@ -100,7 +100,7 @@ Vitest includes an embedded PostgreSQL engine that executes the actual migration
 
 ## Visual design
 
-The November 12 cream/blue redesign follows the user-approved NEAR Hackathon reference, with a large centered split/d/bill wordmark, sharp rules, self-hosted Space Grotesk and pixel receipt graphics. Creation, checkout and organizer history share the same styling. Reduced-motion preferences disable animation; payment statuses and rollout gates are unchanged. The font license is included in `public/fonts/OFL-Space-Grotesk.txt`. See [design direction](../docs/technical/DESIGN.md).
+The porcelain/petrol design uses the user-approved editorial layout and pixel receipt motif, with a large centered split/d/bill wordmark, sharp rules, self-hosted Space Grotesk and pixel receipt graphics. Creation, checkout and organizer history share the same styling. Reduced-motion preferences disable animation; payment statuses and rollout gates are unchanged. The font license is included in `public/fonts/OFL-Space-Grotesk.txt`. See [design direction](../docs/technical/DESIGN.md).
 
 ## Publishing
 
@@ -118,7 +118,7 @@ See [wallet compatibility](../docs/technical/WALLET_COMPATIBILITY.md) for source
 - `POST /api/shares/:id/submit` accepts attemptId plus accountId/publicKey/signature only. It cannot accept an altered intent, amount or recipient. A wallet signature spends funds; no signing happens automatically.
 - `POST /api/shares/:id/refresh` reconciles only that authorized share. `POST /api/reconcile` requires CRON_SECRET and reconciles globally.
 
-Enable neither route merely because credentials exist. The default-off switches in `.env.example` require global activation, a per-method switch and that method's acceptance switch. Set acceptance only after explicitly authorized wallet-device, refund, late-payment and actual confidential-credit checks. Hosted secrets and scheduler configuration are separate from local environment values.
+Do not enable any route merely because credentials exist. The default-off switches in `.env.example` require global activation, a per-method switch and that method's acceptance switch. Set acceptance only after explicitly authorized wallet-device, refund, late-payment and actual confidential-credit checks. Hosted secrets and scheduler configuration are separate from local environment values.
 
 Executable quotes and generated signer payloads are private server records. Atomic reservations prevent duplicate quote allocation and duplicate intent submission. Timeout/unknown outcomes retain their lock. Once an executable quote exists, replacement quotes for that share remain blocked even after failure/refund, because provider finality/cancellation has not been verified; organizer review is required. Same-key network retries reuse the existing attempt, and cancelling a wallet prompt before submission does not spend funds. Old requests continue reconciliation; once any deposit is detected, payment instructions cannot reappear following a status regression.
 
@@ -126,3 +126,17 @@ Executable quotes and generated signer payloads are private server records. Atom
 ### Regenerate app icons
 
 From `app-web`, run `node scripts/generate-brand-icons.mjs`. Expected result: SVG/ICO and PNG favicon, Apple touch and app icons are regenerated in `public/` from the `PixelReceipt` matrix in `components/task-frame.tsx`, using the porcelain/petrol brand colors. `public/site.webmanifest` declares the app icons; this adds home-screen branding, not offline functionality.
+
+
+### Solana USDC requests (November 13)
+
+Migration `supabase/migrations/202611130006_solana_usdc_method.sql` extends the method constraint to `solana`, preserving data and permissions. It was applied to the splitdbill Supabase project on November 13; fresh deployments must apply migrations 001–006 in order. D1 requires no additional migration.
+
+1. Start the local app and choose **Try a sample bill** → create demo requests using a synthetic receiving account.
+2. Open a private diner checkout → choose **Solana wallet (USDC)** → **Try Solana USDC demo**. Expect a clearly labelled simulated request, with no wallet link or fundable address.
+3. Simulate successful payment → the organizer sees one paid share. Reloading preserves it.
+4. To check the real provider without funds, from `app-web` run `node --env-file=.env.local ./node_modules/vitest/vitest.mjs run --config vitest.live.config.ts checks/solana-live.test.ts`. Expect three verified dry quotes and sanitized evidence; no deposit address or transaction signature.
+
+The implemented real route uses exact-output mainnet Solana USDC → confidential USDC and Solana Pay wallet-open/QR/copy instructions. It pins the USDC mint and validates amounts, quote signatures, expiry and wallet-owner address format. Ordinary keypair wallet addresses are supported; off-curve PDA/ATA addresses and memo-dependent quotes are rejected. An address-format check cannot establish ownership or recognize every exchange/token account.
+
+`LIVE_SOLANA_ENABLED` and `SOLANA_ACCEPTANCE_VERIFIED` remain false. Real Solana-wallet compatibility, SOL fees, refund delivery and actual confidential credit are unverified. A dry quote or simulated payment is not acceptance. Solana signing stays in the user's wallet; no sender privacy layer is added.

@@ -1,3 +1,4 @@
+import { solanaPaymentUri } from '../wallets/solana';
 import { paymentQuoteRequest, validatePaymentQuote, isTransparentZcashAddress, validateConfidentialIntent, validateConfidentialSignature, type ConfidentialIntent, type PaymentRoute, type PaymentQuoteRequest, type VerifiedQuote, type Settlement } from '../providers/intents';
 import { zcashPaymentUri } from '../wallets/zcash';
 import { hash, HttpError } from './security';
@@ -10,7 +11,7 @@ export type LivePaymentProvider = {
   submitIntent?(saved: VerifiedQuote, signer: string, stored: ConfidentialIntent, signature: ConfidentialSignature): Promise<{intentHash:string}>;
 };
 export type ConfidentialSignature = {accountId:string;publicKey:string;signature:string};
-export type LivePaymentInput = {method:'zcash'|'confidential';requestKey:string;refundAddress:string};
+export type LivePaymentInput = {method:'zcash'|'confidential'|'solana';requestKey:string;refundAddress:string};
 export type PaymentInstructions = {
   amount:string; symbol:'ZEC'|'USDC'; address?:string; uri?:string; walletUrl?:string;
   statusMessage:string; state:string;
@@ -27,7 +28,7 @@ function routeFor(share: Share, bill: Bill, method: PaymentRoute['method'], refu
 async function boundQuote(store: Store, a: LiveAttempt, historic: boolean, now: number) {
   const share = await store.share(a.share_id);
   const bill = share ? await store.bill(share.bill_id) : null;
-  if (!share || !bill || !a.quote || !['zcash','confidential'].includes(a.method)) throw new Error('Unbound quote');
+  if (!share || !bill || !a.quote || !['zcash','confidential','solana'].includes(a.method)) throw new Error('Unbound quote');
   const route = routeFor(share,bill,a.method as PaymentRoute['method'],String(a.quote.quoteRequest.refundTo ?? ''));
   if (await fingerprint(route)!==a.route_fingerprint) throw new Error('Unbound quote');
   const expected = paymentQuoteRequest(route,false,a.created_at);
@@ -39,7 +40,7 @@ async function boundQuote(store: Store, a: LiveAttempt, historic: boolean, now: 
 
 export async function createLivePayment(
   store: Store, provider: LivePaymentProvider, share: Share, bill: Bill,
-  input: LivePaymentInput, gates: {zcash:boolean;confidential:boolean},
+  input: LivePaymentInput, gates: {zcash:boolean;confidential:boolean;solana?:boolean},
 ): Promise<LiveAttempt> {
   if (!gates[input.method]) throw new HttpError(503,'This payment method is awaiting funded acceptance testing.');
   const savedShare = await store.share(share.id);
@@ -64,6 +65,7 @@ export async function createLivePayment(
     await boundQuote(store,candidate,false,Date.now());
     // Refuse unsupported wallet instructions before persisting a fundable checkout.
     if (route.method==='zcash') await zcashPaymentUri(quote);
+    if (route.method==='solana') solanaPaymentUri(quote);
     await store.saveLiveQuote(candidate.id,quote);
     const saved = await store.liveAttempt(candidate.id);
     if (!saved || saved.allocation_state!=='ready') throw new Error('Allocation not saved');
@@ -98,6 +100,12 @@ export async function livePaymentView(store: Store, a: LiveAttempt, now = Date.n
     try {
       const uri=await zcashPaymentUri(quote,now);
       return {...view,address:quote.quote.depositAddress,uri,statusMessage:'Send the exact ZEC amount from your wallet before this request expires.'};
+    } catch { return {...view,state:'review',statusMessage:'Payment instructions could not be verified. Do not send funds.'}; }
+  }
+  if (a.method==='solana') {
+    try {
+      const uri=solanaPaymentUri(quote,now);
+      return {...view,address:quote.quote.depositAddress,uri,statusMessage:'Send the exact USDC amount on Solana mainnet before expiry. Keep SOL for network fees.'};
     } catch { return {...view,state:'review',statusMessage:'Payment instructions could not be verified. Do not send funds.'}; }
   }
   return {...view,statusMessage:'Confidential balance spending requires a verified wallet handoff.'};

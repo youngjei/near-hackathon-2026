@@ -111,3 +111,10 @@ The same Trezu source includes a near.com/send prefill helper. This is a newly f
 - [Legacy passkey source and explicit related origins](https://github.com/defuse-protocol/defuse-frontend/blob/594085d3c7e60ce912fb62b768b12f46c4917510/src/features/webauthn/lib/webauthnService.ts)
 
 These sources establish protocol and passkey constraints; they do not prove that near.com has no private partner integration. That specific integration remains unconfirmed.
+
+
+## November 13 — Third route: Solana USDC
+
+The adapter now accepts Solana USDC input while retaining the exact internal confidential USDC recipient. The public token catalogue confirms `nep141:sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near` has six decimals and mainnet mint `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`. Three signed dry quotes passed at 5/15/50 USDC; [sanitized evidence](evidence/solana-usdc-dry-2026-11-13.json) is not funded acceptance.
+
+The same immutable route binding, exact-output validation, idempotent allocation and durable reconciliation apply. Solana Pay instructions reject unsupported memos, expired quotes, non-USDC assets and unsupported destination formats. Supabase migration 006 extends only the payment-method constraint and was applied on November 13, preserving rows, RLS and grants. Solana-specific execution/acceptance gates remain disabled. No actual Solana payment or refund has been sent.

@@ -22,7 +22,7 @@ test('ZIP-321 request uses exact zatoshis and refuses unsupported deposit instru
 test('route activation needs independent switches and acceptance; confidential stays disabled', () => {
   expect(paymentReadiness({NEAR_INTENTS_API_KEY:'configured'}).enabled).toBe(false);
   const settings={NEAR_INTENTS_API_KEY:'configured',LIVE_PAYMENTS_ENABLED:'true',LIVE_ZCASH_ENABLED:'true',ZCASH_ACCEPTANCE_VERIFIED:'true',LIVE_CONFIDENTIAL_ENABLED:'true'};
-  expect(paymentReadiness(settings).methods).toEqual({zcash:true,confidential:false});
+  expect(paymentReadiness(settings).methods).toEqual({zcash:true,confidential:false,solana:false});
   expect(paymentReadiness({...settings,CONFIDENTIAL_ACCEPTANCE_VERIFIED:'true'}).methods.confidential).toBe(true);
   expect(paymentReadiness({...settings,ZCASH_ACCEPTANCE_VERIFIED:'false'}).enabled).toBe(false);
 });

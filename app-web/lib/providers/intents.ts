@@ -1,15 +1,17 @@
+import { isSolanaWalletAddress } from "../wallets/solana-address";
 import { verifyQuoteSignature, type QuoteResponse } from "@defuse-protocol/one-click-sdk-typescript";
 import { z } from "zod";
 
 export const INTENTS_API = "https://1click.chaindefuser.com/v0";
 export const ASSETS = {
   zec: "nep141:zec.omft.near",
+  solanaUsdc: "nep141:sol-5ce3bf3a31af18be40ba30f721101b4341690186.omft.near",
   usdc: "nep141:17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1",
 } as const;
 const units = z.string().regex(/^[1-9]\d{0,29}$/);
 const account = z.string().regex(/^(?:0x[0-9a-f]{40}|[a-z0-9]+(?:[._-][a-z0-9]+)*)$/).min(2).max(64);
 export type PaymentRoute = {
-  method: "zcash" | "confidential";
+  method: "zcash" | "confidential" | "solana";
   recipient: string;
   refundTo: string;
   amountUnits: string;
@@ -41,20 +43,22 @@ export async function isTransparentZcashAddress(address: string): Promise<boolea
 
 export function paymentQuoteRequest(route: PaymentRoute, dry = true, now = Date.now()) {
   const parsed = z.object({
-    method: z.enum(["zcash", "confidential"]), recipient: account,
+    method: z.enum(["zcash", "confidential", "solana"]), recipient: account,
     refundTo: z.string().min(2).max(256), amountUnits: units,
   }).safeParse(route);
   if (!parsed.success || BigInt(route.amountUnits) % 10000n !== 0n)
     throw new IntentsError("invalid_input", "Use a valid receiving account and a share rounded to USDC cents.");
   if (route.method === "confidential" && !account.safeParse(route.refundTo).success)
     throw new IntentsError("invalid_input", "Use the payer's Confidential Intents account for refunds.");
+  if (route.method === "solana" && !isSolanaWalletAddress(route.refundTo))
+    throw new IntentsError("unsupported_refund", "Use a valid Solana wallet address for refunds, not a token account or exchange deposit address.");
   return {
     dry, swapType: "EXACT_OUTPUT" as const, slippageTolerance: 100,
-    originAsset: route.method === "zcash" ? ASSETS.zec : ASSETS.usdc,
+    originAsset: route.method === "zcash" ? ASSETS.zec : route.method === "solana" ? ASSETS.solanaUsdc : ASSETS.usdc,
     destinationAsset: ASSETS.usdc,
-    depositType: route.method === "zcash" ? "ORIGIN_CHAIN" as const : "CONFIDENTIAL_INTENTS" as const,
+    depositType: route.method !== "confidential" ? "ORIGIN_CHAIN" as const : "CONFIDENTIAL_INTENTS" as const,
     recipientType: "CONFIDENTIAL_INTENTS" as const,
-    refundType: route.method === "zcash" ? "ORIGIN_CHAIN" as const : "CONFIDENTIAL_INTENTS" as const,
+    refundType: route.method !== "confidential" ? "ORIGIN_CHAIN" as const : "CONFIDENTIAL_INTENTS" as const,
     amount: route.amountUnits, recipient: route.recipient, refundTo: route.refundTo,
     confidentiality: "basic" as const,
     deadline: new Date(now + 15 * 60000).toISOString(),
