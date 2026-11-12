@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 export const metadata: Metadata = {
-  title: "splitdbill",
+  title: "split/d/bill",
   description:
     "Split a receipt and track reimbursements in USDC. Private demo.",
   referrer: "no-referrer",

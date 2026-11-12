@@ -166,3 +166,8 @@ Implemented Your bills using a validated browser-local index of organizer capabi
 Validation: TypeScript and git diff whitespace passed. Full unit run passed 88 checks; the final focused recovery run passed 12 including two subsequently added checks, totaling 90 distinct unit/integration checks. Existing browser suite passed 24/26 initially; the two failures were the expected keyboard order after adding Your bills. Updated that assertion; focused run passed 12, covering 8 new recovery checks plus corrected keyboard and existing receiving checks (34 distinct passing desktop/mobile scenarios overall). Twelve final synthetic screenshots showed no overflow or browser errors. Independent manual review found no material visual defects in its five-screen scope. Real device/wallet and funded acceptance remain outstanding.
 
 Sanitized Sites build passed and source `e3c5ca03b656f9e7f1472eb5c6cbf4c23c246fdc` published successfully as deployment `appgdep_6af52526c3fc81c2b5988e0aeef97fb1`, environment revision 1. Same owner-private URL and disabled live/OCR gates. No provider secrets changed, funds moved or audience expanded.
+
+
+## 2026-11-12 — Larger slash wordmark
+
+User requested a much larger centered split/d/bill logo. Updated the shared header, accessible home-link name and browser title. Desktop wordmark is 56px; mobile is 42–52px with navigation on a separate row. TypeScript and Sites build passed; centered/non-overlap checks passed on home and payer routes at 320/390/1440px. Mobile/desktop screenshots reviewed; two existing keyboard/reduced-motion scenarios passed. Published source `1eb498a6a728d9ef2973aa89f94edad1c8f44733`, deployment `appgdep_6af52de249b881c28b2a906821f87771`. Private audience and runtime environment preserved.

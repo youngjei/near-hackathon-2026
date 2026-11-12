@@ -33,6 +33,8 @@ Delivery target: a real usable application with receipt extraction and verified 
 
 ## Latest verification
 
+- November 12 logo update: enlarged centered `split/d/bill` to 56px desktop and 42–52px mobile, with mobile navigation below. TypeScript, production build, six responsive logo checks and two keyboard/reduced-motion browser scenarios passed. Published privately: source `1eb498a6a728d9ef2973aa89f94edad1c8f44733`, deployment `appgdep_6af52de249b881c28b2a906821f87771`, environment revision 1.
+
 - November 12: responsive interface redesign, purposeful loading/confirmation motion and no-login organizer return flow implemented. Your bills remembers up to 50 authorized bills in this browser; private organizer links restore access on another browser. Recovery restores expired cookies, preserves links on failed/blocked-storage paths and never grants organizer access to payers. No schema or payment-rollout changes.
 - Verification: TypeScript and whitespace checks passed. 90 unit/integration checks covered across the full 88-test run and focused 12-test recovery run; 34 distinct desktop/mobile browser scenarios passed across the existing suite and focused reruns. Updated keyboard-order assertion for new navigation. Twelve synthetic final screenshots had no overflow or page errors; independent manual visual and recovery reviews completed. Sanitized Sites production build and owner-private publication succeeded: source `e3c5ca03b656f9e7f1472eb5c6cbf4c23c246fdc`, deployment `appgdep_6af52526c3fc81c2b5988e0aeef97fb1`, environment revision 1.
 

@@ -214,7 +214,7 @@ test("small screens, large amounts, keyboard focus and reduced motion", async ({
   await expect(page.getByRole("link", { name: "Your bills", exact: true })).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(
-    page.getByRole("link", { name: "splitdbill home" }),
+    page.getByRole("link", { name: "split/d/bill home" }),
   ).toBeFocused();
   await page.screenshot({
     path: `../outputs/home-${test.info().project.name}.png`,

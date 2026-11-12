@@ -7,8 +7,8 @@ export function Shell({ children, notice = "Demo · No real payments" }: { child
     <>
       <header className="site-header">
         <a className="header-link bills-link" href="/bills" aria-current={pathname === "/bills" ? "page" : undefined}>Your bills</a>
-        <a className="wordmark" href="/" aria-label="splitdbill home">
-          splitdbill
+        <a className="wordmark" href="/" aria-label="split/d/bill home">
+          split/d/bill
         </a>
         <a className="header-link new-bill-link" href="/" aria-current={pathname === "/" ? "page" : undefined}><span aria-hidden="true">+</span> New bill</a>
       </header>

@@ -4,7 +4,7 @@ User-authored build brief accepted November 10, 2026.
 
 - Product: a receipt becoming clear reimbursement requests for travelling friends.
 - Trust first; task completion is the primary interaction. No marketing landing page.
-- Wordmark: `splitdbill` in lowercase, centered in the header (updated at the user’s request on November 11).
+- Wordmark: `split/d/bill` in lowercase, centered in the header; 56px desktop and 42–52px mobile (updated at the user’s request on November 12). Mobile navigation sits on its own row below the logo.
 - Palette (November 12): slate canvas `#f3f5f6`, white document surface, ink `#1e2932`, muted `#5d6973`, accent `#236347`, tint `#edf5ef`.
 - Single sans-serif stack, proportional text, tabular amounts. Native form controls for small-screen accessibility.
 - Responsive 960px desktop task frame with context alongside a document surface; single-column mobile composition. Saved bills use a compact 600px list. Typography and rules establish hierarchy.

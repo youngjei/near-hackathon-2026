@@ -111,3 +111,8 @@ User changed the main logo to plain lowercase splitdbill, centered in the header
 User approved Impeccable plus Vercel interface guidance and requested that organizers can return after closing a page. Keep the no-wallet-login design: store validated organizer capabilities on the device after authorized creation/read, list saved bills and expose a private recovery link for another browser. Capability possession grants management access; a receiving address alone never does. Return the existing owner token only in the already-authorized organizer response. Payer responses remain excluded. No database migration or account signup is required. Clearly explain browser-local persistence and loss of access if both storage and saved link are lost.
 
 Use brief interaction/loading/completion feedback, respect reduced motion and preserve truthful payment states. Do not activate real payments or inference as a side effect of visual work.
+
+
+## 2026-11-12 — Larger split/d/bill wordmark
+
+User restored slash-separated split/d/bill branding and requested a much bigger centered logo, superseding the November 11 plain spelling. Give the mobile logo its own row so navigation remains usable.
