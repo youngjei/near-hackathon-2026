@@ -1,18 +1,19 @@
 /* A fixed text stage lets every phrase arrive without moving the receipt action. */
 .animated-intro { min-width: 0; }
-.animated-intro-stage { --trail-width: .8em; --upcoming-width: 1.5em; position: relative; font-size: clamp(38px, 3.5vw, 50px); }
+.animated-intro-stage { --peek-gap: 8px; --trail-width: .8em; container-type: inline-size; --upcoming-width: 1.5em; position: relative; font-size: clamp(38px, 3.5vw, 50px); }
 .animated-intro-peeks { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.animated-intro-peek-group { position: absolute; inset: 0; opacity: 0; color: var(--ink); font-size: inherit; font-weight: 700; line-height: 1.04; letter-spacing: -.04em; }
-.animated-intro-peek-group > span { position: absolute; top: 50%; transform: translateY(-50%); overflow: hidden; white-space: nowrap; mask-image: repeating-linear-gradient(to bottom, #000 0 1px, #0004 1px 2px); }
-.animated-intro-peek-group > .animated-intro-trail { width: var(--trail-width); left: 0; text-align: right; }
-.animated-intro-trail > span { display: block; width: max-content; float: right; }
+.animated-intro-peek-group { position: absolute; inset: 0; opacity: 0; color: var(--ink); font-size: inherit; font-weight: 700; line-height: 1.04; letter-spacing: -.025em; }
+.animated-intro-peek-group > span { position: absolute; inset-block: 0; display: flex; align-items: center; overflow: hidden; mask-image: repeating-linear-gradient(to bottom, #000 0 1px, #0004 1px 2px); }
+.animated-intro-peek-group > .animated-intro-trail { width: var(--trail-width); left: 0; justify-content: flex-end; text-align: right; }
+/* Render each complete neighbor at the main phrase width before cropping its edge. */
+.animated-intro-peek-group > span > span { display: block; flex: none; width: calc(100cqw - var(--trail-width) - var(--upcoming-width) - 2 * var(--peek-gap)); white-space: normal; overflow-wrap: normal; text-wrap: balance; }
 .animated-intro-peek-group > .animated-intro-upcoming { width: var(--upcoming-width); right: 0; text-align: left; }
 .animated-intro .animated-intro-heading {
   display: grid;
   align-items: center;
   min-width: 0;
   min-height: 2.16em;
-  padding-inline: calc(var(--trail-width) + 8px) calc(var(--upcoming-width) + 8px);
+  padding-inline: calc(var(--trail-width) + var(--peek-gap)) calc(var(--upcoming-width) + var(--peek-gap));
   font-size: inherit;
   letter-spacing: -.025em;
   line-height: 1.04;
@@ -37,8 +38,8 @@
 }
 @media (max-width: 760px) {
   .animated-intro { margin-bottom: 0; }
-  .animated-intro-stage { font-size: clamp(28px, 8.4vw, 40px); }
-  .animated-intro .animated-intro-heading { padding-inline: calc(var(--trail-width) + 6px) calc(var(--upcoming-width) + 6px); min-height: 2.16em; }
+  .animated-intro-stage { --peek-gap: 6px; font-size: clamp(28px, 8.4vw, 40px); }
+  .animated-intro .animated-intro-heading { min-height: 2.16em; }
   .animated-intro .animated-intro-caption p { font-size: 17px; }
   .animated-intro-caption { min-height: 48px; margin-top: 18px; gap: 8px; }
   .step-start .animated-intro + .workflow-steps { margin-top: 20px; }

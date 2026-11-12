@@ -12,6 +12,10 @@ const sequenceDuration = (phrases.length - 1) * phraseDuration + arrival + 4500;
 const handoffEasing = "cubic-bezier(.4, 0, .2, 1)";
 type MotionState = "static" | "running" | "paused";
 
+function PhraseText({ index }: { index: number }) {
+  return index === 2 ? <>Send <span className="animated-intro-unbroken">ready-to-pay</span> requests.</> : phrases[index];
+}
+
 export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingElement> }) {
   const root = useRef<HTMLDivElement>(null);
   const animations = useRef<Animation[]>([]);
@@ -105,8 +109,8 @@ export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingEleme
     <div className="animated-intro-stage">
       <div className="animated-intro-peeks" aria-hidden="true">
         {phrases.map((phrase, index) => <div className="animated-intro-peek-group" key={phrase}>
-          <span className="animated-intro-trail"><span>{phrases[(index + phrases.length - 1) % phrases.length].slice(-9)}</span></span>
-          <span className="animated-intro-upcoming">{phrases[(index + 1) % phrases.length]}</span>
+          <span className="animated-intro-trail"><span><PhraseText index={(index + phrases.length - 1) % phrases.length} /></span></span>
+          <span className="animated-intro-upcoming"><span><PhraseText index={(index + 1) % phrases.length} /></span></span>
         </div>)}
       </div>
     <h1 ref={headingRef} tabIndex={-1} className="animated-intro-heading"
@@ -114,7 +118,7 @@ export function AnimatedIntro({ headingRef }: { headingRef: Ref<HTMLHeadingEleme
       <span aria-hidden="true" className="animated-intro-static">Split a receipt into private requests.</span>
       {phrases.map((phrase, index) => <span key={phrase} aria-hidden="true"
         className={`animated-intro-phrase${index === phrases.length - 1 ? " animated-intro-private" : ""}`}>
-        {index === 2 ? <>Send <span className="animated-intro-unbroken">ready-to-pay</span> requests.</> : phrase}
+        <PhraseText index={index} />
       </span>)}
     </h1>
     </div>

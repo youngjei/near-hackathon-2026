@@ -243,3 +243,8 @@ Headline now repeats on a seamless 13.7-second timeline, holding Privately for 4
 ## November 13 — Directional phrase previews
 
 Asymmetric headline previews: previous phrase uses 0.8em (roughly 1.5 characters) and next phrase uses 1.5em (roughly 2.5 characters). Corresponding gutters preserve the overall text width and looping timing. Nine captures at 320/390/1280px had no overflow or page errors; desktop and narrow-phone views inspected. Production build and whitespace checks passed. Published source `5d2ef3825ca597047261d34bf3a4fc890b95c5e3`, deployment `appgdep_6af5dbe2154481c29f39901cc43577d5`, environment revision 1.
+
+
+## November 13 — Multiline preview continuity
+
+Replaced single-line preview snippets with full neighboring phrases, sharing phrase markup, text width, tracking and balanced line wrapping with the main headline. Previous line ends and upcoming line starts remain cropped to the chosen asymmetric widths. Preview blocks stay vertically centered at their natural multiline height. TypeScript, production build and all 10 intro browser checks passed, including character-by-character line grouping at five viewport widths. Nine responsive captures had no overflow/page errors; desktop and 320px layouts visually inspected. Published source `bbe4b9cd8d7fe5bb4a383a77bc45a7008ced27ae`, deployment `appgdep_6af5dd98acfc81c299d43fcb69d4fe4d`, environment revision 1.

@@ -85,3 +85,36 @@ test("pixel story follows its steps and desktop dividers share a baseline", asyn
   await expect(page.locator('link[rel="manifest"]')).toHaveAttribute("href", "/site.webmanifest?v=petrol-1");
   await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("href", "/apple-touch-icon.png?v=petrol-1");
 });
+
+test("neighbor previews preserve every phrase's line breaks when the screen resizes", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Pause animation" }).click();
+  await page.evaluate(() => document.fonts.ready);
+  for (const width of [1280, 960, 761, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    const comparisons = await page.evaluate(() => {
+      const lines = (element: Element) => {
+        const rows = new Map<number, string>();
+        const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+        while (walker.nextNode()) {
+          const node = walker.currentNode;
+          for (let i = 0; i < (node.textContent?.length || 0); i++) {
+            const range = document.createRange();
+            range.setStart(node, i); range.setEnd(node, i + 1);
+            const y = Math.round(range.getBoundingClientRect().top - element.getBoundingClientRect().top);
+            rows.set(y, (rows.get(y) || "") + node.textContent![i]);
+          }
+        }
+        return [...rows.values()].map(line => line.trim()).filter(Boolean);
+      };
+      const phrases = [...document.querySelectorAll(".animated-intro-phrase")];
+      return [...document.querySelectorAll(".animated-intro-peek-group")].flatMap((group, index) => [
+        { actual: lines(group.querySelector(".animated-intro-trail > span")!), expected: lines(phrases[(index + 3) % 4]) },
+        { actual: lines(group.querySelector(".animated-intro-upcoming > span")!), expected: lines(phrases[(index + 1) % 4]) },
+      ]);
+    });
+    for (const comparison of comparisons) expect(comparison.actual).toEqual(comparison.expected);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+});

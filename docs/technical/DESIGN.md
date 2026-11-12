@@ -87,3 +87,5 @@ Use the shared BrandWordmark: the existing pixel receipt beside clean split/d/bi
 ## November 13 — Continuous introduction (current motion)
 
 User explicitly selected indefinite looping over restart. The current sequence lasts 13.7 seconds, with a 4.5-second Privately hold and 2.4-second holds elsewhere. Final/first phrases share the same 500ms handoff across the cycle boundary. Keep pause/resume, offscreen/hidden suspension and static reduced-motion text. Adjacent cyclic phrase glimpses use asymmetric widths: 0.8em for the previous phrase (roughly 1.5 characters), 1.5em for the next (roughly 2.5 characters), with matching gutters. The larger forward glimpse reinforces direction while preserving the total text width. This supersedes earlier once-only/replay behavior.
+
+Neighbor previews must use complete phrase markup at the same available width, font metrics and balanced wrapping as the central phrase. Crop line ends on the previous side and line starts on the upcoming side; never flatten multiline phrases into one-line snippets. Keep their natural block height vertically centered.
