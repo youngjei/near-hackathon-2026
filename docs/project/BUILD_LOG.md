@@ -192,3 +192,8 @@ Sol implemented the bounded component/CSS; Terra reviewed lifecycle/accessibilit
 Added “Get paid back in USDC for the dinner you covered.” above the smaller private-link explanation. Sol implemented shared-timeline faded previews; root refined/reviewed large clipped edge letters and corrected trailing-text alignment. Cues disappear at completion and are hidden for reduced motion. Existing pause/resume/replay and palette remain unchanged.
 
 TypeScript, four focused desktop/mobile animation tests, whitespace and production build passed. Nine responsive screenshots and an autoplay recording were produced; checked narrow-phone and desktop layouts. Publication is pending because automatic approval review returned a technical Bad Request twice on the publishing helper credential transfer. No unsafe-action determination was made; no alternate credential transport was attempted. Existing live source/deployment remain unchanged. No payment logic, provider credentials or rollout gates changed.
+
+
+## 2026-11-12 — Publishing retry succeeded
+
+Restarted the supported Sites publishing helper in a fresh session with a new short-lived credential. The same hidden-stdin approval path succeeded; no bypass or application code changes were needed. Reused the already validated production build, pushed and packaged source `dc5ed40a1d95153e054d19703748ce465529d14a`, and published successfully as deployment `appgdep_6af556b0a5fc81c29de581f31251d05a`, environment revision 1. Native deployment returned succeeded and the existing Site URL. The precise cause of the earlier review-service Bad Request is unknown. Existing owner-only audience and disabled live-payment gates are preserved.
