@@ -6,6 +6,7 @@ import { allocation, currencies, formatAmount, billInput } from "@/lib/money";
 import Decimal from "decimal.js";
 import { receivingAddress as addressSchema } from "@/lib/receiving";
 import { ReceivingHelp } from "@/components/receiving-help";
+import { TaskFrame, WorkflowSteps, ReceiptIcon } from "@/components/task-frame";
 type FX = { rate: string; date: string; source: string; fixture: boolean };
 export default function CreateBill() {
   const [hydrated, setHydrated] = useState(false);
@@ -21,6 +22,14 @@ export default function CreateBill() {
   }, []);
   useEffect(() => setHydrated(true), []);
   const [step, setStep] = useState<"start" | "details" | "review">("start");
+  const heading = useRef<HTMLHeadingElement>(null);
+  const previousStep = useRef(step);
+  useEffect(() => {
+    if (previousStep.current !== step) {
+      heading.current?.focus({ preventScroll: true });
+      previousStep.current = step;
+    }
+  }, [step]);
   const [merchant, setMerchant] = useState(""),
     [total, setTotal] = useState(""),
     [extra, setExtra] = useState("0"),
@@ -155,12 +164,15 @@ export default function CreateBill() {
     step === "review" && fx ? allocation(total, extra, fx.rate, diners) : null;
   return (
     <Shell notice={mode === "live" ? null : undefined}>
-      <div className="flow">
+      <TaskFrame className={`create-layout step-${step}`} context={<>
+        <WorkflowSteps current={step === "start" ? 0 : 1} />
+      </>}>
+        <div key={step} className="step-content" aria-busy={busy}>
         {step === "start" ? (
           <>
             <div className="intro">
-              <h1>Split a bill</h1>
-              <p>Confirm the receipt total and split it equally in USDC.</p>
+              <h1 ref={heading} tabIndex={-1}>Split a bill</h1>
+              <p>Split the total equally in USDC. Send each friend a payment link.</p>
             </div>
             <input
               ref={input}
@@ -174,9 +186,11 @@ export default function CreateBill() {
             />
             <button
               className="upload-area"
+              aria-busy={busy}
               disabled={busy || !hydrated}
               onClick={() => input.current?.click()}
             >
+              <ReceiptIcon />
               <span className="upload-title">
                 {busy ? "Saving receipt…" : "Upload receipt"}
               </span>
@@ -211,7 +225,7 @@ export default function CreateBill() {
               ← Back
             </button>
             <div className="intro compact">
-              <h1>Bill details</h1>
+              <h1 ref={heading} tabIndex={-1}>Bill details</h1>
             </div>
             {preview && (
               <details className="receipt-details">
@@ -322,6 +336,7 @@ export default function CreateBill() {
               </div>
               <button
                 className="button primary full"
+                aria-busy={busy}
                 disabled={busy || !hydrated}
               >
                 {busy ? "Calculating…" : "Review split"}
@@ -336,7 +351,7 @@ export default function CreateBill() {
               ← Edit bill
             </button>
             <div className="intro compact">
-              <h1>Review split</h1>
+              <h1 ref={heading} tabIndex={-1}>Review split</h1>
               <p>
                 {merchant} · {diners} people
               </p>
@@ -383,12 +398,8 @@ export default function CreateBill() {
             <details className="receipt-details">
               <summary>Exchange rate and fees</summary>
               <p className="field-hint">{fx.source} · {fx.date}. This split uses 1 USD = 1 USDC. Payment fees are separate.</p>
+              {new Set(split.shares).size > 1 && <p className="field-hint">A one-cent difference keeps the total exact.</p>}
             </details>
-            {new Set(split.shares).size > 1 && (
-              <p className="field-hint">
-                A one-cent difference keeps the total exact.
-              </p>
-            )}
             <section className="receiving-summary" aria-label="Receiving address">
               <h2>Your receiving address</h2>
               <p className="address-value">{recipient}</p>
@@ -396,6 +407,7 @@ export default function CreateBill() {
             </section>
             <button
               className="button primary full"
+              aria-busy={busy}
               disabled={busy || !hydrated}
               onClick={create}
             >
@@ -405,7 +417,8 @@ export default function CreateBill() {
           </>
         ) : null}
         <ErrorMessage message={error} />
-      </div>
+        </div>
+      </TaskFrame>
     </Shell>
   );
 }

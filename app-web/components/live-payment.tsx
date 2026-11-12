@@ -5,6 +5,7 @@ import { useLivePaymentRefresh } from "@/lib/live-refresh";
 import { api, Checkout, PreparedConfidentialPayment } from "@/lib/client";
 import { connectConfidentialWallet, disconnectConfidentialWallet, signConfidentialIntent } from "@/lib/wallets/confidential-client";
 import { CopyButton, ErrorMessage } from "@/components/shell";
+import { SuccessMark } from "@/components/task-frame";
 
 /** This component only consumes the server's capability-scoped payment projection. */
 export function LivePayment({ data, onChange }: { data: Checkout; onChange: (data: Checkout) => void }) {
@@ -105,12 +106,12 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
     <p className="field-hint">Connect the NEAR wallet holding your confidential USDC. near.com passkey accounts are not supported.</p>
     {walletAccount ? <>
       <p className="address-value">Connected account: {walletAccount}</p>
-      <button className="text-button" disabled={busy || submissionStarted} onClick={disconnectWallet}>Disconnect wallet</button>
-    </> : <button className="button quiet full" disabled={busy || !data.live?.methods.confidential} onClick={connectWallet}>{busy ? "Opening wallet…" : "Connect NEAR wallet"}</button>}
+      <button className="text-button" aria-busy={busy} disabled={busy || submissionStarted} onClick={disconnectWallet}>Disconnect wallet</button>
+    </> : <button className="button quiet full" aria-busy={busy} disabled={busy || !data.live?.methods.confidential} onClick={connectWallet}>{busy ? "Opening wallet…" : "Connect NEAR wallet"}</button>}
   </section>;
-  return <section className="live-payment" aria-label="Payment checkout">
+  return <section className="live-payment" aria-label="Payment checkout" aria-busy={busy}>
     {paid ? <div className="payment-result" role="status">
-      <span className="check-mark" aria-hidden="true">✓</span>
+      <SuccessMark />
       <h2>Payment complete</h2>
     </div> : <>
       {!data.live?.enabled && <p className="inline-note" role="status">{data.live?.reason || "Live payments are not enabled. No payment request can be created yet."}</p>}
@@ -132,8 +133,8 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
               <h2>Review payment</h2>
               <p className="inline-note">Authorize {instructions.amount} USDC from {prepared.signer}. Check the details in your wallet before signing.</p>
               <details><summary>View the exact signed message</summary><pre className="intent-message">{prepared.intent.payload.message}</pre></details>
-              <button className="button primary full" disabled={busy || expired || !data.live?.methods.confidential} onClick={signPayment}>{busy ? "Waiting for wallet…" : "Sign and submit payment"}</button>
-            </section> : <button className="button primary full" disabled={busy || !walletAccount || !data.live?.methods.confidential} onClick={preparePayment}>{busy ? "Preparing review…" : "Review USDC payment"}</button>}
+              <button className="button primary full" aria-busy={busy} disabled={busy || expired || !data.live?.methods.confidential} onClick={signPayment}>{busy ? "Waiting for wallet…" : "Sign and submit payment"}</button>
+            </section> : <button className="button primary full" aria-busy={busy} disabled={busy || !walletAccount || !data.live?.methods.confidential} onClick={preparePayment}>{busy ? "Preparing review…" : "Review USDC payment"}</button>}
           </>}
           {instructions.walletUrl && <a className="button primary full" href={instructions.walletUrl} target="_blank" rel="noopener noreferrer">Review in wallet <span aria-hidden="true">↗</span></a>}
           {instructions.address && <details className="payment-copy"><summary>Copy payment details</summary>
@@ -150,19 +151,19 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
         <div className="method-heading"><h2>Payment method</h2></div>
         <div className="methods" role="radiogroup" aria-label="Payment method">
           {([ ["zcash", "Zcash", "VIZOR or Zodl"], ["confidential", "Confidential balance", "Existing confidential USDC"] ] as const).map(([value, label, hint]) => <label key={value} className={`method ${method === value ? "selected" : ""}`}>
-            <input type="radio" name="live-method" value={value} checked={method === value} disabled={busy} onChange={() => { setMethod(value); setRefundAddress(""); setRequestKey(""); }} />
+            <input type="radio" name="live-method" value={value} checked={method === value} aria-busy={busy} disabled={busy} onChange={() => { setMethod(value); setRefundAddress(""); setRequestKey(""); }} />
             <span><strong>{label}</strong><small>{hint}{!data.live?.methods[value] ? " · Not available yet" : ""}</small></span><span className="radio-visual" aria-hidden="true" />
           </label>)}
         </div>
         {method === "zcash" ? <><label className="field">Refund address
-          <input value={refundAddress} disabled={busy} autoComplete="off" spellCheck={false} maxLength={128} onChange={(e) => { setRefundAddress(e.target.value); setRequestKey(""); }} placeholder="t1… or t3…" aria-describedby="refund-help" />
+          <input value={refundAddress} aria-busy={busy} disabled={busy} autoComplete="off" spellCheck={false} maxLength={128} onChange={(e) => { setRefundAddress(e.target.value); setRequestKey(""); }} placeholder="t1… or t3…" aria-describedby="refund-help" />
           <span className="field-hint" id="refund-help">Unused ZEC is returned here. Refunds are publicly visible.</span>
         </label><details className="payment-help"><summary>Which address should I use?</summary><p className="field-hint">Copy a transparent receive address from your Zcash wallet, starting with t1 or t3. Confirm your wallet can receive at it. Unified and shielded addresses are not supported for refunds.</p></details></> : <>{!data.live?.methods.confidential && <p className="inline-note">Confidential USDC is not available yet.</p>}{walletControls}</>}
-        <button className="button primary full" disabled={busy || !canCreate || (method === "zcash" && !refundAddress.trim()) || (method === "confidential" && !walletAccount)} onClick={start}>{busy ? "Preparing quote…" : requestKey ? "Retry payment request" : "Get payment quote"}<span aria-hidden="true">→</span></button>
+        <button className="button primary full" aria-busy={busy} disabled={busy || !canCreate || (method === "zcash" && !refundAddress.trim()) || (method === "confidential" && !walletAccount)} onClick={start}>{busy ? "Preparing quote…" : requestKey ? "Retry payment request" : "Get payment quote"}<span aria-hidden="true">→</span></button>
       </>}
     </>}
     {data.attempts.length > 0 && <>
-      <button className="text-button" disabled={busy} onClick={refresh}>{busy ? "Checking…" : "Refresh payment status"}</button>
+      <button className="text-button" aria-busy={busy} disabled={busy} onClick={refresh}>{busy ? "Checking…" : "Refresh payment status"}</button>
       <details className="demo-controls"><summary>Payment request history ({data.attempts.length})</summary>
         <p className="field-hint">Ask the organizer to review the outcome before paying again.</p>
         {data.attempts.map((a, i) => <div key={a.id} className="attempt-controls"><span>Request {data.attempts.length - i} · {a.method === "zcash" ? "Zcash" : "USDC"} · {a.status}</span>{a.payment?.statusMessage && <p>{a.payment.statusMessage}</p>}</div>)}

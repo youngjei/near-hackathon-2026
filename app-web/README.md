@@ -51,15 +51,15 @@ Sites uses the Cloudflare entry point. Set hosted `STORAGE_BACKEND=supabase` plu
 4. **Create demo requests** → one persisted bill and N−1 individual reimbursement shares. The organizer's share is excluded from the reimbursement total.
 5. **Share link** on a friend → copy that private link or scan its invitation QR. It opens a checkout, never a fundable wallet request.
 6. Open checkout → choose Zcash or confidential USDC → **Try … demo** → **Simulate successful payment**. No address, live quote, wallet signature or spending submission exists in this mode.
-7. The organizer page updates within about five seconds while open. Reload either page: stored progress persists. **Test another outcome** exercises expiry, failure, refund and late settlement.
+7. The organizer page updates within about five seconds while open. Close it, reopen the app and select **Your bills** → open the saved bill to see current payment progress. **Keep your organizer link** exposes a private recovery link for a different browser; save it privately. **Test another outcome** exercises expiry, failure, refund and late settlement.
 
 The owner-private Sites deployment is for the owner to review. Friends cannot use it until an explicitly authorized audience change/deployment is made. Individual application capabilities remain required even within the hosting access boundary.
 
 ## Privacy and correctness
 
 - Random organizer capability, per-share derived capabilities and hashes stored in the database.
-- Tokens travel in URL fragments, are exchanged through same-origin POST for scoped HTTP-only cookies, and are removed from the address bar. HTTP request URLs/referrers do not include fragments. Do not share organizer links or disclose private share links.
-- Cookies last seven days. This demo has no wallet-based account recovery. Bookmarking preserves access only in a browser retaining the cookie.
+- Tokens travel in URL fragments, are exchanged through same-origin POST for scoped HTTP-only cookies, and are removed after successful access and organizer persistence. If browser storage is blocked, the organizer fragment remains available for manual recovery. HTTP request URLs/referrers do not include fragments. Do not share organizer links or disclose private share links.
+- Cookies last seven days. Authorized organizer capabilities are remembered in browser-local storage and can restore the cookie from **Your bills**. The private organizer recovery link also works in a fresh browser. Clearing browser data or using a different browser removes automatic discovery; losing both saved browser access and the recovery link loses access. There is no wallet-address lookup or cloud account recovery. The list retains up to 50 bills; save private recovery links for older bills. Removing a list entry does not revoke existing cookies or copies of the link. Organizer capabilities are bearer secrets; the browser index stores only the token, bill ID, title and save time, never receipt or receiving-wallet data.
 - Receipts remain in a private bucket. Reading requires organizer or individual share authorization. Images become inaccessible after seven days; automatic object deletion is not scheduled yet.
 - Atomic batches and unique keys prevent duplicate creation and repeated payment requests. One share is counted once even if multiple attempts settle. Old attempts are retained.
 - No API exposes other diners' capabilities to a payer, or raw provider metadata. Rate limits bound creation, upload, FX and attempt calls per session/share.

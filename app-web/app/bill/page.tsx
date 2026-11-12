@@ -5,6 +5,8 @@ import { QR } from "@/components/qr";
 import { Receipt } from "@/components/receipt";
 import { api, redeem, link, Dashboard } from "@/lib/client";
 import { formatAmount } from "@/lib/money";
+import { TaskFrame, SuccessMark } from "@/components/task-frame";
+import { BillRecovery } from "@/components/bill-recovery";
 const labels: Record<string, string> = {
   paid: "Paid in demo",
   pending: "Waiting",
@@ -68,8 +70,8 @@ export default function Bill() {
   const share = data.shares.find((s) => s.id === selected);
   return (
     <Shell notice={isLive ? null : undefined}>
-      <div className="flow">
-        <div className="intro compact">
+      <TaskFrame className="organizer-layout" context={<>
+        <div className="intro compact bill-context">
           <h1>{data.bill.merchant}</h1>
           <p>{data.bill.diners} people</p>
         </div>
@@ -92,7 +94,7 @@ export default function Bill() {
           aria-valuemax={data.shares.length}
         >
           <div
-            style={{ width: `${(Number(received) * 100) / Number(total)}%` }}
+            style={{ transform: `scaleX(${Number(received) / Number(total)})` }}
           />
         </div>
         <div className="progress-caption">
@@ -101,6 +103,9 @@ export default function Bill() {
           </span>
           <span>{formatAmount((total - received).toString())} USDC left</span>
         </div>
+        {paid === data.shares.length && <div className="all-paid" role="status"><SuccessMark /><span>{isLive ? "Everyone has paid" : "Everyone has paid in demo"}</span></div>}
+      </>}>
+        <div className="document-heading"><h2>Payment requests</h2><span>{data.shares.length} friends</span></div>
         <div className="share-list">
           {data.shares.map((s) => (
             <div className="share-row" key={s.id}>
@@ -118,6 +123,8 @@ export default function Bill() {
                 </span>
                 <button
                   className="text-button"
+                  aria-expanded={selected === s.id}
+                  aria-controls={`share-request-${s.id}`}
                   onClick={() => setSelected(selected === s.id ? "" : s.id)}
                 >
                   {selected === s.id ? "Close link" : "Share link"}
@@ -129,6 +136,7 @@ export default function Bill() {
         {share && (
           <section
             className="share-panel"
+            id={`share-request-${share.id}`}
             aria-label={`Share request for friend ${share.position}`}
           >
             <h2>Request for friend {share.position}</h2>
@@ -158,11 +166,9 @@ export default function Bill() {
           </section>
         )}
         <Receipt bill={data.bill} kind="bills" id={data.bill.id} />
-        <p className="small-note left">
-          Bookmark this page on this device to return to all requests.
-        </p>
+        <BillRecovery dashboard={data} />
         <ErrorMessage message={error} />
-      </div>
+      </TaskFrame>
     </Shell>
   );
 }

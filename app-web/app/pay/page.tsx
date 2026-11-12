@@ -5,6 +5,7 @@ import { LivePayment } from "@/components/live-payment";
 import { Receipt } from "@/components/receipt";
 import { api, redeem, Checkout } from "@/lib/client";
 import { formatAmount } from "@/lib/money";
+import { TaskFrame, SuccessMark } from "@/components/task-frame";
 export default function Pay() {
   const [data, setData] = useState<Checkout>(),
     [error, setError] = useState(""),
@@ -90,7 +91,7 @@ export default function Pay() {
     : 0;
   return (
     <Shell notice={data.bill.mode === "live" ? null : undefined}>
-      <div className="flow payment-flow">
+      <TaskFrame className="checkout-layout" context={<>
         <div className="intro compact">
           <h1>Your share</h1>
           <p>
@@ -104,13 +105,13 @@ export default function Pay() {
           </div>
         </div>
         <Receipt bill={data.bill} kind="shares" id={data.share.id} />
+      </>}>
+        <div className="payment-flow" aria-busy={busy}>
         {data.bill.mode === "live" ? (
           <LivePayment data={data} onChange={setData} />
         ) : state === "paid" ? (
-          <div className="payment-result">
-            <span className="check-mark" aria-hidden="true">
-              ✓
-            </span>
+          <div className="payment-result" role="status">
+            <SuccessMark />
             <h2>Paid in demo</h2>
             <p>
               No money was moved.
@@ -121,9 +122,7 @@ export default function Pay() {
           </div>
         ) : pending ? (
           <section className="payment-result">
-            <span className="pending-mark" aria-hidden="true">
-              ···
-            </span>
+            <span className="pending-mark" aria-hidden="true"><i /><i /><i /></span>
             <h2>Demo payment</h2>
             <p>
               Simulated{" "}
@@ -133,6 +132,7 @@ export default function Pay() {
             <p className="field-hint">Demo request expires in {minutes} min.</p>
             <button
               className="button primary full"
+              aria-busy={busy}
               disabled={busy}
               onClick={() => simulate("paid", active.id)}
             >
@@ -193,6 +193,7 @@ export default function Pay() {
             </div>
             <button
               className="button primary full"
+              aria-busy={busy}
               disabled={busy}
               onClick={start}
             >
@@ -259,7 +260,8 @@ export default function Pay() {
           </details>
         )}
         <ErrorMessage message={error} />
-      </div>
+        </div>
+      </TaskFrame>
     </Shell>
   );
 }

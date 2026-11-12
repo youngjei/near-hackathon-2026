@@ -1,8 +1,8 @@
 # Current status
 
-Updated: November 11, 2026 (KST).
+Updated: November 12, 2026 (KST).
 
-Phase: executable payment backend and compatible external NEAR-wallet signing implemented, with rollout gates disabled. Supabase migrations 001–005 are applied. Real device/refund/funded acceptance, hosted payment credentials, reconciliation scheduling and OCR remain outstanding. The November 11 UX refinement and payment-code release is now published on the owner-private Site; execution gates remain disabled. No submission or funded project wallet exists.
+Phase: executable payment backend and compatible external NEAR-wallet signing implemented, with rollout gates disabled. Supabase migrations 001–005 are applied. Real device/refund/funded acceptance, hosted payment credentials, reconciliation scheduling and OCR remain outstanding. The November 12 redesign and organizer recovery release is now published on the owner-private Site; execution gates remain disabled. No submission or funded project wallet exists.
 
 Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site) — owner-only, ChatGPT sign-in required.
 
@@ -33,6 +33,9 @@ Delivery target: a real usable application with receipt extraction and verified 
 
 ## Latest verification
 
+- November 12: responsive interface redesign, purposeful loading/confirmation motion and no-login organizer return flow implemented. Your bills remembers up to 50 authorized bills in this browser; private organizer links restore access on another browser. Recovery restores expired cookies, preserves links on failed/blocked-storage paths and never grants organizer access to payers. No schema or payment-rollout changes.
+- Verification: TypeScript and whitespace checks passed. 90 unit/integration checks covered across the full 88-test run and focused 12-test recovery run; 34 distinct desktop/mobile browser scenarios passed across the existing suite and focused reruns. Updated keyboard-order assertion for new navigation. Twelve synthetic final screenshots had no overflow or page errors; independent manual visual and recovery reviews completed. Sanitized Sites production build and owner-private publication succeeded: source `e3c5ca03b656f9e7f1472eb5c6cbf4c23c246fdc`, deployment `appgdep_6af52526c3fc81c2b5988e0aeef97fb1`, environment revision 1.
+
 - Centered `splitdbill` header wordmark published. Rendered alignment and non-overlapping navigation verified at 320, 390 and 1440 pixels; production build passed.
 
 - UX refinement: 26 desktop/mobile journeys passed against the local Sites runtime. The focused QR-disclosure/above-fold action test passed on both viewports after a short-screen spacing correction. TypeScript and the sanitized Sites production build passed. Nine synthetic screenshots reviewed; no overflow or console errors. Demo disclosure and payment safeguards remain; optional explanations and QR/copy fallback use accessible disclosures.
@@ -41,11 +44,11 @@ Delivery target: a real usable application with receipt extraction and verified 
 - Twenty-six desktop/mobile scenarios pass: ten persisted demo journeys against native Next.js/Supabase and sixteen synthetic live-checkout scenarios. The new receiving-address scenarios also pass against the D1 production build; the previous eight D1 scenarios passed after adapter extraction.
 - Both production builds and TypeScript pass. Native Next.js output is isolated in `.next-native/` so it cannot overwrite Vinext route types.
 - Next.js is 16.4.6; React/ReactDOM/RSC are patched to 19.2.9, resolving the newly listed critical RSC advisory as well as earlier patched issues. Other audit findings remain (26: 16 moderate, 10 high, including tooling/Vinext/Zod); do not describe this as a completed dependency security review.
-- Hosted API checks passed for Supabase selection, receiving-address persistence and exclusion from diner responses, synthetic receipt round-trip, authorization and idempotent simulated settlement. Those hosted checks covered the previous receiving-address deployment. The current payment-code deployment is source `0210ff45d98e054df32bbfba4d6687609a2c574a`, deployment `appgdep_6af468c2067c81c287ce4099d2a398b7`, environment revision 1; its Sites production build and native deployment result succeeded. Only Supabase credentials were configured in hosted secrets; NEAR AI and Intents keys remain local and unused by the app.
+- Hosted API checks passed for Supabase selection, receiving-address persistence and exclusion from diner responses, synthetic receipt round-trip, authorization and idempotent simulated settlement. Those hosted checks covered the previous receiving-address deployment. The current redesign/recovery deployment is source `e3c5ca03b656f9e7f1472eb5c6cbf4c23c246fdc`, deployment `appgdep_6af52526c3fc81c2b5988e0aeef97fb1`, environment revision 1; its Sites production build and native deployment result succeeded. Only Supabase credentials were configured in hosted secrets; NEAR AI and Intents keys remain local and unused by the app.
 
 ## Next
 
-1. Publication completed after the user explicitly approved the publishing helper credential transport. Site source `0210ff45d98e054df32bbfba4d6687609a2c574a`, deployment `appgdep_6af468c2067c81c287ce4099d2a398b7`, environment revision 1. Both live routes remain disabled; publication does not establish wallet or settlement acceptance.
+1. Publication completed after the user explicitly approved the publishing helper credential transport. Site source `e3c5ca03b656f9e7f1472eb5c6cbf4c23c246fdc`, deployment `appgdep_6af52526c3fc81c2b5988e0aeef97fb1`, environment revision 1. Both live routes remain disabled; publication does not establish wallet or settlement acceptance.
 2. Run real VIZOR/Zodl URI + usable transparent-refund tests and a compatible external NEAR wallet signing test. near.com-created passkeys remain unsupported by this external-wallet connector.
 3. With an explicitly authorized small budget and user wallet approvals, verify actual confidential recipient credit, fees, partial/late deposits and refunds. No user-wallet signature or funded execution has happened.
 4. Configure hosted provider/cron secrets and a recurring reconciliation job, then activate only accepted routes. Both route switches remain false.

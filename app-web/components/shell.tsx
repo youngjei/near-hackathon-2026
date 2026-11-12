@@ -6,14 +6,11 @@ export function Shell({ children, notice = "Demo · No real payments" }: { child
   return (
     <>
       <header className="site-header">
+        <a className="header-link bills-link" href="/bills" aria-current={pathname === "/bills" ? "page" : undefined}>Your bills</a>
         <a className="wordmark" href="/" aria-label="splitdbill home">
           splitdbill
         </a>
-        {pathname !== "/" && (
-          <a className="header-link" href="/">
-            New bill
-          </a>
-        )}
+        <a className="header-link new-bill-link" href="/" aria-current={pathname === "/" ? "page" : undefined}><span aria-hidden="true">+</span> New bill</a>
       </header>
       {notice && <div className="demo-notice">{notice}</div>}
       <main id="main">{children}</main>
@@ -38,7 +35,7 @@ export function CopyButton({
   return (
     <button
       type="button"
-      className="button quiet"
+      className={`button quiet ${state === "Copied" ? "copy-confirmed" : ""}`}
       onClick={async () => {
         try {
           await navigator.clipboard.writeText(value);
@@ -49,14 +46,15 @@ export function CopyButton({
         }
       }}
     >
-      {state || label}
+      <span aria-live="polite">{state || label}</span>
     </button>
   );
 }
 export function Loading() {
   return (
-    <div className="loading" role="status">
-      Opening your bill…
+    <div className="loading" role="status" aria-live="polite">
+      <span>Opening your bill…</span>
+      <div className="loading-skeleton" aria-hidden="true"><i /><i /><i /></div>
     </div>
   );
 }

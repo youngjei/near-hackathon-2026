@@ -211,6 +211,8 @@ test("small screens, large amounts, keyboard focus and reduced motion", async ({
     page.getByRole("link", { name: "Skip to content" }),
   ).toBeFocused();
   await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: "Your bills", exact: true })).toBeFocused();
+  await page.keyboard.press("Tab");
   await expect(
     page.getByRole("link", { name: "splitdbill home" }),
   ).toBeFocused();
