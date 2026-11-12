@@ -14,7 +14,7 @@
   min-height: 2.16em;
   padding-inline: 32px;
   font-size: inherit;
-  letter-spacing: -.04em;
+  letter-spacing: -.025em;
   line-height: 1.04;
   overflow: clip;
   overflow-wrap: normal;
@@ -25,9 +25,9 @@
 .animated-intro-private { opacity: 1; color: var(--accent); }
 .animated-intro[data-motion-state="static"] .animated-intro-private { opacity: 0; }
 .animated-intro[data-motion-state="static"] .animated-intro-static { opacity: 1; }
-.animated-intro-caption { display: flex; gap: 12px; align-items: center; min-height: 64px; margin-top: 12px; }
-.animated-intro .animated-intro-caption p { margin: 0; max-width: 30ch; font-size: 17px; line-height: 1.5; color: var(--ink); text-wrap: balance; }
-.animated-intro-secondary { display: block; margin-top: 6px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.animated-intro-caption { display: grid; grid-template-columns: minmax(0, 1fr) 44px; gap: 16px; align-items: start; min-height: 64px; margin-top: 20px; }
+.animated-intro .animated-intro-caption p { margin: 0; max-width: none; font-size: 18px; line-height: 1.6; letter-spacing: 0; color: var(--ink); text-wrap: pretty; }
+.animated-intro-secondary { display: block; margin-top: 12px; font-size: 16px; line-height: 1.6; color: var(--muted); }
 .intro-motion-control { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; color: var(--muted); }
 .intro-motion-control:hover { color: var(--accent); background: var(--tint); }
 .intro-motion-control svg { display: block; width: 20px; height: 20px; }
@@ -41,7 +41,7 @@
   .animated-intro .animated-intro-heading { padding-inline: 20px; min-height: 2.16em; }
   .animated-intro .animated-intro-caption p { font-size: 17px; }
   .animated-intro-peek-group > span { width: 16px; }
-  .animated-intro-caption { min-height: 48px; margin-top: 10px; }
+  .animated-intro-caption { min-height: 48px; margin-top: 18px; gap: 8px; }
   .step-start .animated-intro + .workflow-steps { margin-top: 20px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -49,4 +49,5 @@
   .animated-intro-static { opacity: 1 !important; }
   .animated-intro-peeks { display: none; }
   .intro-motion-control { display: none; }
+  .animated-intro-caption { grid-template-columns: minmax(0, 1fr); }
 }
