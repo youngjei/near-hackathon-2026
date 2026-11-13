@@ -12,12 +12,12 @@ The live guide requires a working prototype, public reproducible repository and 
 - [x] Explain real versus simulated behavior and known limitations.
 - [x] Disclose baseline code, reused libraries/templates and AI code; link the eligible diff. No second independent entry has been identified.
 - [ ] Choose and add a LICENSE file.
-- [ ] Inspect files and Git history for credentials and private data.
-- [ ] Reproduce the demo from a clean checkout.
-- [ ] Make the repository public before **November 14, 23:59 UTC / November 15, 08:59 KST** and keep it public through judging.
+- [x] Inspect current files and Git history for credentials and private data; 579 history blobs had no `.env` file, private key, GitHub token or personal internal receiving identifier. The separate signature evidence is public quote data, not a secret key.
+- [x] Reproduce the demo against a fresh isolated local D1 database and verify the browser journeys.
+- [x] Make the repository public before **November 14, 23:59 UTC / November 15, 08:59 KST** and keep it public through judging. Public `main` serves the README, screenshots and video without sign-in.
 - [x] Record a complete synthetic user workflow; the narrated video is in `assets/demo.mp4`.
 - [ ] Human publishes a public X post saying it was built at NEAR HACKATHON, including `@NEARProtocol`, `#NEARHackathon` and demo video/screenshots. Optional tags: `@NearLegion`, `@NearBuilders`.
-- [ ] Keep any hosted demo up through November 18, ideally November 25.
+- [ ] If a public hosted demo is added, keep it up through November 18, ideally November 25. The current Vercel pilot is owner-only; the credential-free local demo is the judge path permitted by the organizer guide.
 - [ ] Re-read the live rules and verify the exact repo and X post links.
 
 ## Human-provided information
