@@ -18,6 +18,7 @@ From the repository root:
 
 ```sh
 cd app-web
+node --version
 npm ci
 npm run build
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_organic_jimmy_woo.sql
@@ -27,7 +28,7 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 npm run dev -- --port 5173
 ```
 
-Expected result: the local app is available at [http://127.0.0.1:5173](http://127.0.0.1:5173). Keep the server running while following these steps:
+Expected result: `node --version` reports v24.x and the local app is available at [http://127.0.0.1:5173](http://127.0.0.1:5173). Keep the server running while following these steps:
 
 1. Choose **Try a sample bill** → see a synthetic 200 AED receipt and the **Demo · No real payments** label.
 2. Enter `nearcom:demo.near` as the synthetic organizer receiving address (never send funds to it), confirm the sample bill details, and choose **Review split** → see the dated reference conversion and equal USDC shares. The organizer's share is excluded from reimbursements.
