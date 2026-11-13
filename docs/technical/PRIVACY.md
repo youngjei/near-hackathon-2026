@@ -55,7 +55,9 @@ All tests used fresh disposable identity or synthetic addresses, with no deposit
 
 The ordinary status endpoint really exposes the recipient to someone who knows that deposit address. Hiding it in our UI or proxying the quote call does not fix this. That observation is limited to `confidentiality: public`; it must not be generalized to basic/advanced or confidential-account destinations without evidence.
 
-## Exact access gap
+## Exact access gap — November 9 historical findings
+
+Update, November 10: the configured partner key now authorizes both intended dry-quote routes with basic confidentiality. The quote-access blocker below is resolved. Executable confidential status visibility, third-party settlement and end-to-end metadata privacy remain untested; see [payment adapter](PAYMENT_ADAPTER.md).
 
 The official confidentiality announcement says the integration must be enabled through the [Partner Portal](https://partners.near-intents.org). No enabled partner credential was available in this workspace. A valid end-user session worked for balances but was rejected by `/quote`; it does not replace the partner credential there. The published quote auth schema and runtime error messages do not fully explain how partner and user auth compose for confidential quote creation.
 

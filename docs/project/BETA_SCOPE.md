@@ -1,6 +1,6 @@
 # splitdbill beta scope
 
-Decided by the user on November 10, 2026 (KST). This supersedes the earlier broad external-wallet scope. This is a product specification, not a shipped integration.
+Decided by the user on November 10, 2026 (KST), expanded on November 13 to include Solana USDC. This supersedes the earlier two-method restriction. This is a product specification, not a shipped integration.
 
 ## Product promise
 
@@ -13,40 +13,53 @@ Photograph a receipt, confirm the total, split it among friends, and generate pa
 | Organizer | Receives USDC into a user-controlled Confidential Intents balance |
 | Zcash payer | Pays ZEC from a shielded balance using VIZOR or Zodl (formerly Zashi) |
 | Confidential Intents payer | Pays from their existing confidential balance; start with USDC to keep the asset set small |
+| Solana payer | Pays native USDC on Solana using a compatible Solana Pay wallet; public sender/amount visibility is disclosed |
 
 USDC-only confidential input is the initial implementation choice, not an API restriction. Additional private-balance assets can be added later without broadening this beta to external public wallets.
 
-Do not build external Ethereum/MetaMask, Solana/Phantom, BTC or a generic chain selector for this beta. The sender selects one of two payment methods: Zcash wallet or Confidential Intents balance. VIZOR and Zodl are the supported/tested Zcash wallet targets, not a cryptographically enforceable wallet-brand allowlist: a chain transfer does not authenticate the originating app brand.
+Do not build external Ethereum/MetaMask, BTC or a generic chain selector for this beta. The sender selects one of three payment methods: Zcash (VIZOR or Zodl), NEAR Confidential balance, or Solana wallet (USDC). Solana support is USDC-only; native SOL and other tokens are outside this increment. VIZOR and Zodl are the supported/tested Zcash wallet targets, not a cryptographically enforceable wallet-brand allowlist: a chain transfer does not authenticate the originating app brand.
 
 ## Organizer journey
 
-1. Authorize their existing confidential receiving account. Do not require a newly created wallet solely for splitdbill.
+1. Paste and confirm the full internal nearcom-prefixed address from near.com. The field includes a format example and a help popup with finding instructions. No organizer wallet login, connection, ownership signature or new wallet is required in split/d/bill. Validate format, not ownership; never treat this account as a normal blockchain destination.
 2. Photograph/upload a receipt; confirm extracted total, currency, tips and service charges.
 3. Enter diner count including themselves; allocate N shares and request N−1 reimbursements.
 4. Approve the conversion into USDC and rounding allocation. Record FX source and time.
 5. Share the bill invitation and private per-diner checkout access.
 6. Follow unpaid, pending, paid and refunded status until all reimbursement shares settle.
 
+Keep bill management behind the private organizer capability link. Save the confirmed recipient with the bill and bind every payment quote to it. The recipient must not change after payment requests are issued; a different recipient requires a new bill. Address entry, confirmation and immutable storage are implemented; live quote binding remains pending.
+
 Equal splitting is the first beta. Item-level allocations and additional split rules are later scope.
 
 ## Zcash payment path
 
 1. Friend opens their checkout, sees the receipt and USDC share, then selects Zcash.
-2. Backend requests an `EXACT_OUTPUT` ZEC → USDC quote with `depositType: ORIGIN_CHAIN` and `recipientType: CONFIDENTIAL_INTENTS`.
+2. Backend requests an `EXACT_OUTPUT` ZEC → USDC quote with `depositType: ORIGIN_CHAIN` and `recipientType: CONFIDENTIAL_INTENTS`, using the normalized internal account without the nearcom display prefix. The tested adapter implements this direct route; do not substitute a Solana deposit address.
 3. Obtain a supported, payer-controlled refund destination before creating the executable quote. Do not infer a shielded sender's refund address from the public transaction. Verify supported refund formats and their privacy implications with the live integration.
 4. Generate a single-recipient ZIP-321 payment URI from the returned Zcash deposit address and quoted ZEC input amount. Example shape only: `zcash:<deposit-address>?amount=<quoted-ZEC>`. Do not put receipt details or personal names into the URI.
 5. Present a wallet-open action where the OS supports it, a scanable payment QR, and a copy-address/amount fallback. Test VIZOR's Send flow and Zodl on selected release versions. Do not assume every scanner, platform or in-app swap screen processes payment requests identically.
 6. Friend reviews and approves in their wallet. The Zcash network fee is separate from the amount paid to the deposit address; ensure sufficient balance for both.
-7. Backend polls 1Click and reconciles actual USDC delivery before marking the share paid.
+7. Backend verifies provider settlement into the organizer’s confidential account, including output asset, amount and final status. Confidential status access and funded delivery remain acceptance checks before enabling execution.
 
 We create and track the 1Click quote. The wallet makes a ZEC send to its deposit address. Do not send users through a second independent in-wallet swap, which could lose our quote association or duplicate routing.
 
 ZIP-321 is an amount/address request, not a guarantee of quote validity or execution. Display quote expiry, refresh before issuing new instructions, and reconcile late deposits against old attempts. Saved QR codes cannot be remotely erased.
 
+## Solana USDC payment path
+
+1. Select Solana wallet (USDC) and provide a payer-controlled Solana wallet address for refunds.
+2. Request exact-output Solana USDC to the bill's immutable internal confidential recipient. The input is on Solana; the output is confidential USDC, not an external Solana receive address.
+3. Present the verified exact amount and a Solana Pay request containing the USDC mint. Offer wallet-open, QR and copy fallback. The wallet supplies and approves the transaction; the app never signs for the payer.
+4. Require SOL for network fees and any necessary token-account creation. Reconcile against the provider's saved quote and actual confidential output, not merely a wallet-open event or a supplied transaction hash.
+5. Keep this route behind separate disabled execution/acceptance gates until real-device handoff, funded delivery and refunds are verified.
+
+Ordinary Solana USDC transfers publicly expose the source wallet and amount. A wallet brand does not automatically shield this route. Privacy tooling can have different guarantees and requires its own verified sending integration; this implementation does not add Helius Rings or another privacy pool.
+
 ## Confidential balance payment path
 
 1. Friend authorizes access to their existing confidential account.
-2. Backend requests a quote funded from `CONFIDENTIAL_INTENTS`, with confidential recipient and refund types where supported.
+2. Backend requests a quote funded from `CONFIDENTIAL_INTENTS`, with a confidential refund destination. Use `recipientType: CONFIDENTIAL_INTENTS` for the direct internal recipient.
 3. Generate the spending intent, validate account/amount/destination, have the user's wallet sign it, and submit through the partner API.
 4. Track and reconcile settlement into the organizer's confidential USDC balance.
 
@@ -70,7 +83,7 @@ The previous [privacy investigation](../technical/PRIVACY.md) remains relevant e
 - One successful payment counted once despite duplicate notifications, multiple quotes or late settlement.
 - Labels distinguishing live quotes, simulated completion and funded execution. Funded testing still requires an explicit budget.
 
-## Sources checked November 10
+## Sources checked November 10 (Solana additions November 13)
 
 - [VIZOR sending guide](https://vizor.cash/blog/how-to-send-zec/): shielded-balance spending and transparent recipient behavior.
 - [VIZOR wallet listing](https://z.cash/ecosystem/vizor/): shielded-by-default positioning.
@@ -84,3 +97,10 @@ The previous [privacy investigation](../technical/PRIVACY.md) remains relevant e
 - [Signed-intent execution](https://docs.near-intents.org/integration/distribution-channels/1click-api/quickstart/signed-intent-execution): existing confidential-balance payment flow.
 
 Track direction remains Real-World Money plus Social Money as candidates. Choose final tracks against the completed demo; privacy branding is not the product thesis.
+
+## Longer-term product vision
+
+Integrate receipt splitting directly into near.com: automatically use the signed-in user's confidential receiving destination, generate requests and track reimbursements in the existing wallet experience. This is a user-stated aspiration, not a confirmed partnership or shipped near.com feature. The standalone beta uses manual receiving-address entry.
+
+- [Solana Pay transfer requests](https://solana.com/docs/tools/solana-pay/quickstart/transfer-requests): USDC mint, amount and recipient request fields.
+- [Solana privacy boundaries](https://solana.com/docs/finance/privacy): application-level privacy and public participant limits.

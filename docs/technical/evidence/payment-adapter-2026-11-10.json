@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-11-10T04:23:07.489Z",
+  "syntheticAccounts": true,
+  "dryOnly": true,
+  "fundsMoved": false,
+  "results": [
+    {
+      "method": "zcash",
+      "kind": "estimate",
+      "inputAsset": "ZEC",
+      "inputAmount": "0.00438636",
+      "outputUnits": "5000000",
+      "quotedAt": "2026-11-10T04:23:02.269Z",
+      "estimatedSeconds": 455,
+      "signatureVerified": true
+    },
+    {
+      "method": "zcash",
+      "kind": "estimate",
+      "inputAsset": "ZEC",
+      "inputAmount": "0.01316116",
+      "outputUnits": "15000000",
+      "quotedAt": "2026-11-10T04:23:03.132Z",
+      "estimatedSeconds": 455,
+      "signatureVerified": true
+    },
+    {
+      "method": "zcash",
+      "kind": "estimate",
+      "inputAsset": "ZEC",
+      "inputAmount": "0.04387470",
+      "outputUnits": "50000000",
+      "quotedAt": "2026-11-10T04:23:04.064Z",
+      "estimatedSeconds": 455,
+      "signatureVerified": true
+    },
+    {
+      "method": "confidential",
+      "kind": "estimate",
+      "inputAsset": "USDC",
+      "inputAmount": "5.050506",
+      "outputUnits": "5000000",
+      "quotedAt": "2026-11-10T04:23:05.397Z",
+      "estimatedSeconds": 10,
+      "signatureVerified": true
+    },
+    {
+      "method": "confidential",
+      "kind": "estimate",
+      "inputAsset": "USDC",
+      "inputAmount": "15.151516",
+      "outputUnits": "15000000",
+      "quotedAt": "2026-11-10T04:23:06.015Z",
+      "estimatedSeconds": 10,
+      "signatureVerified": true
+    },
+    {
+      "method": "confidential",
+      "kind": "estimate",
+      "inputAsset": "USDC",
+      "inputAmount": "50.505051",
+      "outputUnits": "50000000",
+      "quotedAt": "2026-11-10T04:23:06.961Z",
+      "estimatedSeconds": 10,
+      "signatureVerified": true
+    }
+  ]
+}

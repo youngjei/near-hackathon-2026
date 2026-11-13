@@ -1,6 +1,6 @@
 # APIs and developer tools
 
-Snapshot: 2026-11-09. Live 1Click OpenAPI version: 0.1.10. Base URL: `https://1click.chaindefuser.com`. This inventory includes all 15 operations across 14 paths in the retrieved specification; listing an operation does not mean we executed it.
+Snapshot: 2026-11-09; application adapter update: November 10. Live 1Click OpenAPI version: 0.1.10. Base URL: `https://1click.chaindefuser.com`. This inventory includes all 15 operations across 14 paths in the retrieved specification; listing an operation does not mean we executed it.
 
 ## 1Click REST operations
 
@@ -11,7 +11,7 @@ Snapshot: 2026-11-09. Live 1Click OpenAPI version: 0.1.10. Base URL: `https://1c
 | GET | `/v0/account/balances` | Get user token balances | User access token in Authorization: Bearer; tested |
 | GET | `/v0/account/history` | Get transaction history | User authentication plus invite-only access; observed HTTP 403 |
 | GET | `/v0/tokens` | Get supported tokens | Public; tested |
-| POST | `/v0/quote` | Request a swap quote | Partner auth advertised; public ordinary quotes work anonymously; private quotes blocked in our probes |
+| POST | `/v0/quote` | Request a swap quote | Partner auth advertised; public ordinary quotes work anonymously; both beta confidential routes now pass partner-authenticated dry quotes |
 | GET | `/v0/status` | Check swap execution status | Partner auth advertised; own unfunded public status worked anonymously |
 | GET | `/v0/any-input/withdrawals` | Get ANY_INPUT withdrawals | Partner-auth surface; not executed |
 | POST | `/v0/deposit/submit` | Submit deposit transaction hash | Optional transaction-hash notification; not executed |
@@ -28,7 +28,7 @@ Source: [live OpenAPI](https://1click.chaindefuser.com/docs/v0/openapi.yaml). Th
 
 Partner credential: `X-API-Key: <partner JWT>`; legacy `Authorization: Bearer <partner JWT>` is also accepted. User data endpoints: `Authorization: Bearer <accessToken>` from `/auth/authenticate`. The OpenAPI label `User-Session` names a bearer security scheme; it is not an HTTP header called `User-Session`.
 
-Do not exchange the two token types. The user token worked for balances but failed at `/quote`. The confidential quote user/partner composition needs an enabled partner credential and confirmed integration instructions. Never ship partner secrets, access/refresh tokens or spending keys in a bill link.
+Do not exchange the two token types. The user token worked for balances but failed at `/quote`. The configured partner key now authorizes both beta dry-quote routes. Executable confidential status/session access still needs verification. Never ship partner secrets, access/refresh tokens or spending keys in a bill link.
 
 Source: [authentication](https://docs.near-intents.org/integration/distribution-channels/1click-api/authentication).
 
@@ -73,7 +73,7 @@ Sources: [RPC](https://docs.near-intents.org/integration/market-makers/message-b
 | [NEAR agent skills](https://github.com/near/agent-skills) | Agent integration instructions | Reference; not installed or trusted as live API authority |
 | [Confidential solver example](https://github.com/hairy-pointer/near-intents-amm-solver/tree/feat/confidential-amm-solver-mode) | Liquidity shielding, private solving, balance auth | Architecture reference; we do not need to operate a solver |
 
-The current TypeScript repository package reported 0.1.25. Official quote-signature docs require at least 0.1.24. Pin the version actually validated when implementation begins.
+The November 9 repository snapshot reported 0.1.25. The application now pins SDK 0.1.26 and has verified six live dry-quote signatures with it. See [payment adapter](PAYMENT_ADAPTER.md).
 
 Signature verification is over selected request/quote fields, serialized deterministically, hashed, base58-encoded and Ed25519-signed. The reviewed source excludes several metadata fields and does not include `confidentiality` in its request projection. A valid signature therefore is not a blanket attestation of every response field. Our dry quote, allocated quote and status quote all verified using that published algorithm.
 

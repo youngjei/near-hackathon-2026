@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-11-11",
+  "route": "confidential USDC to confidential USDC",
+  "disposableSyntheticAccounts": true,
+  "fundsMoved": false,
+  "walletSignatureRequested": false,
+  "intentSubmitted": false,
+  "quoteHttpStatus": 201,
+  "generateIntentHttpStatus": 201,
+  "observedStandard": "nep413",
+  "observedRecipient": "intents.far",
+  "nonceBytes": 32,
+  "singleTransfer": true,
+  "signerMatchesRequest": true,
+  "transferReceiverMatchesQuoteDeposit": true,
+  "transferAmountMatchesQuotedInput": true,
+  "confidentialTokenMatchesDocumentedMapping": true,
+  "intentDeadlineMatchesQuoteDeadline": true,
+  "notes": "Two separate unfunded disposable quote/generate requests. No raw payload, account identifier or deposit address retained."
+}
