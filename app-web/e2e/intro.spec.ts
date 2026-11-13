@@ -10,6 +10,7 @@ test("intro pauses, resumes without replaying old words, and loops with a longer
   await expect(phrases.nth(1)).toHaveCSS("opacity", "1", { timeout: 8000 });
   await page.getByRole("button", { name: "Pause animation" }).click();
   await expect(root).toHaveAttribute("data-motion-state", "paused");
+  await expect.poll(() => phrases.evaluateAll(elements => elements.every(element => element.getAnimations()[0]?.playState === "paused"))).toBe(true);
   const times = await phrases.evaluateAll(elements => elements.map(element => element.getAnimations()[0]?.currentTime));
   await page.waitForTimeout(350);
   expect(await phrases.evaluateAll(elements => elements.map(element => element.getAnimations()[0]?.currentTime))).toEqual(times);

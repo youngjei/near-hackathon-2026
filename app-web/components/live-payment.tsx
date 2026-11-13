@@ -14,7 +14,7 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
   const [refundAddress, setRefundAddress] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(Date.now);
   const [qr, setQr] = useState("");
   const [walletAccount, setWalletAccount] = useState("");
   const [prepared, setPrepared] = useState<PreparedConfidentialPayment>();
@@ -29,6 +29,8 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
   const unresolved = !!active && !["failed", "refunded", "paid"].includes(active.status) && ["allocating", "unknown", "review", "processing", "incomplete", "deposit_received", "submitting", "accepted"].includes(payment?.state || "");
   const canCreate = !!data.live?.enabled && !!data.live.methods[method] && !paid && data.attempts.length === 0;
   const instructions = !paid && !expired && active?.status === "pending" && payment?.state === "ready" ? payment : undefined;
+  // Reset the wallet review when the server changes the active attempt.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setPrepared(undefined); setSubmissionStarted(false); }, [active?.id]);
   const uri = ((active?.method === "zcash" && instructions?.uri?.startsWith("zcash:")) || (active?.method === "solana" && instructions?.uri?.startsWith("solana:"))) ? instructions?.uri : undefined;
   useEffect(() => {
@@ -37,6 +39,8 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
   }, []);
   useEffect(() => {
     let cancelled = false;
+    // Never display a QR from a previous payment URI.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setQr("");
     if (uri) QRCode.toDataURL(uri, { width: 232, margin: 2, errorCorrectionLevel: "M" })
       .then((value) => { if (!cancelled) setQr(value); })
@@ -53,7 +57,9 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
   }
   useLivePaymentRefresh(data, refresh, busy);
   useEffect(() => {
-    if (active && ["failed", "refunded"].includes(active.status)) {
+    if (active?.status && ["failed", "refunded"].includes(active.status)) {
+      // Clear a pending review when the server reports a terminal failure.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPrepared(undefined);
       setSubmissionStarted(false);
       setError("");
@@ -126,7 +132,7 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
           <p className="field-hint">Expires in {Math.max(1, Math.ceil((active.expiresAt - now) / 1000))} seconds. Check the amount and destination in your wallet.</p>
           {uri && <>
             {qr && <img className="qr" src={qr} width={232} height={232} alt={`${active.method === "solana" ? "Solana" : "Zcash"} payment request with the exact amount`} />}
-            <p className="field-hint">{active.method === "solana" ? "Scan with a wallet that supports Solana Pay. You need SOL for network fees and possible token account creation." : "Use your wallet’s Send scanner. Network fees are additional."}</p>
+            <p className="field-hint">{active.method === "solana" ? "On another device, scan this QR with a wallet that supports Solana Pay. On this phone, use the exact USDC address and amount below. You need SOL for network fees and possible token account creation." : "Use your wallet’s Send scanner. Network fees are additional."}</p>
           </>}
           {active.method === "confidential" && <>
             {walletControls}
@@ -144,7 +150,7 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
             <div className="payment-copy-actions"><CopyButton value={instructions.address} label="Copy address" /><CopyButton value={instructions.amount} label="Copy exact amount" /></div>
             <p className="field-hint">Check the destination and exact amount before sending. Do not start a separate swap.</p>
           </div>}
-          {uri && <details className="payment-copy">
+          {uri && active.method === "zcash" && <details className="payment-copy">
             <summary>Other ways to pay</summary>
             <p className="field-hint">This link requires a compatible installed mobile wallet and Safari or Chrome. It may not open a wallet from an in-app browser. If it does not work, use the QR or copy the details above.</p>
             <a className="button quiet full" href={uri}>Try mobile wallet link <span aria-hidden="true">↗</span></a>

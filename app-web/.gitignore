@@ -15,6 +15,7 @@
 /.next-native/
 /.vinext/
 /out/
+/AGENTS.md
 next-env.d.ts
 *.tsbuildinfo
 

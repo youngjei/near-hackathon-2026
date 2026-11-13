@@ -2,7 +2,7 @@ import { rememberBill, savedBill } from "./saved-bills";
 // Save on an explicit page open, never re-add a forgotten entry on later polls.
 const rememberedOwnerReads = new Set<string>();
 
-export async function api<T = any>(path: string, body?: unknown, options: { remember?: boolean } = {}): Promise<T> {
+export async function api<T = unknown>(path: string, body?: unknown, options: { remember?: boolean } = {}): Promise<T> {
   let r = await fetch("/api/" + path, {
     method: body === undefined ? "GET" : "POST",
     headers: body === undefined ? {} : { "Content-Type": "application/json" },

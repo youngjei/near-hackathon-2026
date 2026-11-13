@@ -14,6 +14,7 @@ npm run build
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_organic_jimmy_woo.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_complete_bruce_banner.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_durable_live_payments.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0003_unique_live_deposit.sql
 npm run dev -- --port 5173
 ```
 
@@ -23,7 +24,7 @@ The npm legacy peer resolver is pinned in `.npmrc` because the host npm resolver
 
 ## Run with Supabase and native Next.js
 
-The configured Supabase project has all six migrations applied. For a new project, apply `supabase/migrations/*.sql` in filename order. Do not rerun the initial migration on an existing database. Only the server role has table/function access; browser roles cannot call the RPCs.
+The configured hosted Supabase project has migrations 001–007 applied; migration 007 rejects duplicate live deposit instructions across shares. For a new project, apply `supabase/migrations/*.sql` in filename order. Do not rerun the initial migration on an existing database. Only the server role has table/function access; browser roles cannot call the RPCs.
 
 Set `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` in ignored `.env.local`, then:
 
@@ -45,7 +46,7 @@ Sites uses the Cloudflare entry point. Set hosted `STORAGE_BACKEND=supabase` plu
 
 ## Native Vercel owner pilot
 
-Use Node 24 and Vercel CLI 65.15.0. The canonical address is [the standalone pilot](https://split-d-bill.vercel.app). Production deployment `dpl_BCMYhr1jDLgV1BSzX32gjHEqDhAR` is READY with this exact `APP_ORIGIN`. Hosted owner-password login and the real-funds notice were verified. `vercel.json` selects native Next.js with the `.next-native` output directory. `.vercelignore` excludes Sites-only configuration, including `vite.config.ts`, and local secrets/artifacts.
+Use Node 24 and Vercel CLI 65.15.0. The canonical address is [the standalone pilot](https://split-d-bill.vercel.app). Production deployment `dpl_43ft4CvWDSsMtcDBFcyHyBRaGbwN` is READY with this exact `APP_ORIGIN`. The earlier deployment's owner-password login and real-funds notice were verified; the updated deployment's unauthenticated API returned 401. This is not a new wallet acceptance test. `vercel.json` selects native Next.js with the `.next-native` output directory. `.vercelignore` excludes Sites-only configuration, including `vite.config.ts`, and local secrets/artifacts.
 
 From the repository root:
 
@@ -174,13 +175,13 @@ From `app-web`, run `node scripts/generate-brand-icons.mjs`. Expected result: SV
 
 ### Solana USDC requests (November 13)
 
-Migration `supabase/migrations/202611130006_solana_usdc_method.sql` extends the method constraint to `solana`, preserving data and permissions. It was applied to the splitdbill Supabase project on November 13; fresh deployments must apply migrations 001–006 in order. D1 requires no additional migration.
+Migration `supabase/migrations/202611130006_solana_usdc_method.sql` extends the method constraint to `solana`, preserving data and permissions. It was applied to the splitdbill Supabase project on November 13; fresh deployments must apply migrations 001–007 in order. D1 needs no Solana-specific migration, but its later deposit-identity guard is migration `0003`.
 
 1. Start the local app and choose **Try a sample bill** → create demo requests using a synthetic receiving account.
 2. Open a private diner checkout → choose **Solana wallet (USDC)** → **Try Solana USDC demo**. Expect a clearly labelled simulated request, with no wallet link or fundable address.
 3. Simulate successful payment → the organizer sees one paid share. Reloading preserves it.
 4. To check the real provider without funds, from `app-web` run `node --env-file=.env.local ./node_modules/vitest/vitest.mjs run --config vitest.live.config.ts checks/solana-live.test.ts`. Expect three verified dry quotes and sanitized evidence; no deposit address or transaction signature.
 
-The implemented real route uses exact-output mainnet Solana USDC → confidential USDC and Solana Pay wallet-open/QR/copy instructions. It pins the USDC mint and validates amounts, quote signatures, expiry and wallet-owner address format. Ordinary keypair wallet addresses are supported; off-curve PDA/ATA addresses and memo-dependent quotes are rejected. An address-format check cannot establish ownership or recognize every exchange/token account.
+The implemented real route uses exact-output mainnet Solana USDC → confidential USDC and Solana Pay QR/copy instructions. The `solana:` URI is encoded in the QR for wallets that support scanning it; it is not presented as a browser wallet-launch button. On the same phone, open the wallet's Send flow, select USDC on Solana, and paste the exact address and amount. It pins the USDC mint and validates amounts, quote signatures, expiry and wallet-owner address format. Ordinary keypair wallet addresses are supported; off-curve PDA/ATA addresses and memo-dependent quotes are rejected. An address-format check cannot establish ownership or recognize every exchange/token account.
 
 `LIVE_SOLANA_ENABLED` is true in the owner-only Sites and Vercel pilots; `SOLANA_ACCEPTANCE_VERIFIED` remains false. Real Solana-wallet compatibility, SOL fees, refund delivery and actual confidential credit are unverified. A dry quote or simulated payment is not acceptance. Solana signing stays in the user's wallet; no sender privacy layer is added.

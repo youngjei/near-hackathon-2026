@@ -253,11 +253,9 @@ test("Solana quote uses the gated method and exposes a Solana Pay request", asyn
   await expect(page.getByRole("button", { name: "Copy address", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Copy exact amount" })).toBeVisible();
   await expect(page.getByText("On this phone? Open your Solana wallet, choose Send, select USDC on Solana, and paste the address and exact amount below.")).toBeVisible();
-  const walletLink = page.getByRole("link", { name: "Try mobile wallet link", includeHidden: true });
-  await expect(walletLink).toBeHidden();
-  await page.getByText("Other ways to pay", { exact: true }).click();
-  await expect(walletLink).toHaveAttribute("href", uri);
-  await expect(page.getByText(/requires a compatible installed mobile wallet and Safari or Chrome/)).toBeVisible();
+  await expect(page.getByText(/On another device, scan this QR/)).toBeVisible();
+  await expect(page.getByText("Other ways to pay", { exact: true })).toHaveCount(0);
+  await expect(page.locator('a[href^="solana:"]')).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 

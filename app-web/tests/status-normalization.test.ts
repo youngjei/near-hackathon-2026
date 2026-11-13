@@ -1,5 +1,5 @@
 import {expect,test,vi} from 'vitest';
-const verify=vi.hoisted(()=>vi.fn((q:any)=>q.quoteRequest.quoteWaitingTimeMs===3000));
+const verify=vi.hoisted(()=>vi.fn((q:{quoteRequest:{quoteWaitingTimeMs?:number}})=>q.quoteRequest.quoteWaitingTimeMs===3000));
 vi.mock('@defuse-protocol/one-click-sdk-typescript',()=>({verifyQuoteSignature:verify}));
 import {assessSettlement,paymentQuoteRequest,type VerifiedQuote} from '../lib/providers/intents';
 test('status restores only omitted signed provider wait time from independently verified saved quote',()=>{

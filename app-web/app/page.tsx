@@ -25,6 +25,8 @@ export default function CreateBill() {
     }).catch(() => {});
     return () => { cancelled = true; };
   }, []);
+  // Hydration gates browser-only file and navigation actions.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setHydrated(true), []);
   const [step, setStep] = useState<"start" | "details" | "review">("start");
   const heading = useRef<HTMLHeadingElement>(null);

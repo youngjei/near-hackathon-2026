@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import { PGlite } from '@electric-sql/pglite';
 import { DatabaseSync } from 'node:sqlite';
 import { readFile } from 'node:fs/promises';
@@ -30,8 +30,8 @@ function sqliteD1() {
 }
 beforeAll(async()=>{
  await pg.exec(`create role anon;create role authenticated;create role service_role bypassrls;create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);`);
- for(const filename of ['202611100001_beta.sql','202611100002_application_modes.sql','202611100003_server_adapter.sql','202611100004_receiving_account.sql','202611110005_durable_live_payments.sql','202611130006_solana_usdc_method.sql']) await pg.exec(await readFile(new URL('../supabase/migrations/'+filename,import.meta.url),'utf8'));
- for(const filename of ['0000_organic_jimmy_woo.sql','0001_complete_bruce_banner.sql','0002_durable_live_payments.sql']) sqlite.exec(await readFile(new URL('../drizzle/'+filename,import.meta.url),'utf8'));
+ for(const filename of ['202611100001_beta.sql','202611100002_application_modes.sql','202611100003_server_adapter.sql','202611100004_receiving_account.sql','202611110005_durable_live_payments.sql','202611130006_solana_usdc_method.sql','202611130007_unique_live_deposit.sql']) await pg.exec(await readFile(new URL('../supabase/migrations/'+filename,import.meta.url),'utf8'));
+ for(const filename of ['0000_organic_jimmy_woo.sql','0001_complete_bruce_banner.sql','0002_durable_live_payments.sql','0003_unique_live_deposit.sql']) sqlite.exec(await readFile(new URL('../drizzle/'+filename,import.meta.url),'utf8'));
  vi.stubGlobal('fetch',async(input:string|URL|Request,init?:RequestInit)=>{
   const request=new Request(input,init),name=new URL(request.url).pathname.split('/').pop()!;
   const args=await request.json() as Record<string,unknown>;
@@ -43,9 +43,10 @@ beforeAll(async()=>{
  });
  stores.push(supabaseStore('https://database.test','test-server-key'),d1Store(sqliteD1()));
 },30000);
+beforeEach(async()=>{ await pg.exec('UPDATE public.live_payment_attempts SET quote=NULL'); sqlite.exec('UPDATE live_payment_attempts SET quote_json=NULL'); });
 afterAll(async()=>{vi.unstubAllGlobals();await pg.close();sqlite.close();});
 function quote(expires:number):VerifiedQuote {
- return {correlationId:'synthetic',timestamp:new Date().toISOString(),signature:'not-a-provider-signature',quoteRequest:{dry:false,deadline:new Date(expires).toISOString()},quote:{amountIn:'1000000',minAmountIn:'1000000',amountOut:'10000000',minAmountOut:'10000000',amountInFormatted:'0.01',amountInUsd:'10',amountOutFormatted:'10',amountOutUsd:'10',depositAddress:'synthetic-address',deadline:new Date(expires).toISOString(),timeWhenInactive:new Date(expires).toISOString()}};
+ return {correlationId:'synthetic',timestamp:new Date().toISOString(),signature:'not-a-provider-signature',quoteRequest:{dry:false,deadline:new Date(expires).toISOString()},quote:{amountIn:'1000000',minAmountIn:'1000000',amountOut:'10000000',minAmountOut:'10000000',amountInFormatted:'0.01',amountInUsd:'10',amountOutFormatted:'10',amountOutUsd:'10',depositAddress:'synthetic-address-'+crypto.randomUUID(),deadline:new Date(expires).toISOString(),timeWhenInactive:new Date(expires).toISOString()}};
 }
 async function dinner(store:Store,mode:'live'|'demo'='live') {
  const b:Bill={id:crypto.randomUUID(),owner_hash:crypto.randomUUID(),create_key:crypto.randomUUID(),merchant:'Synthetic',currency:'USD',original_total:'20',extra:'0',diners:2,total_units:'20000000',fx_rate:'1',fx_date:'2026-11-11',fx_source:'test',mode,receipt_id:null,recipient_account:'synthetic.near',created_at:Date.now()};
@@ -58,6 +59,19 @@ function reservation(s:Share) {
 }
 for(const kind of ['supabase','d1'])describe(kind,()=>{
  const store=()=>stores.find(s=>s.kind===kind)!;
+ test('atomically rejects a reused deposit identity across shares',async()=>{
+  const db=store(),a=await dinner(db),b=await dinner(db),ra=await db.reserveLiveAttempt(reservation(a.s)),rb=await db.reserveLiveAttempt(reservation(b.s));
+  const shared=quote(Date.now()+60000);
+  const outcomes=await Promise.allSettled([db.saveLiveQuote(ra.attempt.id,shared),db.saveLiveQuote(rb.attempt.id,shared)]);
+  expect(outcomes.map(result=>result.status).sort()).toEqual(['fulfilled','rejected']);
+  const attempts=await Promise.all([db.liveAttempt(ra.attempt.id),db.liveAttempt(rb.attempt.id)]);
+  expect(attempts.filter(attempt=>attempt?.allocation_state==='ready')).toHaveLength(1);
+  expect(attempts.filter(attempt=>attempt?.quote)).toHaveLength(1);
+  const loser=attempts.find(attempt=>attempt?.allocation_state==='allocating')!;
+  await db.markLiveAllocationUnknown(loser.id);
+  expect((await db.liveAttempt(loser.id))?.allocation_state).toBe('unknown');
+  await expect(db.reserveLiveAttempt(reservation(loser.share_id===a.s.id?a.s:b.s))).rejects.toThrow();
+ });
  test('atomic winner for concurrent retries; conflicting keys/routes and uncertain retries fail',async()=>{
   const db=store(),{s}=await dinner(db),r=reservation(s);
   const [first,retry]=await Promise.all([db.reserveLiveAttempt(r),db.reserveLiveAttempt({...r,attempt:{...r.attempt,id:crypto.randomUUID()}})]);
@@ -149,6 +163,18 @@ for(const kind of ['supabase','d1'])describe(kind+' synthetic service',()=>{
   expect(provider.allocate).toHaveBeenCalledTimes(1);const a=(await db.reconcilableLiveAttempts(1,s.id))[0];
   const view=await livePaymentView(db,a);expect(view?.uri).toBe('zcash:'+refund+'?amount=0.01000000');
   expect(JSON.stringify(view)).not.toMatch(/recipient|refundTo|signature|correlationId|synthetic.near/);
+ });
+ test('a collision never exposes a second payment instruction',async()=>{
+  const db=store(),a=await dinner(db),b=await dinner(db),provider=makeProvider();
+  const input={method:'zcash' as const,requestKey:crypto.randomUUID(),refundAddress:refund};
+  const gates={zcash:true,confidential:false};
+  await createLivePayment(db,provider,a.s,a.b,input,gates);
+  const second={...input,requestKey:crypto.randomUUID()};
+  await expect(createLivePayment(db,provider,b.s,b.b,second,gates)).rejects.toMatchObject({status:503});
+  const retry=await createLivePayment(db,provider,b.s,b.b,second,gates);
+  expect(retry.allocation_state).toBe('unknown');
+  expect((await livePaymentView(db,retry))?.address).toBeUndefined();
+  expect(provider.allocate).toHaveBeenCalledTimes(2);
  });
  test('Solana persists once, projects USDC URI, hides it after deposit and reconciles credit',async()=>{
   const db=store(),{b,s}=await dinner(db),provider=makeProvider();

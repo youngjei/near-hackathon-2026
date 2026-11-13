@@ -1,5 +1,35 @@
 # Build log
 
+## 2026-11-13 — Submission reproducibility and media
+
+Prepared a root README with exact credential-free D1 setup, action-to-result sample steps, honest simulation/owner-pilot boundaries, track fit, eligible-work baseline and reused-code disclosure. Added three synthetic UI screenshots and a 72.56-second narrated/captioned demo video to `docs/hackathon/assets/`; masked the synthetic receiving value in the video. The human must still publish the required X post. The license, public repository and exact entry payload remain pending.
+
+Verified a fresh isolated D1 database against all four migrations (0000–0003). Vinext and native Next.js production builds, TypeScript and 114 Vitest tests passed. ESLint passed with zero errors and five image warnings after generated-output exclusion and narrow React hook exceptions. The full Playwright run passed 58/60 desktop/mobile scenarios; both timed intro failures occurred because the test sampled before Web Animations finished pausing. The test now waits for paused play state and the two affected scenarios passed on rerun. No wallet transfer, funded settlement or confidential credit was performed.
+
+## 2026-11-13 — Hosted collision index and owner-pilot deployment
+
+In the authenticated Supabase SQL editor, a preflight count found zero duplicate saved deposit address/memo pairs. Applied migration 007's unique index and verified `live_deposit_identity` appeared in `pg_indexes`. Native Next.js production build passed. Deployed the local Solana handoff correction and deposit-collision guard to the existing owner-only Vercel pilot: deployment `dpl_43ft4CvWDSsMtcDBFcyHyBRaGbwN` is READY at the canonical https://split-d-bill.vercel.app. An unauthenticated API check returned HTTP 401 from the owner-password gate. Vercel's CLI created a persistent automation bypass secret during that check; it was revoked and a follow-up inspection showed zero bypass secrets. Temporary local credential files were removed. No funded payment, device handoff or confidential receiving credit was observed.
+
+## 2026-11-13 — Per-friend deposit collision guard
+
+Audited quote allocation after the owner asked whether friends could receive the same deposit address. Each share requests a separate 1Click quote; official documentation does not explicitly guarantee a unique address. Added local D1 migration 0003 and Supabase migration 007 with atomic uniqueness over saved live deposit address/memo pairs. The second colliding attempt remains locked without revealing its funding instruction. Existing collisions cause migration failure for investigation. This prevents a later collision from reaching another payer; it cannot recall an instruction already shown. Hosted Supabase 007 was applied through its SQL editor after a zero-collision preflight, then verified in `pg_indexes`; code deployment is pending.
+
+TypeScript and all 114 Vitest tests passed, including concurrent storage collisions in both backends. No provider allocation, wallet signature or funded transfer occurred in this check. See `docs/technical/PAYMENT_ADAPTER.md` for the exact privacy and reconciliation boundary.
+
+## 2026-11-13 — Solana browser-launch correction
+
+The owner reported that the Solana Pay action exposed a `solana:` link and did not open a wallet on their device. Solana's transfer-request specification defines this URI and QR payload, but browser launch depends on an installed handler. Removed the Solana link from checkout, kept the exact-amount Solana Pay QR for another-device scanning, and made same-device USDC address/amount copying explicit. Zcash's optional URI shortcut remains. Updated the compatibility record, README and focused browser assertion. This is a local source fix, not a deployment or funded-payment result.
+
+Validation with Node 24.22.3: 110 Vitest tests passed, native Next.js production build passed, sequential TypeScript passed and the focused Solana checkout scenario passed on desktop and mobile. The first TypeScript invocation raced the native build's generated-type cleanup and failed with missing generated files; rerunning after the build passed. The previous lint failures remain. Next: deploy the local fix to the owner pilot after review, test actual QR scanning or manual Send with a bounded owner-approved payment, and verify reconciliation plus confidential credit before claiming live success.
+
+## 2026-11-13 — New-laptop beta audit and demo rough cut
+
+The Conductor workspace initially opened on `origin/main`, which has only the preparation dossier. Found the developed app on `origin/feat/first-beta` and checked out a local tracking branch without renaming the placeholder branch. Added a truthful video storyboard in `docs/hackathon/DEMO_PLAN.md` and captured a 30-second silent MP4 rough cut of the sample receipt → share → simulated Zcash payment → organizer progress journey. The video and final screenshot are ignored workspace artifacts under `.context/`, not published or committed.
+
+On this laptop, installed a disposable Node 24.22.3 runtime because the system Node is 23.6.0. `npm ci`, `npm run typecheck`, `npm test` (110/110), `npm run build`, `npm run build:next`, and `npm run test:e2e` (60/60 desktop/mobile) passed. The E2E run used a fresh local D1 database with migrations 0000–0002 and a local Sites-compatible dev server. `npm run lint` failed with 21 errors and 7 warnings; this is an existing cleanup item, not a passing gate. Inspected the video contact sheet and final organizer screen; the recording visibly labels the journey as simulated.
+
+This verifies the local application journey and its automated boundaries. It does not verify the deployed owner login from this laptop, installed VIZOR/Zodl/Phantom handoff, refund behavior, a funded NEAR Intents route, or confidential USDC credit. Next: test those with the user's own devices and explicit payment approval, then record a narrated final video with only claims backed by observations. Release also needs a license, public repository, public human-posted X demo and exact submission information.
+
 ## 2026-11-09 — Repository and hackathon context
 
 Prepared the repository and reviewed the organizer guide, site and all track prompts. Added event and submission briefs, technical resources, project planning files and original reference snapshots. Cross-checked dates and prize totals, identified older submission wording and Intents/testnet conflicts, and checked internal Markdown links and Git hygiene before the initial commit.

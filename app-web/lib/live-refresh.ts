@@ -25,7 +25,7 @@ export function scheduleLivePaymentRefresh(
 
 export function useLivePaymentRefresh(data: Checkout, refresh: () => Promise<void>, paused: boolean) {
   const current = useRef({ refresh, paused });
-  current.current = { refresh, paused };
+  useEffect(() => { current.current = { refresh, paused }; }, [refresh, paused]);
   const enabled = shouldRefreshLivePayment(data);
   useEffect(() => {
     if (!enabled) return;

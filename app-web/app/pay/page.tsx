@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Shell, ErrorMessage, Loading } from "@/components/shell";
 import { LivePayment } from "@/components/live-payment";
@@ -12,7 +13,7 @@ export default function Pay() {
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [method, setMethod] = useState<PaymentMethod>("zcash"),
-    [now, setNow] = useState(Date.now());
+    [now, setNow] = useState(Date.now);
   const boot = useRef<Promise<void> | null>(null);
   useEffect(() => {
     let cancelled = false;
@@ -117,9 +118,9 @@ export default function Pay() {
             <p>
               No money was moved.
             </p>
-            <a href="/" className="text-button">
+            <Link href="/" className="text-button">
               Split another bill →
-            </a>
+            </Link>
           </div>
         ) : pending ? (
           <section className="payment-result">

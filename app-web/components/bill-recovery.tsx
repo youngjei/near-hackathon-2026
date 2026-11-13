@@ -9,8 +9,12 @@ export function BillRecovery({ dashboard }: { dashboard: Dashboard }) {
   const [saved, setSaved] = useState<boolean>();
   useEffect(() => {
     if (!dashboard.organizerToken) return;
+    // Browser origin and storage are available only after hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRecoveryLink(link("bill", dashboard.bill.id, dashboard.organizerToken));
     setSaved(rememberBill(dashboard.bill, dashboard.organizerToken));
+    // Do not resave on polling: a forgotten entry must stay forgotten.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dashboard.bill.id, dashboard.bill.merchant, dashboard.organizerToken]);
   if (!recoveryLink) return null;
   return (

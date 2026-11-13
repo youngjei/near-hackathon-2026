@@ -2,7 +2,11 @@
 
 Updated: November 13, 2026 (KST).
 
-Phase: owner-only live-payment pilot deployed on Sites and native Vercel. Solana USDC and Zcash requests can use real funds only within the trusted owner session; confidential sending remains disabled and all acceptance flags remain false. Supabase migrations 001–006 are applied. Real wallet/device, refund and funded confidential-credit acceptance and OCR remain outstanding. A native Vercel production build is deployed at https://split-d-bill.vercel.app; canonical-origin deployment and hosted owner login are verified. Supabase Cron/Vault reconciliation runs every minute and an HTTP 200 empty-run response is verified. No submission or funded project wallet exists.
+This workspace was reconnected to `origin/feat/first-beta` after initially opening on `origin/main`, whose preparation-only status is stale for the beta. The latest local verification is below; it does not replace device or funded acceptance.
+
+Phase: owner-only live-payment pilot deployed on Sites and native Vercel. Solana USDC and Zcash requests can use real funds only within the trusted owner session; confidential sending remains disabled and all acceptance flags remain false. Supabase migrations 001–007 are applied. Real wallet/device, refund and funded confidential-credit acceptance and OCR remain outstanding. A native Vercel production build is deployed at https://split-d-bill.vercel.app; canonical-origin deployment and hosted owner login are verified. Supabase Cron/Vault reconciliation runs every minute and an HTTP 200 empty-run response is verified. No submission or funded project wallet exists.
+
+Supabase migration 007 and the equivalent local D1 migration 0003 prevent saving duplicate live deposit address/memo pairs across shares atomically. The hosted Supabase index and Vercel owner-pilot app code were applied and verified at the deployment level; funded behavior remains untested.
 
 Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site) — owner-only, ChatGPT sign-in required.
 
@@ -15,8 +19,8 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 - Built TypeScript/React App Router screens on the Sites-compatible Vinext runtime, with D1 bill/share/attempt records and private R2 receipt uploads.
 - Implemented per-share capabilities, cookie exchange, exact cent allocation, idempotent requests, stale-attempt handling and explicit simulation controls.
 - TypeScript and production build passed; 10 Vitest checks and 8 Playwright scenarios passed. Visual inspection completed; wallet-device testing is separate and not performed.
-- Published the private preview and verified the hosted API with synthetic data: creation, durable reads, separate diner access, simulated settlement and idempotence passed. All five expected database tables were present. No recurring jobs are configured.
-- Applied the first three Supabase migrations with explicit user approval for the server functions and grants. Implemented PostgreSQL transactions, private receipt storage, exact monetary serialization and rate limits. The private Site now uses Supabase; native Next.js is also supported locally. Vercel hosting is not configured.
+- Published the private preview and verified the hosted API with synthetic data: creation, durable reads, separate diner access, simulated settlement and idempotence passed. All five expected database tables were present. A recurring job was added later, as recorded under Latest verification.
+- Applied the first three Supabase migrations with explicit user approval for the server functions and grants. Implemented PostgreSQL transactions, private receipt storage, exact monetary serialization and rate limits. The private Site now uses Supabase; native Next.js is also supported locally. A native Vercel pilot was deployed later.
 
 - Recommended TypeScript/Next.js, Supabase, 1Click/Intents SDKs, ZIP-321 and NEAR AI receipt extraction; see [stack proposal](../technical/STACK.md). Checked current AI-credit terms and hosting constraints. No services provisioned.
 
@@ -32,6 +36,16 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 Delivery target: a real usable application with receipt extraction and verified NEAR payments. Supabase schema and runtime connection are complete; samples remain clearly labelled simulations, while the owner-only pilot is explicitly labelled real-funds testing. Existing D1 test records are preserved but not migrated; create new links in the Supabase-backed preview.
 
 ## Latest verification
+
+- November 13 submission-readiness check: fresh isolated D1 accepted migrations 0000–0003; Vinext and native Next production builds, TypeScript, and all 114 unit/integration tests passed. ESLint has zero errors and five image warnings. Full desktop/mobile Playwright run passed 58 of 60; both failures measured the animation clock before the browser completed a pause. The test now waits for paused play state, and both affected desktop/mobile scenarios passed on rerun. The 73-second synthetic demo video and three sample screenshots are included in the repository; no funds moved. The public repo and human X post remain pending.
+
+- November 13 owner-pilot update: native Next.js build passed; production deployment `dpl_43ft4CvWDSsMtcDBFcyHyBRaGbwN` is READY and aliased to https://split-d-bill.vercel.app. A protection-bypassed unauthenticated `/api/config` request still returned HTTP 401 from the app owner-password gate. The verification CLI created a Vercel automation bypass secret as a side effect; it was revoked immediately, and a subsequent protection inspection reported zero bypass secrets. This verifies deployment and access behavior, not a wallet payment or browser UI session.
+
+- November 13 per-friend deposit audit: each friend has a separate share and 1Click quote, but provider documentation does not guarantee a distinct deposit address. Added D1/Supabase uniqueness enforcement for the saved address/memo pair; a colliding later attempt remains locked and receives no funding instructions. TypeScript and all 114 Vitest tests passed, including concurrent collisions in both stores. Hosted Supabase preflight found zero existing collisions; migration 007 succeeded in its SQL editor and `pg_indexes` returned `live_deposit_identity`. The updated owner-only Vercel pilot was deployed later the same day. See the [payment adapter audit](../technical/PAYMENT_ADAPTER.md).
+
+- November 13 owner Solana handoff report: the owner tried the `solana:` browser link and it did not open a wallet on their device. Removed that optional launch action; the Solana Pay URI remains in the QR for another-device scanning, while same-device users are directed to exact USDC address/amount copying. The updated owner-only Vercel pilot was deployed later the same day, but no device wallet handoff was retested. All 110 Vitest tests, the native production build, sequential TypeScript check and the two focused desktop/mobile Solana checkout tests passed. A true wallet-connected one-tap flow, device QR test and funded settlement remain outstanding.
+
+- November 13 migration check on a new laptop: clean beta checkout installed with Node 24.22.3; TypeScript, all 110 Vitest tests, Vinext and native Next.js production builds, and all 60 desktop/mobile Playwright scenarios passed against a freshly migrated local D1 database. The recorded 30-second [demo rough cut](../hackathon/DEMO_PLAN.md) shows a synthetic bill, simulated Zcash checkout and organizer progress; the MP4 remains in ignored workspace `.context/` for review. Lint failed with 21 errors and 7 warnings, mostly existing React/Next lint rules; no application code was changed in this check. No hosted owner login, installed wallet, funded transfer or confidential credit was retested on this laptop.
 
 - November 13 standalone owner pilot verified: Vercel deployment `dpl_BCMYhr1jDLgV1BSzX32gjHEqDhAR` is READY at https://split-d-bill.vercel.app. Unauthenticated API access returned 401; owner-password login returned 303 with a session cookie. Authorized config returned 200 with live/testing, Zcash and Solana enabled, confidential sending disabled, Supabase storage and OCR disabled. Authorized reconciliation returned 200 with zero attempts checked. Actual browser login reached the homepage with **Live testing · Real funds**. No funded payment was performed.
 
@@ -96,6 +110,6 @@ NEAR AI key is configured locally and remains ignored by Git. It has not been au
 
 ## Known boundaries
 
-Private balances are documented and authentication was tested. Recipient identity privacy across the entire proposed flow is not yet proved. Basic versus advanced guarantees and confidential quote auth composition need partner clarification. Fee/deadline docs/runtime differences are recorded in the technical dossier. No fund movement or mainnet deployment occurred.
+Private balances are documented and authentication was tested. Recipient identity privacy across the entire proposed flow is not yet proved. Basic versus advanced guarantees and confidential quote auth composition need partner clarification. Fee/deadline docs/runtime differences are recorded in the technical dossier. The app is deployed as an owner-only pilot; no funded transfer or verified confidential credit occurred.
 
 Deadline: November 15, 2026, 08:59 KST (November 14, 23:59 UTC).

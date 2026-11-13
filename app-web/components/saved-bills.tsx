@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { api, type Dashboard } from "@/lib/client";
 import { forgetBill, readSavedBills, type SavedBill } from "@/lib/saved-bills";
@@ -14,6 +15,8 @@ export function SavedBills() {
   useEffect(() => {
     let cancelled = false;
     const current = readSavedBills();
+    // Read browser storage after hydration before fetching current statuses.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAvailable(current.available);
     setEntries(current.bills.map(saved => ({ saved })));
     // The local index stores access only. Payment progress always comes from the server.
@@ -78,7 +81,7 @@ export function SavedBills() {
         </>
       )}
       <ErrorMessage message={error} />
-      <a href="/" className="button primary">Split a new bill →</a>
+      <Link href="/" className="button primary">Split a new bill →</Link>
     </>
   );
 }

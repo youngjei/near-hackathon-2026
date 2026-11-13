@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { Shell, ErrorMessage, Loading, CopyButton } from "@/components/shell";
 import { QR } from "@/components/qr";
@@ -53,9 +54,9 @@ export default function Bill() {
           <ErrorMessage message={error} />
           {!error && <Loading />}
           {error && (
-            <a href="/" className="text-button">
+            <Link href="/" className="text-button">
               Start a new bill →
-            </a>
+            </Link>
           )}
         </div>
       </Shell>
