@@ -1,5 +1,13 @@
 # Build log
 
+## 2026-11-13 — Dependency exposure review
+
+Delegated a read-only `npm audit` and runtime schema review. The lockfile has 26 affected packages (10 high, 16 moderate); `--omit=dev` leaves one high Zod 3.25.76 advisory, [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5). The only runtime Zod array is parsed from a provider-generated confidential intent within a 10,000-character message bound; confidential sending is disabled. No plausible direct array-amplification path was found in the public local demo or owner-only pilot. The API's 16,000-character JSON check occurs after request text is buffered, so separate platform ingress limits were not established. A tested Zod 4 migration is a future fix; no blind major dependency upgrade or production gate change was made for this release.
+
+## 2026-11-13 — Anonymous judge rehearsal from public main
+
+A delegated agent cloned the public repository at `2b791d8` into ignored `.context/judge-public-clone`, with no `.env` file or wallet. It followed the README's install, Vinext build, four D1 migration and sample journey steps. All passed: 200 AED sample, three reimbursement shares, simulated Zcash success, organizer progress and persisted status after reload. The host's Node was 23.6.0 rather than the documented and package-declared Node 24; npm warned about the engine, but the flow worked. The later MIT/docs merge changed `main` to `ccf873d` without app changes. Anonymous HTTP access to `LICENSE` returned 200 and GitHub identified MIT. The rehearsal does not establish funded payment or wallet-device compatibility.
+
 ## 2026-11-13 — Code license for public judging
 
 Added the OSI MIT license with the repository owner's established GitHub handle as the copyright holder. The root README scopes this grant to project-authored code and documentation; Space Grotesk remains under its bundled OFL terms and third-party research references retain their original rights. Updated the submission checklist. The owner had raised MIT as an option and authorized completing the release; the human can still flag a preference before the final entry. No personal submission fields or funds were added to Git.
