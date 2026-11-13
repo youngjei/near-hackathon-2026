@@ -1,5 +1,9 @@
 # Build log
 
+## 2026-11-13 — Code license for public judging
+
+Added the OSI MIT license with the repository owner's established GitHub handle as the copyright holder. The root README scopes this grant to project-authored code and documentation; Space Grotesk remains under its bundled OFL terms and third-party research references retain their original rights. Updated the submission checklist. The owner had raised MIT as an option and authorized completing the release; the human can still flag a preference before the final entry. No personal submission fields or funds were added to Git.
+
 ## 2026-11-13 — Public repository release
 
 After scanning current files and 579 reachable Git blobs for committed `.env` files, private keys, GitHub tokens and the personal internal receiving identifier, changed the repository to public under the owner's approved release plan. One `ed25519:` match in old probe evidence was a quote signature, not a secret key. PR #1 merged the beta into `main`; anonymous raw GitHub requests returned HTTP 200 for the root README, three screenshots and MP4. Added a concise repository description and relevant topics. The owner-only Vercel pilot remains protected and is not the judge demo. The local credential-free sample and video are the judge path permitted by the live organizer guide. A code license, lead/contact fields, human X post and exact one-time submission are still outstanding.
