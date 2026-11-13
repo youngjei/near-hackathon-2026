@@ -120,13 +120,13 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
         {!instructions && <h2>{unresolved ? "Checking payment" : expired && active.status === "pending" ? "Quote expired" : active.status === "pending" ? "Payment details" : `Payment ${active.status}`}</h2>}
         {!instructions && payment?.statusMessage && <p className="inline-note" role="status">{payment.statusMessage}</p>}
         {instructions && <>
+          {active.method !== "confidential" && <h2>{active.method === "solana" ? "Scan in your Solana wallet" : "Scan in VIZOR or Zodl"}</h2>}
           <p className="field-hint">{active.method === "confidential" ? "Amount to authorize" : "Send exactly"}</p>
           <p className="payment-exact">{instructions.amount} <span>{instructions.symbol}</span></p>
           <p className="field-hint">Expires in {Math.max(1, Math.ceil((active.expiresAt - now) / 1000))} seconds. Check the amount and destination in your wallet.</p>
           {uri && <>
-            <a className="button primary full" href={uri}>Open {active.method === "solana" ? "Solana" : "Zcash"} wallet <span aria-hidden="true">↗</span></a>
-            <p className="field-hint">{active.method === "solana" ? "Use a wallet that supports Solana Pay requests. You need SOL for network fees and possible token account creation." : "Use VIZOR or Zodl if your version supports payment requests. Network fees are additional."}</p>
-            {qr && <details className="payment-copy"><summary>Scan with another device</summary><img className="qr" src={qr} width={232} height={232} alt={`${active.method === "solana" ? "Solana" : "Zcash"} payment request with the exact amount`} /></details>}
+            {qr && <img className="qr" src={qr} width={232} height={232} alt={`${active.method === "solana" ? "Solana" : "Zcash"} payment request with the exact amount`} />}
+            <p className="field-hint">{active.method === "solana" ? "Scan with a wallet that supports Solana Pay. You need SOL for network fees and possible token account creation." : "Use your wallet’s Send scanner. Network fees are additional."}</p>
           </>}
           {active.method === "confidential" && <>
             {walletControls}
@@ -138,10 +138,16 @@ export function LivePayment({ data, onChange }: { data: Checkout; onChange: (dat
             </section> : <button className="button primary full" aria-busy={busy} disabled={busy || !walletAccount || !data.live?.methods.confidential} onClick={preparePayment}>{busy ? "Preparing review…" : "Review USDC payment"}</button>}
           </>}
           {instructions.walletUrl && <a className="button primary full" href={instructions.walletUrl} target="_blank" rel="noopener noreferrer">Review in wallet <span aria-hidden="true">↗</span></a>}
-          {instructions.address && <details className="payment-copy"><summary>Copy payment details</summary>
+          {instructions.address && <div className="payment-copy">
+            {active.method !== "confidential" && <p className="field-hint">{active.method === "solana" ? "On this phone? Open your Solana wallet, choose Send, select USDC on Solana, and paste the address and exact amount below." : "On this phone? Open VIZOR or Zodl, choose Send, and paste the address and exact ZEC amount below."}</p>}
             <label className="field">Payment address<input readOnly value={instructions.address} onFocus={(e) => e.target.select()} /></label>
             <div className="payment-copy-actions"><CopyButton value={instructions.address} label="Copy address" /><CopyButton value={instructions.amount} label="Copy exact amount" /></div>
-            <p className="field-hint">If scanning fails, paste the address and exact amount{active.method === "solana" ? " and select USDC on Solana" : ""}. Do not start a separate swap.</p>
+            <p className="field-hint">Check the destination and exact amount before sending. Do not start a separate swap.</p>
+          </div>}
+          {uri && <details className="payment-copy">
+            <summary>Other ways to pay</summary>
+            <p className="field-hint">This link requires a compatible installed mobile wallet and Safari or Chrome. It may not open a wallet from an in-app browser. If it does not work, use the QR or copy the details above.</p>
+            <a className="button quiet full" href={uri}>Try mobile wallet link <span aria-hidden="true">↗</span></a>
           </details>}
         </>}
         {expired && <p className="inline-note">Do not send to this expired request. Refresh for late payments and ask the organizer before paying again.</p>}

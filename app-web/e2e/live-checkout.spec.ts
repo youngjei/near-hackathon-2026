@@ -36,20 +36,28 @@ test("allocated instructions survive gate closure, expire, and retain late-payme
   await page.route("**/api/shares/share-test/refresh", (route) => route.fulfill({ json: data }));
   await page.goto("/pay?id=share-test");
   await expect(page.getByText("0.01234567", { exact: false }).first()).toBeVisible();
-  await expect(page.getByRole("link", { name: "Open Zcash wallet" })).toHaveAttribute("href", syntheticUri);
-  await expect(page.getByRole("img", { name: "Zcash payment request with the exact amount" })).toBeHidden();
-  const openWallet = await page.getByRole("link", { name: "Open Zcash wallet" }).boundingBox();
-  expect(openWallet!.y + openWallet!.height).toBeLessThan(page.viewportSize()!.height);
-  await page.getByText("Scan with another device", { exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Scan in VIZOR or Zodl" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Open .* wallet/ })).toHaveCount(0);
   await expect(page.getByRole("img", { name: "Zcash payment request with the exact amount" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Copy exact amount", includeHidden: true })).toBeHidden();
-  await page.getByText("Copy payment details", { exact: true }).click();
   await expect(page.getByLabel("Payment address", { exact: true })).toHaveValue("synthetic-test-address");
+  await expect(page.getByRole("button", { name: "Copy address", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Copy exact amount" })).toBeVisible();
+  await expect(page.getByText("On this phone? Open VIZOR or Zodl, choose Send, and paste the address and exact ZEC amount below.")).toBeVisible();
+  const walletLink = page.getByRole("link", { name: "Try mobile wallet link", includeHidden: true });
+  await expect(walletLink).toBeHidden();
+  await page.getByText("Other ways to pay", { exact: true }).click();
+  await expect(walletLink).toBeVisible();
+  await expect(walletLink).toHaveAttribute("href", syntheticUri);
+  await expect(page.getByText(/requires a compatible installed mobile wallet and Safari or Chrome/)).toBeVisible();
   await expect(page.getByRole("button", { name: "Simulate successful payment" })).toHaveCount(0);
   data.attempts[0].expiresAt = Date.now() - 1;
   await page.getByRole("button", { name: "Refresh payment status" }).click();
   await expect(page.getByRole("heading", { name: "Quote expired" })).toBeVisible();
+  await expect(page.getByRole("img", { name: /payment request with the exact amount/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Copy address", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Copy exact amount" })).toHaveCount(0);
+  await expect(page.getByLabel("Payment address", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Other ways to pay", { exact: true })).toHaveCount(0);
   await expect(page.locator('a[href^="zcash:"]')).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Create a new quote" })).toHaveCount(0);
   await page.getByText("Payment request history (1)").click();
@@ -59,6 +67,50 @@ test("allocated instructions survive gate closure, expire, and retain late-payme
   await expect(page.getByRole("heading", { name: "Payment complete" })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
+
+for (const method of ["zcash", "solana"] as const) {
+  test(`${method} funding controls follow readiness and expire on the device clock`, async ({ page }) => {
+    await page.clock.install();
+    const data = checkout();
+    data.share.status = "pending";
+    data.attempts = [{ id: "readiness-test", method, mode: "live", status: "pending", createdAt: Date.now(), expiresAt: Date.now() + 60_000, payment: { state: "unknown", amount: "0.01234567", symbol: method === "solana" ? "USDC" : "ZEC", address: "synthetic-address", uri: `${method}:synthetic-address?amount=0.01234567` } }];
+    await page.route("**/api/shares/share-test", route => route.fulfill({ json: data }));
+    await page.route("**/api/shares/share-test/refresh", route => route.fulfill({ json: data }));
+    const qr = page.getByRole("img", { name: /payment request with the exact amount/ });
+    const copyAddress = page.getByRole("button", { name: "Copy address", exact: true });
+    const copyAmount = page.getByRole("button", { name: "Copy exact amount" });
+    async function expectNoFunding() {
+      await expect(qr).toHaveCount(0);
+      await expect(copyAddress).toHaveCount(0);
+      await expect(copyAmount).toHaveCount(0);
+      await expect(page.getByLabel("Payment address", { exact: true })).toHaveCount(0);
+      await expect(page.getByText("Other ways to pay", { exact: true })).toHaveCount(0);
+      await expect(page.locator(`a[href^="${method}:"]`)).toHaveCount(0);
+    }
+    await page.goto("/pay?id=share-test");
+    await expect(page.getByRole("heading", { name: "Checking payment" })).toBeVisible();
+    await expectNoFunding();
+    data.attempts[0].payment!.state = "ready";
+    await page.getByRole("button", { name: "Refresh payment status" }).click();
+    await expect(qr).toBeVisible();
+    await expect(copyAddress).toBeVisible();
+    await expect(copyAmount).toBeVisible();
+    for (const control of [qr, copyAddress, copyAmount]) {
+      const box = await control.boundingBox();
+      expect(box).not.toBeNull();
+      expect(box!.x).toBeGreaterThanOrEqual(0);
+      expect(box!.x + box!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await page.clock.fastForward(61_000);
+    await expect(page.getByRole("heading", { name: "Quote expired" })).toBeVisible();
+    await expectNoFunding();
+    data.attempts[0].payment!.state = "processing";
+    await page.getByRole("button", { name: "Refresh payment status" }).click();
+    await expect(page.getByRole("heading", { name: "Checking payment" })).toBeVisible();
+    await expectNoFunding();
+  });
+}
 
 test("request creation keeps exact request fields and refresh errors preserve history", async ({ page }) => {
   const data = checkout();
@@ -126,6 +178,10 @@ test("processing and incomplete payments never offer another send or quote", asy
   await expect(page.getByRole("region", { name: "Current payment request" }).getByText("The deposit is insufficient.")).toBeVisible();
   await expect(page.getByText(/do not top it up/)).toBeVisible();
   await expect(page.locator('a[href^="zcash:"]')).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Copy address", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Copy exact amount" })).toHaveCount(0);
+  await expect(page.getByRole("img", { name: /payment request with the exact amount/ })).toHaveCount(0);
+  await expect(page.getByText("Other ways to pay", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Create a new quote" })).toHaveCount(0);
 });
 
@@ -190,12 +246,19 @@ test("Solana quote uses the gated method and exposes a Solana Pay request", asyn
   await page.getByRole("button", { name: "Get payment quote" }).click();
   expect(submitted?.method).toBe("solana");
   expect(submitted?.refundAddress).toBe("synthetic-refund");
-  await expect(page.getByRole("link", { name: "Open Solana wallet" })).toHaveAttribute("href", uri);
-  await page.getByText("Scan with another device", { exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Scan in your Solana wallet" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Open .* wallet/ })).toHaveCount(0);
   await expect(page.getByRole("img", { name: "Solana payment request with the exact amount" })).toBeVisible();
-  await page.getByText("Copy payment details", { exact: true }).click();
   await expect(page.getByLabel("Payment address", { exact: true })).toHaveValue("synthetic-address");
+  await expect(page.getByRole("button", { name: "Copy address", exact: true })).toBeVisible();
   await expect(page.getByRole("button", { name: "Copy exact amount" })).toBeVisible();
+  await expect(page.getByText("On this phone? Open your Solana wallet, choose Send, select USDC on Solana, and paste the address and exact amount below.")).toBeVisible();
+  const walletLink = page.getByRole("link", { name: "Try mobile wallet link", includeHidden: true });
+  await expect(walletLink).toBeHidden();
+  await page.getByText("Other ways to pay", { exact: true }).click();
+  await expect(walletLink).toHaveAttribute("href", uri);
+  await expect(page.getByText(/requires a compatible installed mobile wallet and Safari or Chrome/)).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
 
 test("owner live testing labels checkout and organizer as real funds", async ({ page }) => {
