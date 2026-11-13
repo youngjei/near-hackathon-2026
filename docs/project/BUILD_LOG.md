@@ -1,5 +1,9 @@
 # Build log
 
+## 2026-11-13 — Public repository release
+
+After scanning current files and 579 reachable Git blobs for committed `.env` files, private keys, GitHub tokens and the personal internal receiving identifier, changed the repository to public under the owner's approved release plan. One `ed25519:` match in old probe evidence was a quote signature, not a secret key. PR #1 merged the beta into `main`; anonymous raw GitHub requests returned HTTP 200 for the root README, three screenshots and MP4. Added a concise repository description and relevant topics. The owner-only Vercel pilot remains protected and is not the judge demo. The local credential-free sample and video are the judge path permitted by the live organizer guide. A code license, lead/contact fields, human X post and exact one-time submission are still outstanding.
+
 ## 2026-11-13 — Submission reproducibility and media
 
 Prepared a root README with exact credential-free D1 setup, action-to-result sample steps, honest simulation/owner-pilot boundaries, track fit, eligible-work baseline and reused-code disclosure. Added three synthetic UI screenshots and a 72.56-second narrated/captioned demo video to `docs/hackathon/assets/`; masked the synthetic receiving value in the video. The human must still publish the required X post. The license, public repository and exact entry payload remain pending.
