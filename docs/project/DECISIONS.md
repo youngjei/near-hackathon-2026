@@ -164,3 +164,8 @@ The approved headline sequence is Photograph a receipt → Split the amount → 
 - The owner tried the `solana:` browser action and found that it did not open a wallet. Solana Pay defines a transfer-request URI, but that alone does not establish a browser-to-wallet handler on the owner's device.
 - Remove the Solana browser-launch link from checkout. Keep the URI inside the QR for a wallet on another device; make same-device USDC Send instructions and exact address/amount copying explicit. Preserve the signed quote, expiry, route binding and reconciliation logic.
 - A true one-tap payment would require a tested wallet connection/transaction flow. Do not label the current handoff as one-tap or treat the failed launch as funded acceptance.
+
+## 2026-11-13 — Public release license
+
+- Use MIT for project-authored code and documentation. The user named MIT as a viable option while authorizing a submission-ready public repository; use the established GitHub owner handle in the copyright notice rather than inventing a legal name.
+- Keep the bundled Space Grotesk font under its included OFL license and the dated third-party reference material under its original rights. State that scope in the README.

@@ -11,7 +11,7 @@ The live guide requires a working prototype, public reproducible repository and 
 - [x] Add prerequisites, exact install/run commands, sample input, expected output and numbered action → result demo steps to README.
 - [x] Explain real versus simulated behavior and known limitations.
 - [x] Disclose baseline code, reused libraries/templates and AI code; link the eligible diff. No second independent entry has been identified.
-- [ ] Choose and add a LICENSE file.
+- [x] Add an MIT LICENSE for project-authored code and documentation; bundled font and third-party reference material retain their own terms.
 - [x] Inspect current files and Git history for credentials and private data; 579 history blobs had no `.env` file, private key, GitHub token or personal internal receiving identifier. The separate signature evidence is public quote data, not a secret key.
 - [x] Reproduce the demo against a fresh isolated local D1 database and verify the browser journeys.
 - [x] Make the repository public before **November 14, 23:59 UTC / November 15, 08:59 KST** and keep it public through judging. Public `main` serves the README, screenshots and video without sign-in.

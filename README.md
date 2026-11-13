@@ -65,6 +65,8 @@ The tracked project history starts with workspace commit [`9a1d14f`](https://git
 
 The app uses open-source runtime and UI libraries, including React, Next.js, Vinext, Supabase, Drizzle ORM, and NEAR Connect; exact versions are pinned in `app-web/package-lock.json`. No external app template or pre-existing splitdbill codebase was used. Space Grotesk is distributed under the SIL Open Font License in `app-web/public/fonts/OFL-Space-Grotesk.txt`. Research references and third-party prompt files under `docs/hackathon/reference/` retain their original authorship and are not project code.
 
+Project-authored code and documentation are released under the [MIT License](LICENSE). The bundled font and third-party reference material retain their own terms.
+
 Codex assisted with research, implementation, and documentation; the project owner directed product decisions and reviewed changes. The optional NEAR AI receipt adapter is not connected to the demo, and no model call is made when using the sample flow.
 
 ## Further reading
@@ -73,5 +75,3 @@ Codex assisted with research, implementation, and documentation; the project own
 - [Beta scope](docs/project/BETA_SCOPE.md) · [Privacy findings and limits](docs/technical/PRIVACY.md) · [Payment adapter status](docs/technical/PAYMENT_ADAPTER.md)
 - [Application setup, validation and wallet limits](app-web/README.md)
 - [Hackathon brief and reproducible submission checklist](docs/hackathon/BRIEF.md) · [Demo recording plan](docs/hackathon/DEMO_PLAN.md)
-
-**Release note:** a code license has not yet been selected. See the repository's release checklist before reusing or redistributing this project.
