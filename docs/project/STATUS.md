@@ -41,6 +41,8 @@ The user selected the 25-second voiced desktop/mobile cut for public release and
 
 ## Latest verification
 
+- November 14 local scoped pilot access: payer checkout and its share APIs can pass the native owner gate; the server validates the share capability before enabling owner-test payment readiness. Bill creation and organizer access remain owner-only. TypeScript, all 116 Vitest tests, and the native Next.js production build passed; an independent source review found no authorization bypass. This change is local, not deployed; hosted browser, device and funded acceptance remain outstanding.
+
 - November 14 checkout privacy copy: Zcash and payment privacy help now describe confidential USDC as the quoted destination and state actual credit remains unverified. TypeScript and six focused wallet/Solana tests passed. Local code only; the hosted UI remains on its prior deployment. The local desktop/mobile video footage has been recaptured with the updated copy.
 
 - November 13 dependency release review: `npm audit` reports 26 affected packages (10 high, 16 moderate); production-only audit reports one high Zod 3.25.76 advisory, [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5). The only runtime Zod array parses a provider-generated confidential intent inside a 10,000-character message limit, and confidential sending is disabled in the pilot; no direct array-amplification route was found for the current demo. This is a scoped exposure assessment, not a security clearance. Zod 4 migration and separate body-ingress limit review remain future work.

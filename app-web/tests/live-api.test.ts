@@ -63,3 +63,21 @@ test('Solana live allocation keeps amounts and receiving account bound to the sa
  expect(response.status).toBe(201);
  expect(calls.create).toHaveBeenCalledWith(store,provider,share,bill,{method:'solana',requestKey:key,refundAddress:'GmaDrppBC7P5ARKV8g3djiwP89vz1jLK23V2GBjuAEGB'},readiness.methods);
 });
+
+test('pilot readiness is scoped to the authenticated share and never global',async()=>{
+ const disabled={enabled:false,testing:false,reason:'Owner access required',methods:{zcash:false,solana:false,confidential:false}};
+ const pilot={enabled:true,testing:true,reason:'Testing',methods:{zcash:true,solana:true,confidential:false}};
+ const handle=createHandler(store,undefined,{provider,readiness:disabled,payerReadiness:pilot});
+ const body={method:'solana',requestKey:crypto.randomUUID(),refundAddress:'test'};
+ expect(((await (await handle(new Request(origin+'/api/config'))).json()) as {live:{enabled:boolean}}).live.enabled).toBe(false);
+ expect((await handle(request(`shares/${id}/attempts`,body,false))).status).toBe(404);
+ expect((await handle(request(`shares/${id}/attempts`,body,true,'https://evil.test'))).status).toBe(403);
+ const other='33333333-3333-4333-8333-333333333333';
+ expect((await handle(request(`shares/${other}/attempts`,body))).status).toBe(404);
+ expect(calls.create).not.toHaveBeenCalled();
+ const response=await handle(request(`shares/${id}/attempts`,body));
+ expect(response.status).toBe(201);
+ expect(((await response.json()) as {live:typeof pilot}).live).toEqual(pilot);
+ expect(calls.create).toHaveBeenCalledWith(store,provider,share,bill,body,pilot.methods);
+ expect(((await (await handle(new Request(origin+'/api/config'))).json()) as {live:{enabled:boolean}}).live.enabled).toBe(false);
+});
