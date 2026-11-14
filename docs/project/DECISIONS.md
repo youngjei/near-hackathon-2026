@@ -1,5 +1,9 @@
 # Decision log
 
+## 2026-11-14 — Patch the production Zod advisory
+
+Move from Zod 3.25.76 to 4.6.7, whose record schema API requires explicit string keys in the three provider-validation sites. The patched version clears the known production advisory without weakening quote or confidential-intent validation; verify with the existing payment suite and both production builds before deployment.
+
 ## 2026-11-14 — Shared public-operation cost brakes
 
 Use independent fixed-hour global budgets for FX, receipt uploads, bill creation and live quote attempts in addition to existing per-session and per-share limits. Reuse the atomic database counter and fail closed on its errors; check global before per-session limits so exhaustion cannot create unbounded new counter rows. Keep payer refresh and scheduled reconciliation outside these budgets. The limits bound cost during a future rollout but are not identity or anti-denial-of-service controls: an attacker can exhaust a shared quota, and fixed windows allow boundary bursts. Count retries and failures conservatively until an operationally verified alternative exists.

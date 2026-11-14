@@ -1,5 +1,9 @@
 # Build log
 
+## November 14 — Patched production Zod advisory
+
+Upgraded Zod from 3.25.76 to 4.6.7 and made the three record schemas explicit for Zod 4. The current production dependency audit reports zero vulnerabilities. Node 24.22.3 TypeScript, 121 Vitest tests, Vinext and native Next.js production builds passed; lint had zero errors and five existing image warnings. The patch is local code, not a hosted deployment, and does not change funded acceptance.
+
 ## November 14 — Public abuse circuit breakers
 
 Bound JSON bodies to 16 KiB during streaming and cancel oversized streams. Added separate global hourly budgets for FX (1,000), uploads (100), creation (200), and live quote attempts (200), using the existing atomic store counter; refresh and cron reconciliation do not consume these budgets. Every request reaching a budget, including failed requests and quote retries, counts. Independent review found that per-session counters could still grow after global exhaustion; reordered the checks to run the global cap first, then verified the exhausted case creates no new session counter. TypeScript and 17 focused tests passed. These provisional limits can deny legitimate service if exhausted; they do not replace edge limits, monitoring, receipt deletion, reconciliation capacity planning, or funded acceptance. Application changes are not deployed.

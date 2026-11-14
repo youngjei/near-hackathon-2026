@@ -67,7 +67,7 @@ export function paymentQuoteRequest(route: PaymentRoute, dry = true, now = Date.
 
 const quoteSchema = z.object({
   correlationId: z.string().optional(), timestamp: z.string().datetime(), signature: z.string(),
-  quoteRequest: z.record(z.unknown()),
+  quoteRequest: z.record(z.string(), z.unknown()),
   quote: z.object({
     amountIn: units, amountOut: units, minAmountIn: units, minAmountOut: units,
     amountInFormatted: z.string(), amountInUsd: z.string(),
@@ -147,7 +147,7 @@ export function assessSettlement(raw: unknown, saved: VerifiedQuote, now = Date.
   // signed default from the independently verified saved quote.
   validatePaymentQuote(saved, expected, {historic:true});
   const incomingRaw = structuredClone(data.quoteResponse);
-  const statusObject = z.object({quoteRequest:z.record(z.unknown())}).passthrough().safeParse(incomingRaw);
+  const statusObject = z.object({quoteRequest:z.record(z.string(), z.unknown())}).passthrough().safeParse(incomingRaw);
   if (!statusObject.success) invalidQuote();
   const sr = statusObject.data.quoteRequest;
   if (sr.quoteWaitingTimeMs === undefined && saved.quoteRequest.quoteWaitingTimeMs !== undefined)
@@ -252,7 +252,7 @@ export function validateConfidentialIntent(raw: unknown, saved: VerifiedQuote, s
   try { if (atob(p.nonce).length !== 32) invalidQuote(); } catch { invalidQuote(); }
   let message: unknown;
   try { message=JSON.parse(p.message); } catch { invalidQuote(); }
-  const transfer = z.object({intent:z.literal('transfer'),receiver_id:z.string(),tokens:z.record(units)}).strict();
+  const transfer = z.object({intent:z.literal('transfer'),receiver_id:z.string(),tokens:z.record(z.string(), units)}).strict();
   const body=z.object({signer_id:z.string(),deadline:z.string().datetime(),intents:z.array(transfer).length(1)}).strict().safeParse(message);
   if (!body.success || body.data.signer_id !== signer || body.data.intents[0].receiver_id !== q.quote.depositAddress ||
       Date.parse(body.data.deadline) <= now || Date.parse(body.data.deadline) > Date.parse(q.quote.deadline)) invalidQuote();
