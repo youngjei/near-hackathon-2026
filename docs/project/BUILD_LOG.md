@@ -1,5 +1,9 @@
 # Build log
 
+## November 14 — Hosted receipt upload and private readback
+
+Uploaded the synthetic 84 KB London PNG through the public Vercel pilot, attached it to a demo bill and retrieved it through the organizer capability. Upload and bill creation returned HTTP 201; authorized retrieval returned HTTP 200 with byte-identical `image/png`, while an unauthenticated retrieval returned 404. The response reported `extracted: null` and manual total/currency confirmation. This verifies private storage and readback for this path, not OCR, device UI, funded settlement or receipt deletion. No quote or funds were used.
+
 ## November 14 — Public Vercel pilot
 
 Production deployment `dpl_3DDcV5WXi7nrgRcAnykHAufFrJuo` is READY at https://split-d-bill.vercel.app. The public pilot and live testing are enabled with global, Solana, Zcash and provider switches on; confidential sending, all acceptance flags and receipt cleanup remain off. One Vercel WAF rule is active. Anonymous homepage and configuration checks returned 200 and `/test-access` returned 404. An anonymous API-created private live $15 bill with two $5 shares returned 200 for the first checkout with its capability and 404 for the other share and organizer. No quote or funds were used. Vercel request logs show three recent `POST /api/reconcile` responses with HTTP 200 on this deployment; they do not establish funded settlement. Wallet/device, refund and funded acceptance remain outstanding. The separate Sites preview remains owner-private.
