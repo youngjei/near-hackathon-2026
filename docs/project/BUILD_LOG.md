@@ -1,5 +1,9 @@
 # Build log
 
+## November 14 — Checkout privacy wording
+
+Changed Zcash and shared privacy help to distinguish the quoted confidential-USDC destination from unverified actual credit. Route-specific privacy limits and disclosure semantics remain intact. TypeScript and six focused wallet/Solana Vitest checks passed. Local only; no deployment or funded test.
+
 ## 2026-11-13 — Dependency exposure review
 
 Delegated a read-only `npm audit` and runtime schema review. The lockfile has 26 affected packages (10 high, 16 moderate); `--omit=dev` leaves one high Zod 3.25.76 advisory, [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5). The only runtime Zod array is parsed from a provider-generated confidential intent within a 10,000-character message bound; confidential sending is disabled. No plausible direct array-amplification path was found in the public local demo or owner-only pilot. The API's 16,000-character JSON check occurs after request text is buffered, so separate platform ingress limits were not established. A tested Zod 4 migration is a future fix; no blind major dependency upgrade or production gate change was made for this release.
@@ -320,3 +324,7 @@ Vercel production deployment `dpl_BCMYhr1jDLgV1BSzX32gjHEqDhAR` is READY at the 
 ## November 13 — Final standalone owner-access verification
 
 Vercel deployment `dpl_BCMYhr1jDLgV1BSzX32gjHEqDhAR` is READY at `https://split-d-bill.vercel.app`. Hosted checks passed: unauthenticated API access returned 401; owner-password login returned 303 with its HTTP-only session cookie. Authorized config returned 200 with mode live, testing true, Zcash/Solana enabled, confidential sending disabled, Supabase storage and OCR disabled. Authorized reconciliation returned 200 with zero attempts checked. An actual browser owner login succeeded and the homepage displayed **Live testing · Real funds**. Supabase every-minute reconciliation and its empty HTTP 200 response remain verified. No funded payment, wallet transaction, refund or actual confidential credit was performed or inferred from these checks.
+
+## November 14 — Selected voiced demo video and poster
+
+Copied the user-selected 25-second desktop/mobile voiced cut from ignored review storage into `docs/hackathon/assets/demo.mp4` and added its poster as `docs/hackathon/assets/demo-poster.png`. Updated the root README and `docs/hackathon/DEMO_PLAN.md` to describe the synthetic uploaded £200 London GBP receipt, simulated payment and organizer progress, and distinguish the video from the built-in 200 AED local sample. Added `docs/hackathon/assets/DEMO_ASSETS.md` with exact Mixkit music source/license attribution, the AI-generated fan-made Cartman voice disclosure and unaffiliated status, and the unverified third-party promotional rights boundary. The repository MIT license does not grant rights to those third-party assets. The owner selected the voiced cut for public release and authorized publishing it on GitHub. Its fan-made AI voice is unaffiliated with South Park and its rights holders; third-party promotional rights remain unverified. Video metadata, copied-file identity, poster dimensions, Markdown links and documentation consistency were checked. No social post or deployment was made in this release.
