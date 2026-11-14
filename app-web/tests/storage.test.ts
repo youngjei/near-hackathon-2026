@@ -9,11 +9,17 @@ const pg = new PGlite();
 const origin = "https://split.test";
 let handle: ReturnType<typeof createHandler>;
 let session: string;
+const receiptObjects = new Set<string>();
+let failReceiptDelete = false;
 const migrations = [
   "202611100001_beta.sql",
   "202611100002_application_modes.sql",
   "202611100003_server_adapter.sql",
   "202611100004_receiving_account.sql",
+  "202611110005_durable_live_payments.sql",
+  "202611130006_solana_usdc_method.sql",
+  "202611130007_unique_live_deposit.sql",
+  "202611140008_receipt_retention.sql",
 ];
 beforeAll(async () => {
   await pg.exec(`create role anon; create role authenticated; create role service_role bypassrls;
@@ -30,6 +36,12 @@ beforeAll(async () => {
     "fetch",
     async (input: string | URL | Request, init?: RequestInit) => {
       const request = new Request(input, init);
+      if (new URL(request.url).pathname === "/storage/v1/object/receipts" && request.method === "DELETE") {
+        const { prefixes } = await request.json() as { prefixes: string[] };
+        if (failReceiptDelete) return Response.json({ message: "unavailable" }, { status: 503 });
+        for (const key of prefixes) receiptObjects.delete(key);
+        return Response.json([]);
+      }
       const name = new URL(request.url).pathname.split("/").pop()!;
       const args = (await request.json()) as Record<string, unknown>;
       if (!/^sdb_[a-z_]+$/.test(name))
@@ -281,4 +293,31 @@ test("bare blockchain and malformed receiving addresses are rejected by the API"
  for(const receivingAddress of ['', '0x'+'a1'.repeat(20), 'nearcom:0x123', 'nearcom:solana:abc']) {
   expect((await call('/bills','POST',{...input(),receivingAddress})).status).toBe(400);
  }
+});
+
+
+test("receipt retention deletes expired objects and metadata, preserves bills, and retries failures", async () => {
+  const { data } = await dinner();
+  const old = crypto.randomUUID(), fresh = crypto.randomUUID();
+  const now = Date.now();
+  const oldKey = `receipts/${old}`, freshKey = `receipts/${fresh}`;
+  receiptObjects.add(oldKey); receiptObjects.add(freshKey);
+  await pg.query("insert into public.receipts(id,owner_hash,object_key,mime,created_at) values ($1,'owner',$2,'image/png',$3),($4,'owner',$5,'image/png',$6)", [old, oldKey, new Date(now - 7 * 86400000).toISOString(), fresh, freshKey, new Date(now).toISOString()]);
+  await pg.query("update public.bills set receipt_id=$1 where id=$2", [old, data.bill.id]);
+  const store = supabaseStore("https://database.test", "test-server-key");
+  failReceiptDelete = true;
+  await expect(store.cleanupExpiredReceipts(now, 10)).rejects.toThrow();
+  expect(await store.receipt(old)).not.toBeNull();
+  expect((await store.bill(data.bill.id))?.receipt_id).toBe(old);
+  failReceiptDelete = false;
+  expect(await store.cleanupExpiredReceipts(now, 10)).toBe(1);
+  expect(await store.cleanupExpiredReceipts(now, 10)).toBe(0);
+  expect(await store.receipt(old)).toBeNull();
+  expect(await store.receipt(fresh)).not.toBeNull();
+  expect(receiptObjects.has(oldKey)).toBe(false);
+  expect(receiptObjects.has(freshKey)).toBe(true);
+  expect((await store.bill(data.bill.id))?.receipt_id).toBeNull();
+  expect((await store.shares(data.bill.id))).toHaveLength(2);
+  const { rows } = await pg.query<{browser:boolean; server:boolean}>(`select has_function_privilege('anon','public.sdb_expired_receipts(timestamptz,integer)','execute') or has_function_privilege('authenticated','public.sdb_delete_expired_receipt(uuid,text,timestamptz)','execute') as browser, has_function_privilege('service_role','public.sdb_delete_expired_receipt(uuid,text,timestamptz)','execute') as server`);
+  expect(rows[0]).toEqual({browser:false, server:true});
 });

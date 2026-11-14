@@ -59,8 +59,25 @@ export function sameOrigin(req: Request) {
 export async function readJson(req: Request) {
   if (!req.headers.get("content-type")?.startsWith("application/json"))
     throw new HttpError(415, "Expected JSON.");
-  const text = await req.text();
-  if (text.length > 16000) throw new HttpError(413, "Request too large.");
+  const max = 16 * 1024;
+  if (Number(req.headers.get("content-length") || 0) > max)
+    throw new HttpError(413, "Request too large.");
+  const reader = req.body?.getReader();
+  const decoder = new TextDecoder();
+  let text = "", bytes = 0;
+  if (reader) {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      bytes += value.length;
+      if (bytes > max) {
+        await reader.cancel();
+        throw new HttpError(413, "Request too large.");
+      }
+      text += decoder.decode(value, { stream: true });
+    }
+    text += decoder.decode();
+  }
   try {
     return JSON.parse(text);
   } catch {

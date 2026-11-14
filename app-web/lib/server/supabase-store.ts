@@ -87,6 +87,16 @@ export function supabaseStore(url: string, key: string): Store {
         );
       return data;
     },
+    async cleanupExpiredReceipts(now, limit) {
+      const cutoff = new Date(now - 7 * 86400000).toISOString();
+      const expired = await rpc("sdb_expired_receipts", { p_cutoff: cutoff, p_limit: Math.min(100, Math.max(1, Math.floor(limit))) }) as { id: string; object_key: string }[];
+      for (const receipt of expired) {
+        const { error } = await receipts.remove([receipt.object_key]);
+        if (error) throw new HttpError(503, "Receipt storage is unavailable. Please try again.");
+        await rpc("sdb_delete_expired_receipt", { p_id: receipt.id, p_key: receipt.object_key, p_cutoff: cutoff });
+      }
+      return expired.length;
+    },
     async createBill(b, shares) {
       return normalize<Bill>(
         await rpc("sdb_create_bill", {

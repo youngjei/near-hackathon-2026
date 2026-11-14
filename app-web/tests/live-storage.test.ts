@@ -30,7 +30,7 @@ function sqliteD1() {
 }
 beforeAll(async()=>{
  await pg.exec(`create role anon;create role authenticated;create role service_role bypassrls;create schema storage;create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);`);
- for(const filename of ['202611100001_beta.sql','202611100002_application_modes.sql','202611100003_server_adapter.sql','202611100004_receiving_account.sql','202611110005_durable_live_payments.sql','202611130006_solana_usdc_method.sql','202611130007_unique_live_deposit.sql']) await pg.exec(await readFile(new URL('../supabase/migrations/'+filename,import.meta.url),'utf8'));
+ for(const filename of ['202611100001_beta.sql','202611100002_application_modes.sql','202611100003_server_adapter.sql','202611100004_receiving_account.sql','202611110005_durable_live_payments.sql','202611130006_solana_usdc_method.sql','202611130007_unique_live_deposit.sql','202611140008_receipt_retention.sql']) await pg.exec(await readFile(new URL('../supabase/migrations/'+filename,import.meta.url),'utf8'));
  for(const filename of ['0000_organic_jimmy_woo.sql','0001_complete_bruce_banner.sql','0002_durable_live_payments.sql','0003_unique_live_deposit.sql']) sqlite.exec(await readFile(new URL('../drizzle/'+filename,import.meta.url),'utf8'));
  vi.stubGlobal('fetch',async(input:string|URL|Request,init?:RequestInit)=>{
   const request=new Request(input,init),name=new URL(request.url).pathname.split('/').pop()!;
@@ -241,4 +241,35 @@ for(const kind of ['supabase','d1'])describe(kind+' synthetic service',()=>{
   expect(provider.submitIntent).toHaveBeenCalledTimes(1);
   expect((await livePaymentView(db,(await db.liveAttempt(a.id))!))?.state).toBe('unknown');
  });
+});
+
+
+test('D1 and R2 receipt retention retries failed deletes and preserves active bill data', async () => {
+ const objects = new Map<string, Uint8Array>();
+ let failDelete = true;
+ const bucket = {
+  put: async (key: string, bytes: Uint8Array) => { objects.set(key, bytes); },
+  delete: async (key: string) => { if (failDelete) throw new Error('storage unavailable'); objects.delete(key); },
+ } as unknown as R2Bucket;
+ const db = d1Store(sqliteD1(), bucket);
+ const now = Date.now();
+ const expired = {id: crypto.randomUUID(), owner_hash:'synthetic', object_key:`receipts/${crypto.randomUUID()}`, mime:'image/png', created_at:now - 7 * 86400000};
+ const fresh = {...expired,id:crypto.randomUUID(),object_key:`receipts/${crypto.randomUUID()}`,created_at:now};
+ await db.saveReceipt(expired, new Uint8Array([1]));
+ await db.saveReceipt(fresh, new Uint8Array([2]));
+ const {b,s} = await dinner(db);
+ sqlite.prepare('update bills set receipt_id=? where id=?').run(expired.id,b.id);
+ await expect(db.cleanupExpiredReceipts(now,20)).rejects.toThrow('storage unavailable');
+ expect(await db.receipt(expired.id)).not.toBeNull();
+ expect((await db.bill(b.id))?.receipt_id).toBe(expired.id);
+ expect(objects.has(expired.object_key)).toBe(true);
+ failDelete = false;
+ expect(await db.cleanupExpiredReceipts(now,20)).toBe(1);
+ expect(await db.cleanupExpiredReceipts(now,20)).toBe(0);
+ expect(await db.receipt(expired.id)).toBeNull();
+ expect(await db.receipt(fresh.id)).not.toBeNull();
+ expect(objects.has(expired.object_key)).toBe(false);
+ expect(objects.has(fresh.object_key)).toBe(true);
+ expect((await db.bill(b.id))?.receipt_id).toBeNull();
+ expect(await db.shares(b.id)).toEqual([s]);
 });
