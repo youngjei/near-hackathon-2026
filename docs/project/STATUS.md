@@ -1,6 +1,6 @@
 # Current status
 
-Updated: November 13, 2026 (KST).
+Updated: November 14, 2026 (KST).
 
 This workspace was reconnected to `origin/feat/first-beta` after initially opening on `origin/main`, whose preparation-only status is stale for the beta. The latest local verification is below; it does not replace device or funded acceptance.
 
@@ -35,7 +35,13 @@ Preview: [https://split-d-bill-beta.snu-chatgpt-5678.chatgpt.site](https://split
 
 Delivery target: a real usable application with receipt extraction and verified NEAR payments. Supabase schema and runtime connection are complete; samples remain clearly labelled simulations, while the owner-only pilot is explicitly labelled real-funds testing. Existing D1 test records are preserved but not migrated; create new links in the Supabase-backed preview.
 
+## November 14 selected demo video
+
+The user selected the 25-second voiced desktop/mobile cut for public release and authorized publishing it on GitHub. The video and poster are included at `docs/hackathon/assets/demo.mp4` and `docs/hackathon/assets/demo-poster.png`. The video shows a synthetic uploaded £200 London receipt and simulated payment progress; no quote or transfer is executed and no funds move. The root README distinguishes this GBP video flow from the built-in 200 AED local sample. Music and AI-generated fan-voice attribution, unaffiliated status and unverified third-party promotional rights are documented in `docs/hackathon/assets/DEMO_ASSETS.md`. The X post and hackathon entry remain unsubmitted; no social post or deployment was made in this update.
+
 ## Latest verification
+
+- November 14 checkout privacy copy: Zcash and payment privacy help now describe confidential USDC as the quoted destination and state actual credit remains unverified. TypeScript and six focused wallet/Solana tests passed. Local code only; the hosted UI remains on its prior deployment. The local desktop/mobile video footage has been recaptured with the updated copy.
 
 - November 13 dependency release review: `npm audit` reports 26 affected packages (10 high, 16 moderate); production-only audit reports one high Zod 3.25.76 advisory, [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5). The only runtime Zod array parses a provider-generated confidential intent inside a 10,000-character message limit, and confidential sending is disabled in the pilot; no direct array-amplification route was found for the current demo. This is a scoped exposure assessment, not a security clearance. Zod 4 migration and separate body-ingress limit review remain future work.
 

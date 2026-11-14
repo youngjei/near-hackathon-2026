@@ -8,7 +8,9 @@ The product contribution is the receipt-to-request flow. NEAR Intents is integra
 
 ![split/d/bill home screen using the synthetic sample flow](docs/hackathon/assets/home-mobile.png)
 
-[Watch the 73-second synthetic demo](docs/hackathon/assets/demo.mp4) — bill review, separate share checkout, simulated success, and organizer progress. No funds move in the recording.
+[![Split/d/bill demo poster: £200 London bill becomes individual requests](docs/hackathon/assets/demo-poster.png)](docs/hackathon/assets/demo.mp4)
+
+[Watch the 25-second desktop and mobile demo](docs/hackathon/assets/demo.mp4) — a synthetic £200 London receipt is uploaded and reviewed, split into USDC shares, and followed through a mobile checkout and simulated organizer progress. The uploaded GBP receipt shown in the video is separate from the built-in 200 AED local sample below. Payment success is simulated; no funds move and the demo does not execute a quote or transfer. The selected cut uses an AI-generated fan-made Cartman voice, unaffiliated with South Park and its rights holders. Third-party promotional rights have not been verified. See [demo asset notes](docs/hackathon/assets/DEMO_ASSETS.md).
 
 ## Try the local demo
 

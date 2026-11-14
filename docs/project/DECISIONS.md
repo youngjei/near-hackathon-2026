@@ -169,3 +169,8 @@ The approved headline sequence is Photograph a receipt → Split the amount → 
 
 - Use MIT for project-authored code and documentation. The user named MIT as a viable option while authorizing a submission-ready public repository; use the established GitHub owner handle in the copyright notice rather than inventing a legal name.
 - Keep the bundled Space Grotesk font under its included OFL license and the dated third-party reference material under its original rights. State that scope in the README.
+
+
+## 2026-11-14 — Selected 25-second voiced demo video
+
+Use the user-selected 25-second voiced desktop/mobile cut for public release in `docs/hackathon/assets/demo.mp4` with `demo-poster.png`. Describe it as a synthetic uploaded £200 London GBP receipt flow, distinct from the built-in 200 AED sample. Its payment completion is simulated; no quote or transfer runs. Credit Mixkit's “Digital Clouds” and disclose that narration is an AI-generated fan-made Cartman voice, unaffiliated with South Park and its rights holders, with no promotional rights verified. The project MIT license does not cover these third-party assets. Do not claim rights clearance or endorsement. Keep social posting as a separate human action.
