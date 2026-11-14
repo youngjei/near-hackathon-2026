@@ -52,9 +52,9 @@ Apply the four local D1 migrations only once to a fresh local database. The `.wr
 - Private per-diner checkout capabilities and organizer recovery links, separate status views, private receipt access, and simulated settlement tracking.
 - Payment adapters for Zcash (VIZOR or Zodl), existing NEAR Confidential Intents balances, and Solana USDC. The Solana route discloses public sender/amount visibility; wallet branding does not change that.
 - Verified dry quotes for the supported routes, immutable organizer receiving-account binding, quote allocation, settlement reconciliation, and NEP-413 signing for compatible external NEAR wallets.
-- An owner-only pilot that permits real Solana/Zcash payment requests. Confidential-balance sending remains disabled. Real wallet handoff, refunds, funded transfers and actual confidential receiving credit have not passed acceptance; all acceptance flags remain false.
+- A public Vercel pilot that permits real Solana/Zcash payment requests; the separate Sites preview remains owner-private. Confidential-balance sending remains disabled. Real wallet handoff, refunds, funded transfers and actual confidential receiving credit have not passed acceptance; all acceptance flags remain false.
 
-The hosted [Vercel owner pilot](https://split-d-bill.vercel.app) requires the owner's private access. It is not an open public demo. No password is included in this repository. The deployed application and every payment gate must be treated according to their explicit on-screen status; sample bills remain simulations.
+The [Vercel public pilot](https://split-d-bill.vercel.app) allows anyone with the URL to create a live bill and real Solana/Zcash payment requests. Each payer needs their individual private share capability. Confidential sending is disabled and all acceptance flags are false; wallet/device, refund and funded confidential-credit acceptance remain outstanding. Receipt cleanup is disabled. Sample bills remain simulations. The separate Sites preview remains owner-private.
 
 ## NEAR Hackathon tracks
 

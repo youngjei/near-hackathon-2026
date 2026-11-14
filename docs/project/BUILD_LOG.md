@@ -1,16 +1,20 @@
 # Build log
 
+## November 14 — Public Vercel pilot
+
+Production deployment `dpl_3DDcV5WXi7nrgRcAnykHAufFrJuo` is READY at https://split-d-bill.vercel.app. The public pilot and live testing are enabled with global, Solana, Zcash and provider switches on; confidential sending, all acceptance flags and receipt cleanup remain off. One Vercel WAF rule is active. Anonymous homepage and configuration checks returned 200 and `/test-access` returned 404. An anonymous API-created private live $15 bill with two $5 shares returned 200 for the first checkout with its capability and 404 for the other share and organizer. No quote or funds were used. Vercel request logs show three recent `POST /api/reconcile` responses with HTTP 200 on this deployment; they do not establish funded settlement. Wallet/device, refund and funded acceptance remain outstanding. The separate Sites preview remains owner-private.
+
 ## November 14 — Patched production Zod advisory
 
-Upgraded Zod from 3.25.76 to 4.6.7 and made the three record schemas explicit for Zod 4. The current production dependency audit reports zero vulnerabilities. Node 24.22.3 TypeScript, 121 Vitest tests, Vinext and native Next.js production builds passed; lint had zero errors and five existing image warnings. The patch is local code, not a hosted deployment, and does not change funded acceptance.
+Upgraded Zod from 3.25.76 to 4.6.7 and made the three record schemas explicit for Zod 4. The current production dependency audit reports zero vulnerabilities. Node 24.22.3 TypeScript, 121 Vitest tests, Vinext and native Next.js production builds passed; lint had zero errors and five existing image warnings. The patch was subsequently deployed and does not change funded acceptance.
 
 ## November 14 — Public abuse circuit breakers
 
-Bound JSON bodies to 16 KiB during streaming and cancel oversized streams. Added separate global hourly budgets for FX (1,000), uploads (100), creation (200), and live quote attempts (200), using the existing atomic store counter; refresh and cron reconciliation do not consume these budgets. Every request reaching a budget, including failed requests and quote retries, counts. Independent review found that per-session counters could still grow after global exhaustion; reordered the checks to run the global cap first, then verified the exhausted case creates no new session counter. TypeScript and 17 focused tests passed. These provisional limits can deny legitimate service if exhausted; they do not replace edge limits, monitoring, receipt deletion, reconciliation capacity planning, or funded acceptance. Application changes are not deployed.
+Bound JSON bodies to 16 KiB during streaming and cancel oversized streams. Added separate global hourly budgets for FX (1,000), uploads (100), creation (200), and live quote attempts (200), using the existing atomic store counter; refresh and cron reconciliation do not consume these budgets. Every request reaching a budget, including failed requests and quote retries, counts. Independent review found that per-session counters could still grow after global exhaustion; reordered the checks to run the global cap first, then verified the exhausted case creates no new session counter. TypeScript and 17 focused tests passed. These provisional limits can deny legitimate service if exhausted; they do not replace edge limits, monitoring, receipt deletion, reconciliation capacity planning, or funded acceptance. Application changes were subsequently deployed.
 
 ## November 14 — Checkout privacy wording
 
-Changed Zcash and shared privacy help to distinguish the quoted confidential-USDC destination from unverified actual credit. Route-specific privacy limits and disclosure semantics remain intact. TypeScript and six focused wallet/Solana Vitest checks passed. Local only; no deployment or funded test.
+Changed Zcash and shared privacy help to distinguish the quoted confidential-USDC destination from unverified actual credit. Route-specific privacy limits and disclosure semantics remain intact. TypeScript and six focused wallet/Solana Vitest checks passed. Subsequently deployed; no funded test.
 
 ## 2026-11-13 — Dependency exposure review
 

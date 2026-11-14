@@ -1,5 +1,9 @@
 # Decision log
 
+## 2026-11-14 — Open the Vercel pilot
+
+Operate native Vercel as a public real-funds testing pilot while keeping the separate Sites preview owner-private. Anyone with the URL may create a live bill; scoped capabilities protect payer and organizer access. Enable Solana and Zcash testing with the provider and global switches, leave confidential sending and every acceptance flag off, and keep receipt cleanup disabled until migration 008 is applied and cleanup is enabled separately. One WAF rule and shared application budgets constrain abuse but do not establish funded acceptance or eliminate denial-of-service risk. Wallet/device, refund and confidential-credit acceptance remain outstanding.
+
 ## 2026-11-14 — Patch the production Zod advisory
 
 Move from Zod 3.25.76 to 4.6.7, whose record schema API requires explicit string keys in the three provider-validation sites. The patched version clears the known production advisory without weakening quote or confidential-intent validation; verify with the existing payment suite and both production builds before deployment.
