@@ -50,6 +50,20 @@ export function d1Store(db: D1Database, bucket?: R2Bucket): Store {
     async receiptBody(key) {
       return (await bucket?.get(key))?.body ?? null;
     },
+    async cleanupExpiredReceipts(now, limit) {
+      const cutoff = now - 7 * 86400000;
+      const expired = await rows<Receipt>("SELECT * FROM receipts WHERE created_at<=? ORDER BY created_at,id LIMIT ?", cutoff, Math.min(100, Math.max(1, Math.floor(limit))));
+      if (expired.length && !bucket) throw new Error("Receipt storage unavailable");
+      for (const receipt of expired) {
+        // Keep metadata for retry if object deletion fails.
+        await bucket!.delete(receipt.object_key);
+        await db.batch([
+          stmt("UPDATE bills SET receipt_id=NULL WHERE receipt_id=? AND EXISTS (SELECT 1 FROM receipts WHERE id=? AND object_key=? AND created_at<=?)", [receipt.id, receipt.id, receipt.object_key, cutoff]),
+          stmt("DELETE FROM receipts WHERE id=? AND object_key=? AND created_at<=?", [receipt.id, receipt.object_key, cutoff]),
+        ]);
+      }
+      return expired.length;
+    },
     async createBill(b, shares) {
       const fields = Object.keys(b) as (keyof Bill)[];
       const statements = [

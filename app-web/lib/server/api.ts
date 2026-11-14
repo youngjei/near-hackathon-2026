@@ -26,6 +26,9 @@ export type PaymentOptions = {
   readiness?: ReturnType<typeof paymentReadiness>;
   payerReadiness?: ReturnType<typeof paymentReadiness>;
 };
+// Shared hourly circuit breakers, independent of the replaceable session cookie.
+// These bound cost, not abuse by individual clients or denial of service.
+export const PUBLIC_HOURLY_BUDGETS = { fx: 1000, upload: 100, create: 200, quote: 200 } as const;
 export function createHandler(store: Store, cronSecret?: string, payments: PaymentOptions = {}) {
   const readiness = payments.readiness ?? liveReadiness;
   async function limit(key: string, max: number) {
@@ -189,11 +192,14 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
         const currency = z
           .enum(currencies)
           .parse(new URL(req.url).searchParams.get("currency"));
-        await limit("fx:" + (await hash(await session(req))), 100);
+        const sessionHash = await hash(await session(req));
+        await limit("global:fx", PUBLIC_HOURLY_BUDGETS.fx);
+        await limit("fx:" + sessionHash, 100);
         return json(await getRate(currency, new URL(req.url).searchParams.get("mode") !== "live"));
       }
       if (resource === "receipts" && method === "POST") {
         const ownerHash = await hash(await session(req));
+        await limit("global:upload", PUBLIC_HOURLY_BUDGETS.upload);
         await limit("upload:" + ownerHash, 12);
         const bytes = await readBytes(req, 5 * 1024 * 1024);
         const mime = imageType(bytes);
@@ -221,6 +227,7 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
       }
       if (resource === "bills" && !id && method === "POST") {
         const master = await session(req);
+        await limit("global:create", PUBLIC_HOURLY_BUDGETS.create);
         await limit("create:" + (await hash(master)), 20);
         const body = billInput.parse(await readJson(req));
         if (body.mode === "live" && (!readiness.enabled || !payments.provider))
@@ -372,13 +379,15 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
             refundAddress: z.string().trim().max(256).optional(),
           })
           .parse(await readJson(req));
-        await limit("attempt:" + id, 40);
         if (bill.mode === "live") {
           if (!payments.provider) throw new HttpError(503, requestReadiness.reason);
+          await limit("global:quote", PUBLIC_HOURLY_BUDGETS.quote);
+          await limit("attempt:" + id, 40);
           await createLivePayment(store, payments.provider, share, bill,
             { ...body, refundAddress: body.refundAddress || "" }, requestReadiness.methods);
           return json(await checkout(share, bill, requestReadiness), 201);
         }
+        await limit("attempt:" + id, 40);
         const current = await store.attempts(id);
         const previous = current.find((a) => a.request_key === body.requestKey);
         if (previous) {
@@ -460,11 +469,18 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
           req.headers.get("authorization") !== `Bearer ${cronSecret}`
         )
           throw new HttpError(401, "Unauthorized.");
-        await store.expireDemo(Date.now());
+        const now = Date.now();
+        await store.expireDemo(now);
+        // Payment status has priority: slow object storage must not delay it.
         const result = payments.provider
           ? await reconcileLivePayments(store, payments.provider, {limit: 20})
           : {checked: 0, updated: 0, unavailable: 0};
-        return json({ ok: true, livePaymentsChecked: result.checked, ...result });
+        let receiptsCleaned: number | null = null;
+        try { receiptsCleaned = await store.cleanupExpiredReceipts(now, 20); }
+        catch { /* Payment reconciliation has already completed. Retry cleanup next run. */ }
+        if (receiptsCleaned === null)
+          return json({ ok: false, error: "Receipt cleanup failed; retry on the next scheduled run.", livePaymentsChecked: result.checked, ...result }, 503);
+        return json({ ok: true, receiptsCleaned, livePaymentsChecked: result.checked, ...result });
       }
       throw new HttpError(404, "Not found.");
     } catch (e) {

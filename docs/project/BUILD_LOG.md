@@ -1,5 +1,9 @@
 # Build log
 
+## November 14 — Public abuse circuit breakers
+
+Bound JSON bodies to 16 KiB during streaming and cancel oversized streams. Added separate global hourly budgets for FX (1,000), uploads (100), creation (200), and live quote attempts (200), using the existing atomic store counter; refresh and cron reconciliation do not consume these budgets. Every request reaching a budget, including failed requests and quote retries, counts. Independent review found that per-session counters could still grow after global exhaustion; reordered the checks to run the global cap first, then verified the exhausted case creates no new session counter. TypeScript and 17 focused tests passed. These provisional limits can deny legitimate service if exhausted; they do not replace edge limits, monitoring, receipt deletion, reconciliation capacity planning, or funded acceptance. Application changes are not deployed.
+
 ## November 14 — Checkout privacy wording
 
 Changed Zcash and shared privacy help to distinguish the quoted confidential-USDC destination from unverified actual credit. Route-specific privacy limits and disclosure semantics remain intact. TypeScript and six focused wallet/Solana Vitest checks passed. Local only; no deployment or funded test.
@@ -332,3 +336,11 @@ Copied the user-selected 25-second desktop/mobile voiced cut from ignored review
 ## November 14 — scoped payer access (local)
 
 Allowed the native private-pilot checkout shell and exact share API paths through the owner gate. The API validates each share capability before applying pilot route readiness; creation and organizer access retain the owner gate. TypeScript and all 116 Vitest tests passed, including cross-share and same-origin checks. The native production build initially caught three `Response.json()` test assertions typed as `unknown`; those assertions were given explicit response shapes and the complete native build then passed. An independent source review found no authorization bypass; a hosted browser test remains pending. No deployment, gate changes, signatures or funds; real wallet, refund and confidential-credit acceptance remains outstanding.
+
+## 2026-11-14 — Local receipt retention
+
+Added bounded, idempotent seven-day receipt cleanup to the authenticated reconciliation route for Supabase Storage/Postgres and D1/R2. Payment reconciliation now runs before object storage cleanup. Objects are deleted first; transactional metadata/reference cleanup follows, and failed storage operations retain records for retries. Added service-only migration 008, tested the complete 001–008 migration sequence and Supabase/D1 failure and retry paths. TypeScript, Vinext and native Next.js production builds passed; all 121 Vitest tests passed. No migration, deployment or hosted data deletion was performed.
+
+## 2026-11-14 — Production edge rule staged and published
+
+Vercel Hobby had no active firewall rules. Staged one IP-keyed fixed-window rule for POST `/api/bills`, `/api/receipts` and `/api/shares/:id/attempts`: 30 requests per IP per 60 seconds, returning a rate limit response. It excludes payer refresh and the authenticated reconciliation endpoint. Vercel's automatic approval check rejected publication until the user approved the exact effect; after that approval, publication succeeded and `vercel firewall status` showed one active rule. This protects the existing owner pilot now; it does not open bill creation or verify a wallet payment. No application deployment or migration occurred.

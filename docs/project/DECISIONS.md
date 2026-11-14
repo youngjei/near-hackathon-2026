@@ -1,5 +1,9 @@
 # Decision log
 
+## 2026-11-14 — Shared public-operation cost brakes
+
+Use independent fixed-hour global budgets for FX, receipt uploads, bill creation and live quote attempts in addition to existing per-session and per-share limits. Reuse the atomic database counter and fail closed on its errors; check global before per-session limits so exhaustion cannot create unbounded new counter rows. Keep payer refresh and scheduled reconciliation outside these budgets. The limits bound cost during a future rollout but are not identity or anti-denial-of-service controls: an attacker can exhaust a shared quota, and fixed windows allow boundary bursts. Count retries and failures conservatively until an operationally verified alternative exists.
+
 ## 2026-11-09 — Preparation before implementation
 
 - Start with a private repository under youngjei; use the neutral name near-hackathon-2026 until a product name is chosen.
@@ -178,3 +182,11 @@ Use the user-selected 25-second voiced desktop/mobile cut for public release in 
 ## 2026-11-14 — Scoped payer access during the owner pilot
 
 Keep bill creation and organizer access behind the native owner session during live testing, while permitting a friend with a valid private share capability to open and use only their checkout. The API validates that capability before applying pilot payment readiness; a public page path alone never enables a real quote. This allows a real payer to participate without receiving the owner's password. The change is local and has passed TypeScript and mocked authorization/payment checks, but it has not been deployed or exercised with a wallet. Continue to keep acceptance flags false until funded settlement, refund/late-payment handling and actual confidential credit are verified. Public bill creation remains a separate release step.
+
+## 2026-11-14 — Receipt retention
+
+Use the existing authenticated reconciliation endpoint to process expired receipts in bounded batches. Delete object storage before metadata so failed deletion can be retried; clear the receipt reference atomically with metadata deletion while retaining bills and payments. Return a failure for cleanup errors after continuing payment reconciliation. Supabase requires migration 008 and deployment; D1/R2 requires an authenticated external scheduler.
+
+## 2026-11-14 — Production firewall rule for public writes
+
+After user approval, publish one Vercel Hobby rate-limit rule keyed by the edge-observed IP: 30 POST requests per 60 seconds to bill creation, receipt upload and live quote endpoints. Exclude payer refresh and authenticated reconciliation so payment status capacity is independent. The CLI reports the rule active. This rule is a first abuse barrier, not a guarantee against distributed requests; the app's atomic global budgets and monitoring remain necessary for public release.

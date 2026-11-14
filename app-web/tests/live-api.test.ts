@@ -16,7 +16,7 @@ beforeEach(async()=>{
  vi.clearAllMocks();calls.reconcile.mockResolvedValue({checked:1,updated:1,unavailable:0});calls.prepare.mockResolvedValue({intent:{},signer:'payer.near',state:'prepared'});
  bill={id:billId,owner_hash:await hash(token),create_key:crypto.randomUUID(),merchant:'Synthetic',currency:'USD',original_total:'10',extra:'0',diners:2,total_units:'10000000',fx_rate:'1',fx_date:'2026-11-11',fx_source:'USD reference',mode:'live',receipt_id:null,recipient_account:'receiver.near',created_at:Date.now()};
  share={id,bill_id:billId,position:1,amount_units:'5000000',token_hash:await hash(token)};
- store={kind:'d1',bill:vi.fn(async()=>bill),share:vi.fn(async()=>share),attempts:vi.fn(async()=>[]),incrementLimit:vi.fn(async()=>1),expireDemo:vi.fn()} as unknown as Store;
+ store={kind:'d1',bill:vi.fn(async()=>bill),share:vi.fn(async()=>share),attempts:vi.fn(async()=>[]),incrementLimit:vi.fn(async()=>1),expireDemo:vi.fn(),cleanupExpiredReceipts:vi.fn(async()=>0)} as unknown as Store;
  provider={allocate:vi.fn(),status:vi.fn()};
 });
 function request(path:string,body:unknown,authorized=true,requestOrigin=origin){return new Request(origin+'/api/'+path,{method:'POST',headers:{Origin:requestOrigin,'Content-Type':'application/json',...(authorized?{Cookie:`sdb_s_${id}=${token}`}:{})},body:JSON.stringify(body)});}
@@ -54,6 +54,18 @@ test('refresh is scoped to the diner and cron is authorized separately even with
  expect((await handle(request('reconcile',{}))).status).toBe(401);
  const req=new Request(origin+'/api/reconcile',{method:'POST',headers:{Authorization:'Bearer cron-test'}});
  expect((await handle(req)).status).toBe(200);expect(calls.reconcile).toHaveBeenCalledTimes(2);
+});
+
+test('payment reconciliation completes before a receipt cleanup failure',async()=>{
+ vi.mocked(store.cleanupExpiredReceipts).mockRejectedValueOnce(new Error('storage unavailable'));
+ const handle=createHandler(store,'cron-test',{provider});
+ const req=new Request(origin+'/api/reconcile',{method:'POST',headers:{Authorization:'Bearer cron-test'}});
+ const response=await handle(req);
+ expect(response.status).toBe(503);
+ expect(calls.reconcile).toHaveBeenCalledOnce();
+ expect(vi.mocked(store.cleanupExpiredReceipts)).toHaveBeenCalledOnce();
+ expect(calls.reconcile.mock.invocationCallOrder[0]).toBeLessThan(vi.mocked(store.cleanupExpiredReceipts).mock.invocationCallOrder[0]);
+ expect(await response.json()).toMatchObject({ok:false,livePaymentsChecked:1});
 });
 
 test('Solana live allocation keeps amounts and receiving account bound to the saved share',async()=>{

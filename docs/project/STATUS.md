@@ -41,6 +41,8 @@ The user selected the 25-second voiced desktop/mobile cut for public release and
 
 ## Latest verification
 
+- November 14 public-abuse hardening: JSON bodies now stop at 16 KiB while streaming. Atomic shared hourly circuit breakers cap FX requests at 1,000, receipt uploads at 100, bill creations at 200 and live quote attempts at 200, alongside existing per-session/share limits. Global caps run before per-session counters to bound new rate-limit rows after exhaustion; refresh and scheduled reconciliation use separate capacity. TypeScript and 17 focused tests passed for these changes. Vercel's `Public write limits` firewall rule was published after the user's approval; CLI status shows one active rule for 30 matching POSTs per IP per 60 seconds, excluding refresh/reconciliation. These controls do not prove funded acceptance or prevent distributed denial of service; the application code remains local and undeployed. Alerting, hosted receipt-cleanup migration, reconciliation capacity monitoring and tested payment recovery remain public-release blockers.
+
 - November 14 local scoped pilot access: payer checkout and its share APIs can pass the native owner gate; the server validates the share capability before enabling owner-test payment readiness. Bill creation and organizer access remain owner-only. TypeScript, all 116 Vitest tests, and the native Next.js production build passed; an independent source review found no authorization bypass. This change is local, not deployed; hosted browser, device and funded acceptance remain outstanding.
 
 - November 14 checkout privacy copy: Zcash and payment privacy help now describe confidential USDC as the quoted destination and state actual credit remains unverified. TypeScript and six focused wallet/Solana tests passed. Local code only; the hosted UI remains on its prior deployment. The local desktop/mobile video footage has been recaptured with the updated copy.
@@ -127,3 +129,7 @@ NEAR AI key is configured locally and remains ignored by Git. It has not been au
 Private balances are documented and authentication was tested. Recipient identity privacy across the entire proposed flow is not yet proved. Basic versus advanced guarantees and confidential quote auth composition need partner clarification. Fee/deadline docs/runtime differences are recorded in the technical dossier. The app is deployed as an owner-only pilot; no funded transfer or verified confidential credit occurred.
 
 Deadline: November 15, 2026, 08:59 KST (November 14, 23:59 UTC).
+
+## Local receipt retention — November 14
+
+The authenticated reconciliation endpoint now reconciles payments first, then cleans up to 20 receipt objects older than seven days per run and clears their metadata and bill references; bill and payment records remain. Storage failures retain metadata for retries and cannot delay the start of payment reconciliation. This is local code only: Supabase migration 008 and an application deployment are required before the hosted job can perform cleanup; neither has been applied. D1/R2 uses the same endpoint and requires an external authenticated scheduler. TypeScript and all 121 Vitest tests pass, including the full Supabase 001–008 migration sequence and Supabase/D1 storage failure and retry cases.

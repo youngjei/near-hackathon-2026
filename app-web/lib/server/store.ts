@@ -72,6 +72,7 @@ export interface Store {
   receipt(id: string): Promise<Receipt | null>;
   saveReceipt(receipt: Receipt, bytes: Uint8Array): Promise<void>;
   receiptBody(key: string): Promise<BodyInit | null>;
+  cleanupExpiredReceipts(now: number, limit: number): Promise<number>;
   createBill(bill: Bill, shares: Share[]): Promise<Bill>;
   createDemoAttempt(attempt: Attempt): Promise<void>;
   updateDemoAttempt(
