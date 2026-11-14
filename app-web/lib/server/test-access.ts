@@ -33,7 +33,7 @@ function loginPage(returnTo: string, failed = false) {
 // Shared by native Next proxy and runtime. API enforcement remains effective
 // even if a hosting layer bypasses proxy. No Sites identity header is trusted.
 export async function testAccess(request: Request, settings: Settings): Promise<Response | undefined> {
-  if (!enabled(settings)) return;
+  if (settings.STANDALONE_PRIVATE_ACCESS !== "true" || !enabled(settings)) return;
   if (!configured(settings)) return json({error: "Private testing access is not configured."}, 503);
   let origin: URL;
   try {

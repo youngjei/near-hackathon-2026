@@ -27,6 +27,6 @@ export async function handle(request: Request) {
   return createHandler(
     supabaseStore(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY),
     CRON_SECRET,
-    paymentOptions(process.env, testOwnerAuthorized(request, process.env)),
+    paymentOptions(process.env, testOwnerAuthorized(request, process.env), true),
   )(canonicalRequest);
 }

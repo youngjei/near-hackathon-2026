@@ -22,6 +22,7 @@ import {
 import type { Store, Bill, Share, Attempt } from "./store";
 const uuid = z.string().uuid();
 export type PaymentOptions = {
+  receiptCleanupEnabled?: boolean;
   provider?: LivePaymentProvider;
   readiness?: ReturnType<typeof paymentReadiness>;
   payerReadiness?: ReturnType<typeof paymentReadiness>;
@@ -476,9 +477,11 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
           ? await reconcileLivePayments(store, payments.provider, {limit: 20})
           : {checked: 0, updated: 0, unavailable: 0};
         let receiptsCleaned: number | null = null;
-        try { receiptsCleaned = await store.cleanupExpiredReceipts(now, 20); }
-        catch { /* Payment reconciliation has already completed. Retry cleanup next run. */ }
-        if (receiptsCleaned === null)
+        if (payments.receiptCleanupEnabled) {
+          try { receiptsCleaned = await store.cleanupExpiredReceipts(now, 20); }
+          catch { /* Payment reconciliation has already completed. Retry cleanup next run. */ }
+        }
+        if (payments.receiptCleanupEnabled && receiptsCleaned === null)
           return json({ ok: false, error: "Receipt cleanup failed; retry on the next scheduled run.", livePaymentsChecked: result.checked, ...result }, 503);
         return json({ ok: true, receiptsCleaned, livePaymentsChecked: result.checked, ...result });
       }
