@@ -24,6 +24,7 @@ const uuid = z.string().uuid();
 export type PaymentOptions = {
   provider?: LivePaymentProvider;
   readiness?: ReturnType<typeof paymentReadiness>;
+  payerReadiness?: ReturnType<typeof paymentReadiness>;
 };
 export function createHandler(store: Store, cronSecret?: string, payments: PaymentOptions = {}) {
   const readiness = payments.readiness ?? liveReadiness;
@@ -54,7 +55,7 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
       );
     return { bill, token };
   }
-  async function authorizedShare(req: Request, id: string) {
+  async function validateShare(req: Request, id: string) {
     uuid.parse(id);
     const share = await store.share(id);
     const token = cookie(req, `sdb_s_${id}`);
@@ -110,7 +111,7 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
     );
     return { bill: billView(bill), live: readiness, organizerToken: token, receivingAddress: bill.recipient_account ? displayReceivingAddress(bill.recipient_account) : null, shares: result };
   }
-  async function checkout(share: Share, bill: Bill) {
+  async function checkout(share: Share, bill: Bill, readiness: ReturnType<typeof paymentReadiness>) {
     const attempts = await store.attempts(share.id);
     return {
       bill: billView(bill),
@@ -156,6 +157,12 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
   }
   return async function handle(req: Request): Promise<Response> {
     try {
+      let requestReadiness = readiness;
+      async function authorizedShare(req: Request, id: string) {
+        const result = await validateShare(req, id);
+        requestReadiness = payments.payerReadiness ?? readiness;
+        return result;
+      }
       const path = new URL(req.url).pathname
         .replace(/^\/api\/?/, "")
         .split("/")
@@ -321,7 +328,7 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
       }
       if (resource === "shares" && id && method === "GET" && !action) {
         const { share, bill } = await authorizedShare(req, id);
-        return json(await checkout(share, bill));
+        return json(await checkout(share, bill, requestReadiness));
       }
       if (
         (resource === "bills" || resource === "shares") &&
@@ -367,17 +374,17 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
           .parse(await readJson(req));
         await limit("attempt:" + id, 40);
         if (bill.mode === "live") {
-          if (!payments.provider) throw new HttpError(503, readiness.reason);
+          if (!payments.provider) throw new HttpError(503, requestReadiness.reason);
           await createLivePayment(store, payments.provider, share, bill,
-            { ...body, refundAddress: body.refundAddress || "" }, readiness.methods);
-          return json(await checkout(share, bill), 201);
+            { ...body, refundAddress: body.refundAddress || "" }, requestReadiness.methods);
+          return json(await checkout(share, bill, requestReadiness), 201);
         }
         const current = await store.attempts(id);
         const previous = current.find((a) => a.request_key === body.requestKey);
         if (previous) {
           if (previous.method !== body.method)
             throw new HttpError(409, "Choose a new payment request.");
-          return json(await checkout(share, bill));
+          return json(await checkout(share, bill, requestReadiness));
         }
         if (current.some((a) => a.status === "paid"))
           throw new HttpError(409, "This share is already paid.");
@@ -392,32 +399,32 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
           expires_at: now + 10 * 60000,
           mode: "demo",
         });
-        return json(await checkout(share, bill), 201);
+        return json(await checkout(share, bill, requestReadiness), 201);
       }
       if (resource === "shares" && id && action === "prepare" && method === "POST") {
         const { share, bill } = await authorizedShare(req, id);
-        if (bill.mode !== "live" || !payments.provider || !readiness.methods.confidential)
+        if (bill.mode !== "live" || !payments.provider || !requestReadiness.methods.confidential)
           throw new HttpError(503, "Confidential wallet payments are not enabled.");
         await limit("signing:" + id, 40);
         const body = z.object({attemptId: uuid, signer: z.string().min(2).max(64)}).strict().parse(await readJson(req));
-        return json(await prepareConfidentialPayment(store, payments.provider, share.id, body.attemptId, body.signer, readiness.methods));
+        return json(await prepareConfidentialPayment(store, payments.provider, share.id, body.attemptId, body.signer, requestReadiness.methods));
       }
       if (resource === "shares" && id && action === "submit" && method === "POST") {
         const { share, bill } = await authorizedShare(req, id);
-        if (bill.mode !== "live" || !payments.provider || !readiness.methods.confidential)
+        if (bill.mode !== "live" || !payments.provider || !requestReadiness.methods.confidential)
           throw new HttpError(503, "Confidential wallet payments are not enabled.");
         await limit("signing:" + id, 40);
         const body = z.object({attemptId: uuid, accountId: z.string().min(2).max(64), publicKey: z.string().max(100), signature: z.string().max(128)}).strict().parse(await readJson(req));
         await submitConfidentialPayment(store, payments.provider, share.id, body.attemptId,
-          {accountId: body.accountId, publicKey: body.publicKey, signature: body.signature}, readiness.methods);
-        return json(await checkout(share, bill));
+          {accountId: body.accountId, publicKey: body.publicKey, signature: body.signature}, requestReadiness.methods);
+        return json(await checkout(share, bill, requestReadiness));
       }
       if (resource === "shares" && id && action === "refresh" && method === "POST") {
         const { share, bill } = await authorizedShare(req, id);
         await limit("refresh:" + id, 300);
         if (bill.mode === "live" && payments.provider)
           await reconcileLivePayments(store, payments.provider, {shareId: id, limit: 10});
-        return json(await checkout(share, bill));
+        return json(await checkout(share, bill, requestReadiness));
       }
       if (
         resource === "shares" &&
@@ -445,7 +452,7 @@ export function createHandler(store: Store, cronSecret?: string, payments: Payme
           throw new HttpError(409, "This payment cannot change to that state.");
         }
         await store.updateDemoAttempt(attempt.id, id, attempt.status, next);
-        return json(await checkout(share, bill));
+        return json(await checkout(share, bill, requestReadiness));
       }
       if (resource === "reconcile" && method === "POST") {
         if (

@@ -72,3 +72,18 @@ test("native runtime independently enforces access before storage or config", as
   const response = await handle(login());
   expect(response.status).toBe(303);
 });
+
+test("pilot admits only checkout shell and exact capability-protected share endpoints", async () => {
+  const id = "22222222-2222-4222-8222-222222222222";
+  expect(await testAccess(request("/pay?id=" + id), settings)).toBeUndefined();
+  expect(await testAccess(request("/fonts/space-grotesk-variable.ttf"), settings)).toBeUndefined();
+  for (const suffix of ["", "/receipt"]) expect(await testAccess(request(`/api/shares/${id}${suffix}`), settings)).toBeUndefined();
+  for (const suffix of ["access", "attempts", "prepare", "submit", "refresh", "simulate"]) {
+    const req = new Request(`http://localhost:3000/api/shares/${id}/${suffix}`, {method:"POST"});
+    expect(await testAccess(req, settings)).toBeUndefined();
+  }
+  for (const path of ["/", "/bill", "/bills", "/api/config", "/api/bills", `/api/shares/${id}/unknown`, `/api/shares/${id}/attempts/extra`]) {
+    expect(await testAccess(request(path), settings)).toBeDefined();
+  }
+  expect((await testAccess(new Request("http://localhost:3000/api/bills", {method:"POST"}), settings))?.status).toBe(401);
+});

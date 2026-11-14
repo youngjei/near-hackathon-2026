@@ -68,6 +68,13 @@ export async function testAccess(request: Request, settings: Settings): Promise<
   }
   if (url.pathname === "/test-access" && request.method === "GET") return loginPage(safeReturn(url.searchParams.get("returnTo")));
   if (testOwnerAuthorized(request, settings)) return;
+  // The checkout shell must load before the fragment capability can be redeemed.
+  // Share API routes still authenticate the capability in the API handler.
+  if (request.method === "GET" && (url.pathname === "/pay" || url.pathname === "/fonts/space-grotesk-variable.ttf")) return;
+  const sharePath = /^\/api\/shares\/[0-9a-f-]{36}(?:\/(access|receipt|attempts|prepare|submit|refresh|simulate))?$/i.exec(url.pathname);
+  if (sharePath && ((request.method === "GET" && (!sharePath[1] || sharePath[1] === "receipt")) ||
+      (request.method === "POST" && ["access", "attempts", "prepare", "submit", "refresh", "simulate"].includes(sharePath[1] || "")))) return;
+
   if (url.pathname === "/api/reconcile" && request.method === "POST" && settings.CRON_SECRET && equal(request.headers.get("authorization") || "", `Bearer ${settings.CRON_SECRET}`)) return;
   if (url.pathname.startsWith("/api/")) return json({error: "Open this deployment and enter your owner password."}, 401);
   return new Response(null, {status: 303, headers: {...responseHeaders, Location: `${origin.origin}/test-access?returnTo=${encodeURIComponent(safeReturn(url.pathname + url.search))}`}});
