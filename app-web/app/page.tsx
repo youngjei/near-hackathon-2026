@@ -170,7 +170,7 @@ export default function CreateBill() {
   const split =
     step === "review" && fx ? allocation(total, extra, fx.rate, diners) : null;
   return (
-    <Shell notice={mode === "live" ? liveTesting ? "Live testing · Real funds" : "Live · Real funds" : undefined}>
+    <Shell notice={mode === "live" ? liveTesting ? "Pilot testing · Real funds" : "Live · Real funds" : undefined}>
       <TaskFrame className={`create-layout step-${step}`} context={<>
         {step === "start" && <div className="start-explanation"><AnimatedIntro headingRef={heading} /><ReceiptStory /></div>}
         {step !== "start" && <SplitGraphic key={step} split={step === "review"} />}

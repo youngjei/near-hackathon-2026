@@ -58,7 +58,7 @@ test('refresh is scoped to the diner and cron is authorized separately even with
 
 test('payment reconciliation completes before a receipt cleanup failure',async()=>{
  vi.mocked(store.cleanupExpiredReceipts).mockRejectedValueOnce(new Error('storage unavailable'));
- const handle=createHandler(store,'cron-test',{provider});
+ const handle=createHandler(store,'cron-test',{provider,receiptCleanupEnabled:true});
  const req=new Request(origin+'/api/reconcile',{method:'POST',headers:{Authorization:'Bearer cron-test'}});
  const response=await handle(req);
  expect(response.status).toBe(503);
@@ -92,4 +92,13 @@ test('pilot readiness is scoped to the authenticated share and never global',asy
  expect(((await response.json()) as {live:typeof pilot}).live).toEqual(pilot);
  expect(calls.create).toHaveBeenCalledWith(store,provider,share,bill,body,pilot.methods);
  expect(((await (await handle(new Request(origin+'/api/config'))).json()) as {live:{enabled:boolean}}).live.enabled).toBe(false);
+});
+
+test('disabled receipt cleanup does not block payment reconciliation',async()=>{
+ vi.mocked(store.cleanupExpiredReceipts).mockRejectedValue(new Error('migration missing'));
+ const handle=createHandler(store,'cron-test',{provider});
+ const response=await handle(new Request(origin+'/api/reconcile',{method:'POST',headers:{Authorization:'Bearer cron-test'}}));
+ expect(response.status).toBe(200);
+ expect(await response.json()).toMatchObject({ok:true,receiptsCleaned:null,livePaymentsChecked:1});
+ expect(store.cleanupExpiredReceipts).not.toHaveBeenCalled();
 });

@@ -1,7 +1,7 @@
 import { afterEach, expect, test, vi } from "vitest";
 import { testAccess, testOwnerAuthorized } from "../lib/server/test-access";
 import { handle } from "../lib/server/runtime-node";
-const settings = {LIVE_PAYMENT_TESTING: "true", PRIVATE_TEST_PASSWORD: "test-only-owner-password-with-over-32-characters", APP_ORIGIN: "https://split.test", CRON_SECRET: "cron-test-secret"};
+const settings = {STANDALONE_PRIVATE_ACCESS: "true", LIVE_PAYMENT_TESTING: "true", PRIVATE_TEST_PASSWORD: "test-only-owner-password-with-over-32-characters", APP_ORIGIN: "https://split.test", CRON_SECRET: "cron-test-secret"};
 afterEach(() => vi.unstubAllEnvs());
 function request(path = "/api/config", headers: Record<string, string> = {}) {
   return new Request(`http://localhost:3000${path}`, {headers});
@@ -86,4 +86,8 @@ test("pilot admits only checkout shell and exact capability-protected share endp
     expect(await testAccess(request(path), settings)).toBeDefined();
   }
   expect((await testAccess(new Request("http://localhost:3000/api/bills", {method:"POST"}), settings))?.status).toBe(401);
+});
+
+test("standalone access can be disabled for a public pilot", async () => {
+  expect(await testAccess(new Request("https://split.test/api/bills", {method:"POST"}), {...settings, STANDALONE_PRIVATE_ACCESS:"false", PUBLIC_LIVE_PILOT:"true"})).toBeUndefined();
 });

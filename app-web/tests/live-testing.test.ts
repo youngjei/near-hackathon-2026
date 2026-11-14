@@ -48,3 +48,25 @@ test("owner proof does not bypass ordinary rollout or confidential signing accep
   expect(paymentReadiness(settings, true).methods.confidential).toBe(false);
   expect(paymentReadiness({...settings, CONFIDENTIAL_ACCEPTANCE_VERIFIED: "true"}, true).methods.confidential).toBe(true);
 });
+
+test("public pilot is opt-in and still requires each payment switch", () => {
+  const publicSettings = {...settings, PUBLIC_LIVE_PILOT: "true", STANDALONE_PRIVATE_ACCESS: "false"};
+  expect(paymentOptions(publicSettings, false, true).readiness).toMatchObject({enabled:true, testing:true, methods:{zcash:true,solana:true,confidential:false}});
+  for (const key of ["PUBLIC_LIVE_PILOT", "LIVE_PAYMENT_TESTING", "LIVE_PAYMENTS_ENABLED", "NEAR_INTENTS_API_KEY"]) {
+    expect(paymentOptions({...publicSettings, [key]: ""}, false, true).readiness?.enabled).toBe(false);
+  }
+  expect(paymentOptions({...publicSettings, STANDALONE_PRIVATE_ACCESS:"true"}, false, true).readiness?.enabled).toBe(false);
+  expect(paymentOptions({...publicSettings, LIVE_SOLANA_ENABLED:"false"}, false, true).readiness?.methods.solana).toBe(false);
+  expect(paymentOptions({...publicSettings, LIVE_ZCASH_ENABLED:"false"}, false, true).readiness?.methods.zcash).toBe(false);
+  expect(JSON.stringify(paymentOptions(publicSettings, false, true).readiness)).not.toContain(publicSettings.NEAR_INTENTS_API_KEY);
+});
+
+
+test("pilot is native-only and share bypass requires an active private host", () => {
+  const publicSettings = {...settings, PUBLIC_LIVE_PILOT:"true", STANDALONE_PRIVATE_ACCESS:"false"};
+  expect(paymentOptions(publicSettings).readiness?.enabled).toBe(false);
+  expect(paymentOptions(publicSettings).payerReadiness).toBeUndefined();
+  expect(paymentOptions({...publicSettings, PUBLIC_LIVE_PILOT:"false"}, false, true).payerReadiness).toBeUndefined();
+  expect(paymentOptions({...publicSettings, STANDALONE_PRIVATE_ACCESS:"true"}, false, true).payerReadiness?.enabled).toBe(true);
+  expect(paymentOptions({...publicSettings, PRIVATE_LIVE_TEST_HOST:"true"}).payerReadiness?.enabled).toBe(true);
+});

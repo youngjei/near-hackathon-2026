@@ -348,3 +348,7 @@ Added bounded, idempotent seven-day receipt cleanup to the authenticated reconci
 ## 2026-11-14 — Production edge rule staged and published
 
 Vercel Hobby had no active firewall rules. Staged one IP-keyed fixed-window rule for POST `/api/bills`, `/api/receipts` and `/api/shares/:id/attempts`: 30 requests per IP per 60 seconds, returning a rate limit response. It excludes payer refresh and the authenticated reconciliation endpoint. Vercel's automatic approval check rejected publication until the user approved the exact effect; after that approval, publication succeeded and `vercel firewall status` showed one active rule. This protects the existing owner pilot now; it does not open bill creation or verify a wallet payment. No application deployment or migration occurred.
+
+## 2026-11-14 — Password-free public pilot prepared locally
+
+The user requested that judges be able to create bills and that the owner test live payments without the password screen. Added a native-only `PUBLIC_LIVE_PILOT` gate that requires the existing live-testing, global, route and provider switches. A valid share capability remains required for payer checkout; confidential sending and all acceptance flags remain disabled. Added an independent receipt-cleanup switch, default off until migration 008 is applied. TypeScript, all 126 Vitest tests, and both Vinext and native Next.js production builds passed. No application deployment, database migration, production setting change or funded payment occurred in this code update.

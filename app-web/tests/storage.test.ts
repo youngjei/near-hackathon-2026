@@ -67,6 +67,7 @@ beforeAll(async () => {
   handle = createHandler(
     supabaseStore("https://database.test", "test-server-key"),
     "test-cron",
+    {receiptCleanupEnabled: true},
   );
   const r = await call("/session", "POST");
   session = r.headers.get("set-cookie")!.split(";")[0];
@@ -320,4 +321,15 @@ test("receipt retention deletes expired objects and metadata, preserves bills, a
   expect((await store.shares(data.bill.id))).toHaveLength(2);
   const { rows } = await pg.query<{browser:boolean; server:boolean}>(`select has_function_privilege('anon','public.sdb_expired_receipts(timestamptz,integer)','execute') or has_function_privilege('authenticated','public.sdb_delete_expired_receipt(uuid,text,timestamptz)','execute') as browser, has_function_privilege('service_role','public.sdb_delete_expired_receipt(uuid,text,timestamptz)','execute') as server`);
   expect(rows[0]).toEqual({browser:false, server:true});
+});
+
+test("public pilot creates a live bill without an owner login", async () => {
+  const { paymentOptions } = await import("../lib/server/payment-runtime");
+  const options = paymentOptions({PUBLIC_LIVE_PILOT:"true", STANDALONE_PRIVATE_ACCESS:"false", LIVE_PAYMENT_TESTING:"true", LIVE_PAYMENTS_ENABLED:"true", LIVE_SOLANA_ENABLED:"true", NEAR_INTENTS_API_KEY:"synthetic-secret"}, false, true);
+  const publicHandle = createHandler(supabaseStore("https://database.test", "test-server-key"), undefined, options);
+  const response = await publicHandle(new Request(`${origin}/api/bills`, {method:"POST", headers:{Origin:origin, "Content-Type":"application/json", Cookie:session}, body:JSON.stringify({...input(),mode:"live"})}));
+  expect(response.status).toBe(201);
+  const body = await response.text();
+  expect(body).not.toContain("synthetic-secret");
+  expect(JSON.parse(body).bill.mode).toBe("live");
 });

@@ -194,3 +194,7 @@ Use the existing authenticated reconciliation endpoint to process expired receip
 ## 2026-11-14 — Production firewall rule for public writes
 
 After user approval, publish one Vercel Hobby rate-limit rule keyed by the edge-observed IP: 30 POST requests per 60 seconds to bill creation, receipt upload and live quote endpoints. Exclude payer refresh and authenticated reconciliation so payment status capacity is independent. The CLI reports the rule active. This rule is a first abuse barrier, not a guarantee against distributed requests; the app's atomic global budgets and monitoring remain necessary for public release.
+
+## 2026-11-14 — Password-free public pilot before acceptance
+
+Honor the user's request for public bill creation and no password screen during their live test by making a native Vercel-only `PUBLIC_LIVE_PILOT` opt-in. It requires `LIVE_PAYMENT_TESTING=true`, `STANDALONE_PRIVATE_ACCESS=false`, global and per-method switches and the provider credential. Keep immutable recipients, payer capabilities, route validation, visible real-funds pilot copy, confidential sending disabled and all acceptance flags false. The public URL can be discovered even before the owner shares it; do not describe this as an owner-only test or a verified rollout. Enable receipt cleanup separately after migration 008 so the hosted reconciliation job stays healthy until that migration is approved and applied.

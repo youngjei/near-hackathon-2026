@@ -92,7 +92,7 @@ export default function Pay() {
     ? Math.max(0, Math.ceil((active.expiresAt - now) / 60000))
     : 0;
   return (
-    <Shell notice={data.bill.mode === "live" ? data.live?.testing ? "Live testing · Real funds" : "Live · Real funds" : undefined}>
+    <Shell notice={data.bill.mode === "live" ? data.live?.testing ? "Pilot testing · Real funds" : "Live · Real funds" : undefined}>
       <TaskFrame className="checkout-layout" context={<>
         <div className="intro compact">
           <h1>Your share</h1>
